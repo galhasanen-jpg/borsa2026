@@ -151,13 +151,15 @@ export default function GlobalNewsPage() {
                 <span className="text-gray-500 text-xs">القناة الاقتصادية الأولى في العالم العربي</span>
               </div>
               <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-                <iframe
-                  className="absolute top-0 left-0 w-full h-full"
-                  src="https://www.youtube.com/embed/OLbqCS3OrPM?autoplay=1"
-                  title="CNBC Arabia Live"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
+                {activeCategory.id === 'live' && (
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full"
+                    src="https://www.youtube.com/embed/OLbqCS3OrPM?autoplay=1"
+                    title="CNBC Arabia Live"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                )}
               </div>
             </div>
 
