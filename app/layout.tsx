@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import TickerBar from "./components/TickerBar";
@@ -26,6 +27,7 @@ export default function RootLayout({
           <TickerBar />
           {children}
         </LanguageProvider>
+        <Analytics />
       </body>
     </html>
   );
