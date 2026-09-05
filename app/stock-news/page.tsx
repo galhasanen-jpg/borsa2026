@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function StockNewsPage() {
+  const contentRef = useRef<HTMLDivElement>(null);
   const [lang, setLang] = useState<'ar' | 'en'>('ar');
   const [stocks, setStocks] = useState<any[]>([]);
   const [sectors, setSectors] = useState<any[]>([]);
@@ -35,6 +36,13 @@ export default function StockNewsPage() {
     const data = await res.json();
     setSectors(data);
   }
+
+  useEffect(() => {
+    if (selectedStock && window.innerWidth < 1024) {
+      const timer = setTimeout(() => contentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedStock, loadingNews]);
 
   async function fetchNews(stock: any) {
     setSelectedStock(stock);
@@ -184,7 +192,7 @@ export default function StockNewsPage() {
           </div>
 
           {/* المحتوى */}
-          <div className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
+          <div ref={contentRef} className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
 
             {!selectedStock && (
               <div className="flex items-center justify-center h-64 text-gray-500">
