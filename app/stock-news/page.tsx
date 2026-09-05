@@ -38,8 +38,8 @@ export default function StockNewsPage() {
   }
 
   useEffect(() => {
-    if (selectedStock && window.innerWidth < 1024) {
-      const timer = setTimeout(() => contentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    if (selectedStock && !loadingNews && window.innerWidth < 1024) {
+      const timer = setTimeout(() => contentRef.current?.scrollIntoView({ behavior: 'auto', block: 'start' }), 50);
       return () => clearTimeout(timer);
     }
   }, [selectedStock, loadingNews]);
