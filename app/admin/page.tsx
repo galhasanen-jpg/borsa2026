@@ -325,7 +325,17 @@ export default function AdminPage() {
 
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-orange-500 font-bold text-xl">⚙️ لوحة الإدارة</h1>
-          <span className="text-gray-500 text-xs">{prices.length} سهم محدث من {stocks.length}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-gray-500 text-xs">{prices.length} سهم محدث من {stocks.length}</span>
+            <a
+              href="https://vercel.com/galhasanen-jpgs-projects/borsa2026cd/analytics"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-800 text-gray-300 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-700 hover:text-orange-500 transition"
+            >
+              📊 تحليلات الزوار
+            </a>
+          </div>
         </div>
 
         {message && (
