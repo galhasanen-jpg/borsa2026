@@ -127,6 +127,22 @@ const content = {
           'تسجيل الخروج',
         ],
       },
+      {
+        title: 'لوحة الإدارة 🔒', icon: '⚙️', path: '/admin',
+        data: [
+          'قائمة كل الأسهم مع أسعارها المحدَّثة يدوياً ونسبة تغييرها وحجم تداولها',
+          'البيانات التاريخية (فتح، أعلى، أدنى، إغلاق، حجم) لكل سهم وتاريخ',
+          'طلبات تسجيل المحللين الجدد وطلبات المتابعين المعلّقة',
+        ],
+        tasks: [
+          'تعديل أو حذف سعر أي سهم يدوياً',
+          'إضافة بيانات تاريخية لسهم بشكل فردي أو استيراد دفعة بيانات دفعة واحدة',
+          'قبول أو رفض طلبات تسجيل المحللين',
+          'إضافة توصية جديدة لأي محلل، وتحديث حالتها (ناجحة/خاسرة) عند تحقق النتيجة',
+          'قبول أو رفض طلبات المتابعين — القبول يرسل كود تفعيل تلقائياً على بريد المتابع',
+        ],
+        note: '🔒 هذه الصفحة مخصّصة لإدارة الموقع فقط، وتتطلب كلمة مرور للدخول إليها.',
+      },
     ],
     followerGuide: [
       {
@@ -369,6 +385,22 @@ const content = {
           'Log out',
         ],
       },
+      {
+        title: 'Admin Dashboard 🔒', icon: '⚙️', path: '/admin',
+        data: [
+          'Every stock with its manually-updated price, change % and trading volume',
+          'Historical OHLC (open, high, low, close) and volume data per stock and date',
+          'Pending analyst registration requests and pending follower requests',
+        ],
+        tasks: [
+          "Edit or delete any stock's price manually",
+          'Add historical data for a stock one at a time, or import a whole batch at once',
+          'Approve or reject new analyst registrations',
+          "Add a new recommendation for any analyst, and update its status (successful/failed) once the outcome is known",
+          "Approve or reject follower requests — approval automatically emails the follower their activation code",
+        ],
+        note: '🔒 This page is for site administrators only and requires a password to access.',
+      },
     ],
     followerGuide: [
       {
@@ -574,6 +606,10 @@ export default function GuidePage() {
                     ))}
                   </ul>
                 </div>
+
+                {page.note && (
+                  <p className="text-gray-500 text-xs mt-4 border-t border-gray-800 pt-3">{page.note}</p>
+                )}
               </div>
             ))}
           </div>
