@@ -54,20 +54,23 @@ export async function GET(request) {
             }
         }
 
+        // نضيف حقل "source" لكل صف (db/yahoo/mock) حتى يسهل التأكد من مصدر البيانات الفعلي
+        // من الاستجابة مباشرة دون الحاجة لمقارنته يدوياً بمصدر خارجي
         if (dbRows.length > 0) {
-            return Response.json(dbRows);
+            return Response.json(dbRows.map(r => ({ ...r, source: 'db' })));
         }
 
         // ثانياً: لا توجد بيانات محفوظة؛ نجلب بيانات تاريخية حقيقية من Yahoo Finance
         const yahooHistory = await fetchYahooHistory(symbol, period);
         if (yahooHistory && yahooHistory.length > 0) {
             if (client) await cacheHistory(client, symbol, yahooHistory);
-            return Response.json(yahooHistory);
+            return Response.json(yahooHistory.map(r => ({ ...r, source: 'yahoo' })));
         }
 
         // ثالثاً: لا توجد بيانات حقيقية من أي مصدر؛ بيانات تقريبية ترتكز على السعر الحالي الفعلي
         const anchor = client ? await getAnchorPrice(client, symbol) : getMockPrice(symbol);
-        return Response.json(generateMockHistory(symbol, period, anchor));
+        const mockHistory = generateMockHistory(symbol, period, anchor);
+        return Response.json(mockHistory.map(r => ({ ...r, source: 'mock' })));
 
     } finally {
         if (client) client.release();
