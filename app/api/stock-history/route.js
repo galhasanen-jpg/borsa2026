@@ -1,4 +1,5 @@
 import { getConnection } from '../../lib/db';
+import { getMockPrice } from '../../lib/mock-prices';
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
@@ -32,18 +33,33 @@ export async function GET(request) {
             [symbol]
         );
 
-        // إذا لا توجد بيانات حقيقية، نولد بيانات احتياطية
+        // إذا لا توجد بيانات حقيقية، نولد بيانات احتياطية مرتبطة بالسعر الحالي الفعلي
         if (result.rows.length === 0) {
-            return Response.json(generateMockHistory(symbol, period));
+            const anchor = await getAnchorPrice(client, symbol);
+            return Response.json(generateMockHistory(symbol, period, anchor));
         }
 
         return Response.json(result.rows);
 
     } catch (err) {
-        return Response.json(generateMockHistory(symbol, period));
+        return Response.json(generateMockHistory(symbol, period, getMockPrice(symbol)));
     } finally {
         if (client) client.release();
     }
+}
+
+// السعر الذي ترسو عليه آخر نقطة في البيانات الاحتياطية، حتى يتطابق الرسم البياني
+// مع السعر الحالي المعروض فعلياً للسهم بدل سعر عشوائي منفصل عنه.
+async function getAnchorPrice(client, symbol) {
+    try {
+        const result = await client.query(
+            `SELECT price FROM stock_prices WHERE symbol = $1`,
+            [symbol.replace('.CA', '')]
+        );
+        const price = result.rows[0] ? parseFloat(result.rows[0].price) : NaN;
+        if (!isNaN(price) && price > 0) return price;
+    } catch (err) {}
+    return getMockPrice(symbol);
 }
 
 export async function POST(request) {
@@ -69,10 +85,24 @@ export async function POST(request) {
     }
 }
 
-function generateMockHistory(symbol, period) {
-    const seed = symbol.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const basePrice = 10 + (seed % 200);
+// مولّد أرقام عشوائية بذرته ثابتة، حتى لا يتغيّر شكل الرسم البياني الاحتياطي في كل تحميل للصفحة
+function mulberry32(seed) {
+    return function () {
+        seed |= 0;
+        seed = (seed + 0x6D2B79F5) | 0;
+        let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+}
 
+function hashSeed(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
+    return h;
+}
+
+function generateMockHistory(symbol, period, anchorPrice) {
     let days;
     switch (period) {
         case '1w': days = 7; break;
@@ -83,35 +113,43 @@ function generateMockHistory(symbol, period) {
         default: days = 30;
     }
 
-    const history = [];
-    let price = basePrice;
     const today = new Date();
-
+    const dates = [];
     for (let i = days; i >= 0; i--) {
         const date = new Date(today);
         date.setDate(date.getDate() - i);
-
         // تجاهل الجمعة والسبت
         if (date.getDay() === 5 || date.getDay() === 6) continue;
+        dates.push(date);
+    }
 
-        const change = (Math.random() - 0.48) * (price * 0.03);
-        price = Math.max(price + change, basePrice * 0.5);
+    // نسير بالسعر إلى الوراء ابتداءً من السعر الحالي الحقيقي، فتنتهي البيانات التاريخية
+    // بالضبط عند نفس السعر المعروض فعلياً للسهم بدل قيمة عشوائية منفصلة عنه
+    const rand = mulberry32(hashSeed(symbol + ':' + period));
+    const closes = new Array(dates.length);
+    closes[dates.length - 1] = anchorPrice;
+    for (let i = dates.length - 2; i >= 0; i--) {
+        const dailyMove = (rand() - 0.5) * 0.03; // تذبذب يومي واقعي حول 1.5%
+        closes[i] = Math.max(closes[i + 1] / (1 + dailyMove), anchorPrice * 0.3);
+    }
 
-        const open = parseFloat(price.toFixed(2));
-        const close = parseFloat((price + (Math.random() - 0.5) * price * 0.02).toFixed(2));
-        const high = parseFloat((Math.max(open, close) + Math.random() * price * 0.01).toFixed(2));
-        const low = parseFloat((Math.min(open, close) - Math.random() * price * 0.01).toFixed(2));
-        const volume = Math.floor(100000 + Math.random() * 2000000);
+    const volRand = mulberry32(hashSeed(symbol + ':volume'));
+    const volumeBase = 100000 + Math.floor(volRand() * 2000000);
 
-        history.push({
+    return dates.map((date, i) => {
+        const close = parseFloat(closes[i].toFixed(2));
+        const open = parseFloat((i > 0 ? closes[i - 1] : close).toFixed(2));
+        const high = parseFloat((Math.max(open, close) * (1 + rand() * 0.008)).toFixed(2));
+        const low = parseFloat((Math.min(open, close) * (1 - rand() * 0.008)).toFixed(2));
+        const volume = Math.floor(volumeBase * (0.5 + rand()));
+
+        return {
             date: date.toISOString().split('T')[0],
             open,
             high,
             low,
             close,
             volume
-        });
-    }
-
-    return history;
+        };
+    });
 }
