@@ -1,6 +1,15 @@
 import { getConnection } from '../../lib/db';
 import { getMockPrice } from '../../lib/mock-prices';
 
+// مطابقة الفترة الزمنية المطلوبة مع صيغة المدى التي يفهمها Yahoo Finance
+const YAHOO_RANGE = {
+    '1w': '5d',
+    '1m': '1mo',
+    '3m': '3mo',
+    '6m': '6mo',
+    '1y': '1y',
+};
+
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const symbol = searchParams.get('symbol');
@@ -13,42 +22,114 @@ export async function GET(request) {
     let client;
     try {
         client = await getConnection();
-
-        // تحديد الفترة الزمنية
-        let dateFilter;
-        switch (period) {
-            case '1w': dateFilter = "NOW() - INTERVAL '7 days'"; break;
-            case '1m': dateFilter = "NOW() - INTERVAL '1 month'"; break;
-            case '3m': dateFilter = "NOW() - INTERVAL '3 months'"; break;
-            case '6m': dateFilter = "NOW() - INTERVAL '6 months'"; break;
-            case '1y': dateFilter = "NOW() - INTERVAL '1 year'"; break;
-            default: dateFilter = "NOW() - INTERVAL '1 month'";
-        }
-
-        const result = await client.query(
-            `SELECT date, open, high, low, close, volume
-            FROM stock_history
-            WHERE symbol = $1 AND date >= ${dateFilter}
-            ORDER BY date ASC`,
-            [symbol]
-        );
-
-        // إذا لا توجد بيانات حقيقية، نولد بيانات احتياطية مرتبطة بالسعر الحالي الفعلي
-        if (result.rows.length === 0) {
-            const anchor = await getAnchorPrice(client, symbol);
-            return Response.json(generateMockHistory(symbol, period, anchor));
-        }
-
-        return Response.json(result.rows);
-
     } catch (err) {
-        return Response.json(generateMockHistory(symbol, period, getMockPrice(symbol)));
+        client = null;
+    }
+
+    try {
+        // أولاً: البيانات المحفوظة فعلياً في قاعدة البيانات
+        let dbRows = [];
+        if (client) {
+            try {
+                let dateFilter;
+                switch (period) {
+                    case '1w': dateFilter = "NOW() - INTERVAL '7 days'"; break;
+                    case '1m': dateFilter = "NOW() - INTERVAL '1 month'"; break;
+                    case '3m': dateFilter = "NOW() - INTERVAL '3 months'"; break;
+                    case '6m': dateFilter = "NOW() - INTERVAL '6 months'"; break;
+                    case '1y': dateFilter = "NOW() - INTERVAL '1 year'"; break;
+                    default: dateFilter = "NOW() - INTERVAL '1 month'";
+                }
+
+                const result = await client.query(
+                    `SELECT date, open, high, low, close, volume
+                    FROM stock_history
+                    WHERE symbol = $1 AND date >= ${dateFilter}
+                    ORDER BY date ASC`,
+                    [symbol]
+                );
+                dbRows = result.rows;
+            } catch (err) {
+                dbRows = [];
+            }
+        }
+
+        if (dbRows.length > 0) {
+            return Response.json(dbRows);
+        }
+
+        // ثانياً: لا توجد بيانات محفوظة؛ نجلب بيانات تاريخية حقيقية من Yahoo Finance
+        const yahooHistory = await fetchYahooHistory(symbol, period);
+        if (yahooHistory && yahooHistory.length > 0) {
+            if (client) await cacheHistory(client, symbol, yahooHistory);
+            return Response.json(yahooHistory);
+        }
+
+        // ثالثاً: لا توجد بيانات حقيقية من أي مصدر؛ بيانات تقريبية ترتكز على السعر الحالي الفعلي
+        const anchor = client ? await getAnchorPrice(client, symbol) : getMockPrice(symbol);
+        return Response.json(generateMockHistory(symbol, period, anchor));
+
     } finally {
         if (client) client.release();
     }
 }
 
-// السعر الذي ترسو عليه آخر نقطة في البيانات الاحتياطية، حتى يتطابق الرسم البياني
+// يجلب بيانات OHLCV تاريخية حقيقية من Yahoo Finance عبر واجهة الرسم البياني العامة (بدون مفتاح API)
+async function fetchYahooHistory(symbol, period) {
+    const range = YAHOO_RANGE[period] || '1mo';
+    const yahooSymbol = symbol.includes('.') ? symbol : `${symbol}.CA`;
+
+    try {
+        const res = await fetch(
+            `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?range=${range}&interval=1d`,
+            { headers: { 'User-Agent': 'Mozilla/5.0' }, cache: 'no-store' }
+        );
+        const data = await res.json();
+        const result = data?.chart?.result?.[0];
+        const timestamps = result?.timestamp;
+        const quote = result?.indicators?.quote?.[0];
+
+        if (!timestamps || !quote) return null;
+
+        const history = [];
+        for (let i = 0; i < timestamps.length; i++) {
+            const close = quote.close?.[i];
+            if (close == null) continue; // تجاهل الأيام بدون تداول (عطلات)
+
+            history.push({
+                date: new Date(timestamps[i] * 1000).toISOString().split('T')[0],
+                open: parseFloat((quote.open?.[i] ?? close).toFixed(2)),
+                high: parseFloat((quote.high?.[i] ?? close).toFixed(2)),
+                low: parseFloat((quote.low?.[i] ?? close).toFixed(2)),
+                close: parseFloat(close.toFixed(2)),
+                volume: quote.volume?.[i] || 0,
+            });
+        }
+
+        return history;
+    } catch (err) {
+        return null;
+    }
+}
+
+// تخزين البيانات الحقيقية القادمة من Yahoo في stock_history حتى تُقرأ محلياً في المرات القادمة
+// بدون حاجة لطلب Yahoo من جديد. لا نستبدل بها سعر اليوم إذا كان محدَّثاً بالفعل من مصدر لحظي.
+async function cacheHistory(client, symbol, history) {
+    try {
+        for (const row of history) {
+            await client.query(
+                `INSERT INTO stock_history (symbol, date, open, high, low, close, volume)
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                ON CONFLICT (symbol, date) DO NOTHING`,
+                [symbol, row.date, row.open, row.high, row.low, row.close, row.volume]
+            );
+        }
+    } catch (err) {
+        // تجاهل أي خطأ في التخزين المؤقت؛ لا يؤثر على الاستجابة للمستخدم
+    }
+}
+
+// السعر الذي ترسو عليه آخر نقطة في البيانات التقريبية، حتى يتطابق الرسم البياني
 // مع السعر الحالي المعروض فعلياً للسهم بدل سعر عشوائي منفصل عنه.
 async function getAnchorPrice(client, symbol) {
     try {
