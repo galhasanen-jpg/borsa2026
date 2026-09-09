@@ -1,8 +1,19 @@
 // جلب بيانات حقيقية (تاريخية وسعر حالي) من Yahoo Finance — واجهة عامة بدون حاجة لمفتاح API،
 // تُستخدم كحل مرحلي ريثما تتوفر واجهة رسمية من البورصة المصرية نفسها.
 
+// بعض الأسهم مدرجة على Yahoo برمز ISIN (مثل EGS...) بدل الرمز المختصر المعتاد.
+// كل ما نتأكد من رمز صحيح لسهم فشلت مزامنته، نضيفه هنا.
+const YAHOO_SYMBOL_OVERRIDES = {
+    'QNBE': 'EGS60081C014.CA',
+};
+
+function resolveYahooSymbol(symbol) {
+    if (YAHOO_SYMBOL_OVERRIDES[symbol]) return YAHOO_SYMBOL_OVERRIDES[symbol];
+    return symbol.includes('.') ? symbol : `${symbol}.CA`;
+}
+
 export async function fetchYahooHistory(symbol, range = '1y') {
-    const yahooSymbol = symbol.includes('.') ? symbol : `${symbol}.CA`;
+    const yahooSymbol = resolveYahooSymbol(symbol);
 
     try {
         const res = await fetch(
@@ -38,7 +49,7 @@ export async function fetchYahooHistory(symbol, range = '1y') {
 }
 
 export async function fetchYahooQuote(symbol) {
-    const yahooSymbol = symbol.includes('.') ? symbol : `${symbol}.CA`;
+    const yahooSymbol = resolveYahooSymbol(symbol);
 
     try {
         const res = await fetch(
