@@ -14,26 +14,34 @@ const stocksData = [
   { symbol: 'MFPC.CA', name: 'موبكو', nameEn: 'MOPCO' },
 ];
 
-const newsData = [
-  { title: 'البورصة المصرية تسجل ارتفاعاً قوياً في التداولات', titleEn: 'EGX records strong rise in trading', time: 'منذ 5 دقائق', source: 'البورصة المصرية' },
-  { title: 'الجنيه المصري يستقر أمام الدولار', titleEn: 'Egyptian Pound stabilizes vs Dollar', time: 'منذ 12 دقيقة', source: 'البنك المركزي' },
-  { title: 'أسهم البنوك تقود مكاسب البورصة المصرية', titleEn: 'Banking stocks lead EGX gains', time: 'منذ 25 دقيقة', source: 'مباشر' },
-  { title: 'الذهب يرتفع لمستويات قياسية جديدة', titleEn: 'Gold rises to new record levels', time: 'منذ 30 دقيقة', source: 'رويترز' },
-  { title: 'موبكو يحقق أعلى ارتفاع في جلسة اليوم', titleEn: 'MOPCO achieves highest gain today', time: 'منذ 45 دقيقة', source: 'البورصة المصرية' },
-];
+const NEWS_QUERY = 'البورصة المصرية اقتصاد مصر';
+
+// وقت نسبي حقيقي محسوب من تاريخ نشر الخبر الفعلي، بدل نص ثابت لا يتغير أبداً
+function timeAgo(rawDate: string, lang: 'ar' | 'en') {
+  const diffMin = Math.max(0, Math.floor((Date.now() - new Date(rawDate).getTime()) / 60000));
+  if (diffMin < 1) return lang === 'ar' ? 'الآن' : 'Just now';
+  if (diffMin < 60) return lang === 'ar' ? `منذ ${diffMin} دقيقة` : `${diffMin}m ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return lang === 'ar' ? `منذ ${diffHr} ساعة` : `${diffHr}h ago`;
+  const diffDay = Math.floor(diffHr / 24);
+  return lang === 'ar' ? `منذ ${diffDay} يوم` : `${diffDay}d ago`;
+}
 
 export default function Home() {
   const { lang } = useLanguage();
   const [indices, setIndices] = useState<any[]>([]);
   const [stocks, setStocks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [news, setNews] = useState<any[]>([]);
 
   useEffect(() => {
     fetchMarkets();
     fetchStocks();
+    fetchNews();
     const interval = setInterval(() => {
       fetchMarkets();
       fetchStocks();
+      fetchNews();
     }, 60000);
     return () => clearInterval(interval);
   }, []);
@@ -43,6 +51,14 @@ export default function Home() {
       const res = await fetch('/api/markets');
       const data = await res.json();
       if (data.indices) setIndices(data.indices);
+    } catch (e) {}
+  }
+
+  async function fetchNews() {
+    try {
+      const res = await fetch(`/api/global-news?query=${encodeURIComponent(NEWS_QUERY)}`);
+      const data = await res.json();
+      setNews(Array.isArray(data) ? data.slice(0, 5) : []);
     } catch (e) {}
   }
 
@@ -166,17 +182,32 @@ export default function Home() {
               </h2>
             </div>
             <div className="divide-y divide-gray-800">
-              {newsData.map((item, i) => (
-                <div key={i} className="px-4 py-3 hover:bg-gray-800 transition cursor-pointer">
-                  <p className="text-white text-xs leading-relaxed">
-                    {lang === 'ar' ? item.title : item.titleEn}
-                  </p>
-                  <div className="flex justify-between items-center mt-2">
-                    <span className="text-orange-500 text-xs">{item.source}</span>
-                    <span className="text-gray-500 text-xs">{item.time}</span>
+              {news.length === 0 ? (
+                Array(5).fill(0).map((_, i) => (
+                  <div key={i} className="px-4 py-3">
+                    <div className="h-3 bg-gray-800 rounded animate-pulse mb-2"></div>
+                    <div className="h-3 bg-gray-800 rounded animate-pulse w-1/2"></div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                news.map((item, i) => (
+                  <a
+                    key={i}
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block px-4 py-3 hover:bg-gray-800 transition cursor-pointer"
+                  >
+                    <p className="text-white text-xs leading-relaxed">
+                      {item.title}
+                    </p>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-orange-500 text-xs">{item.source}</span>
+                      <span className="text-gray-500 text-xs">{timeAgo(item.rawDate, lang)}</span>
+                    </div>
+                  </a>
+                ))
+              )}
             </div>
           </div>
 
