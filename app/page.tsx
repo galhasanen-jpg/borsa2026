@@ -98,7 +98,13 @@ export default function Home() {
                   {index.change}
                 </span>
               </div>
-              <p className="text-gray-400 text-xs">{lang === 'ar' ? index.name : index.nameEn}</p>
+              <p className="text-gray-400 text-xs flex items-center gap-1">
+                {lang === 'ar' ? index.name : index.nameEn}
+                <span
+                  className={`inline-block w-1.5 h-1.5 rounded-full ${index.live ? 'bg-green-500' : 'bg-gray-600'}`}
+                  title={index.live ? (lang === 'ar' ? 'بيانات حية' : 'Live data') : (lang === 'ar' ? 'بيانات احتياطية غير محدّثة' : 'Fallback data, not live')}
+                />
+              </p>
               <p className="text-white font-bold text-lg mt-1">{index.price}</p>
               <p className={`text-xs mt-1 ${index.up ? 'text-green-400' : 'text-red-400'}`}>
                 {index.up ? '▲ ارتفاع' : '▼ انخفاض'}

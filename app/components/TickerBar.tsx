@@ -1,21 +1,61 @@
 'use client';
 
-const mockTickers = [
-  { symbol: 'EGX30', price: '52,719', change: '+0.57%', up: true },
-  { symbol: 'COMI', price: '126.00', change: '+3.70%', up: true },
-  { symbol: 'SWDY', price: '78.00', change: '+1.75%', up: true },
-  { symbol: 'TMGH', price: '80.59', change: '+2.01%', up: true },
-  { symbol: 'ETEL', price: '88.00', change: '0.00%', up: true },
-  { symbol: 'EAST', price: '37.85', change: '-3.67%', up: false },
-  { symbol: 'EFIH', price: '19.20', change: '-0.67%', up: false },
-  { symbol: 'FWRY', price: '18.20', change: '+2.88%', up: true },
-  { symbol: 'USD/EGP', price: '52.67', change: '+0.12%', up: true },
-  { symbol: 'XAU', price: '4,694', change: '+0.45%', up: true },
-  { symbol: 'OIL', price: '82.30', change: '-0.23%', up: false },
-];
+import { useState, useEffect } from 'react';
+
+const STOCK_SYMBOLS = ['COMI', 'SWDY', 'TMGH', 'ETEL', 'EAST', 'EFIH', 'FWRY'];
+
+type Ticker = { symbol: string; price: string; change: string; up: boolean };
 
 export default function TickerBar() {
-  const allTickers = [...mockTickers, ...mockTickers];
+  const [tickers, setTickers] = useState<Ticker[]>([]);
+
+  useEffect(() => {
+    fetchTickers();
+    const interval = setInterval(fetchTickers, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  async function fetchTickers() {
+    try {
+      const [marketsRes, pricesRes] = await Promise.all([
+        fetch('/api/markets'),
+        fetch('/api/stock-prices'),
+      ]);
+      const marketsData = await marketsRes.json();
+      const pricesData = await pricesRes.json();
+
+      const result: Ticker[] = [];
+
+      const egx = marketsData.indices?.find((idx: any) => idx.name === 'EGX30');
+      if (egx) result.push({ symbol: 'EGX30', price: egx.price, change: egx.change, up: egx.up });
+
+      if (Array.isArray(pricesData)) {
+        for (const sym of STOCK_SYMBOLS) {
+          const p = pricesData.find((x: any) => x.symbol === sym);
+          if (!p) continue;
+          const change = parseFloat(p.change_percent);
+          result.push({
+            symbol: sym,
+            price: parseFloat(p.price).toFixed(2),
+            change: `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`,
+            up: change >= 0,
+          });
+        }
+      }
+
+      if (marketsData.usdEgp) {
+        result.push({ symbol: 'USD/EGP', price: marketsData.usdEgp, change: '', up: true });
+      }
+      const gold = marketsData.indices?.find((idx: any) => idx.name === 'الذهب');
+      if (gold) result.push({ symbol: 'XAU', price: gold.price, change: gold.change, up: gold.up });
+      const oil = marketsData.indices?.find((idx: any) => idx.name === 'البترول');
+      if (oil) result.push({ symbol: 'OIL', price: oil.price, change: oil.change, up: oil.up });
+
+      if (result.length > 0) setTickers(result);
+    } catch (e) {}
+  }
+
+  const allTickers = [...tickers, ...tickers];
 
   return (
     <div className="bg-black border-b border-gray-800 overflow-hidden">
@@ -28,23 +68,27 @@ export default function TickerBar() {
 
         {/* الشريط المتحرك */}
         <div className="overflow-hidden flex-1">
-          <div
-            className="flex w-max"
-            style={{ animation: 'ticker 35s linear infinite' }}
-          >
-            {allTickers.map((ticker, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 px-4 py-2 border-r border-gray-800 flex-shrink-0 cursor-pointer hover:bg-gray-900 transition"
-              >
-                <span className="text-gray-300 text-xs font-bold tracking-wider">{ticker.symbol}</span>
-                <span className="text-white text-xs font-mono">{ticker.price}</span>
-                <span className={`text-xs font-bold flex items-center gap-0.5 ${ticker.up ? 'text-green-400' : 'text-red-400'}`}>
-                  {ticker.up ? '▲' : '▼'} {ticker.change}
-                </span>
-              </div>
-            ))}
-          </div>
+          {allTickers.length > 0 && (
+            <div
+              className="flex w-max"
+              style={{ animation: 'ticker 35s linear infinite' }}
+            >
+              {allTickers.map((ticker, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 px-4 py-2 border-r border-gray-800 flex-shrink-0 cursor-pointer hover:bg-gray-900 transition"
+                >
+                  <span className="text-gray-300 text-xs font-bold tracking-wider">{ticker.symbol}</span>
+                  <span className="text-white text-xs font-mono">{ticker.price}</span>
+                  {ticker.change && (
+                    <span className={`text-xs font-bold flex items-center gap-0.5 ${ticker.up ? 'text-green-400' : 'text-red-400'}`}>
+                      {ticker.up ? '▲' : '▼'} {ticker.change}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
       </div>
