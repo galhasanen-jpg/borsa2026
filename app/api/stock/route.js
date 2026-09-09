@@ -11,7 +11,7 @@ export async function GET(request) {
         // أولاً: جلب من Supabase
         client = await getConnection();
         const result = await client.query(
-            `SELECT price, change_percent, volume FROM stock_prices WHERE symbol = $1`,
+            `SELECT price, change_percent, volume, updated_at FROM stock_prices WHERE symbol = $1`,
             [symbol]
         );
 
@@ -20,7 +20,8 @@ export async function GET(request) {
             return Response.json({
                 price: row.price,
                 changePercent: row.change_percent,
-                volume: row.volume
+                volume: row.volume,
+                updatedAt: row.updated_at
             });
         }
     } catch (err) {

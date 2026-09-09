@@ -359,6 +359,12 @@ export default function StocksPage() {
                     </div>
                   ))}
                 </div>
+                {prices[selectedStock.symbol]?.updatedAt && (
+                  <p className="text-gray-600 text-xs mt-3">
+                    {lang === 'ar' ? 'آخر تحديث: ' : 'Last updated: '}
+                    {new Date(prices[selectedStock.symbol].updatedAt).toLocaleString(lang === 'ar' ? 'ar-EG' : 'en-US')}
+                  </p>
+                )}
               </div>
             )}
 
