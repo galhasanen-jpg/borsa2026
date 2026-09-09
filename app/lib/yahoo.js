@@ -7,14 +7,17 @@ const YAHOO_SYMBOL_OVERRIDES = {
     'QNBE': 'EGS60081C014.CA',
 };
 
-function resolveYahooSymbol(symbol) {
-    if (YAHOO_SYMBOL_OVERRIDES[symbol]) return YAHOO_SYMBOL_OVERRIDES[symbol];
-    return symbol.includes('.') ? symbol : `${symbol}.CA`;
+// قائمة الرموز المرشّحة نجربها على Yahoo بالترتيب: استثناء معروف، ثم الرمز المختصر + .CA،
+// ثم رمز الـ ISIN المحفوظ لهذا السهم (إن وُجد) + .CA كحل أخير
+function candidateYahooSymbols(symbol, isin) {
+    const candidates = [];
+    if (YAHOO_SYMBOL_OVERRIDES[symbol]) candidates.push(YAHOO_SYMBOL_OVERRIDES[symbol]);
+    candidates.push(symbol.includes('.') ? symbol : `${symbol}.CA`);
+    if (isin) candidates.push(isin.includes('.') ? isin : `${isin}.CA`);
+    return candidates;
 }
 
-export async function fetchYahooHistory(symbol, range = '1y') {
-    const yahooSymbol = resolveYahooSymbol(symbol);
-
+async function fetchHistoryForYahooSymbol(yahooSymbol, range) {
     try {
         const res = await fetch(
             `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?range=${range}&interval=1d`,
@@ -42,15 +45,13 @@ export async function fetchYahooHistory(symbol, range = '1y') {
             });
         }
 
-        return history;
+        return history.length > 0 ? history : null;
     } catch (err) {
         return null;
     }
 }
 
-export async function fetchYahooQuote(symbol) {
-    const yahooSymbol = resolveYahooSymbol(symbol);
-
+async function fetchQuoteForYahooSymbol(yahooSymbol) {
     try {
         const res = await fetch(
             `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${yahooSymbol}`,
@@ -69,4 +70,21 @@ export async function fetchYahooQuote(symbol) {
     } catch (err) {
         return null;
     }
+}
+
+// symbol: الرمز المختصر عندنا. isin (اختياري): رمز ISIN المحفوظ لهذا السهم، يُجرَّب إذا فشل الرمز المختصر
+export async function fetchYahooHistory(symbol, range = '1y', isin = null) {
+    for (const yahooSymbol of candidateYahooSymbols(symbol, isin)) {
+        const history = await fetchHistoryForYahooSymbol(yahooSymbol, range);
+        if (history) return history;
+    }
+    return null;
+}
+
+export async function fetchYahooQuote(symbol, isin = null) {
+    for (const yahooSymbol of candidateYahooSymbols(symbol, isin)) {
+        const quote = await fetchQuoteForYahooSymbol(yahooSymbol);
+        if (quote) return quote;
+    }
+    return null;
 }

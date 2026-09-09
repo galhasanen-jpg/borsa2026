@@ -62,7 +62,9 @@ export async function GET(request) {
         }
 
         // ثانياً: لا توجد بيانات محفوظة؛ نجلب بيانات تاريخية حقيقية من Yahoo Finance
-        const yahooHistory = await fetchYahooHistoryRange(symbol, YAHOO_RANGE[period] || '1mo');
+        // (مع تجربة رمز ISIN المحفوظ للسهم كحل احتياطي لو الرمز المختصر غير مدرج على Yahoo)
+        const isin = client ? await getIsin(client, symbol) : null;
+        const yahooHistory = await fetchYahooHistoryRange(symbol, YAHOO_RANGE[period] || '1mo', isin);
         if (yahooHistory && yahooHistory.length > 0) {
             if (client) await cacheHistory(client, symbol, yahooHistory);
             return Response.json(yahooHistory.map(r => ({ ...r, source: 'yahoo' })));
@@ -75,6 +77,19 @@ export async function GET(request) {
 
     } finally {
         if (client) client.release();
+    }
+}
+
+// رمز ISIN المحفوظ لهذا السهم (إن وُجد)، يُستخدم كرمز بديل نجربه على Yahoo
+async function getIsin(client, symbol) {
+    try {
+        const result = await client.query(
+            `SELECT isin FROM stocks WHERE symbol = $1`,
+            [symbol.replace('.CA', '')]
+        );
+        return result.rows[0]?.isin || null;
+    } catch (err) {
+        return null;
     }
 }
 

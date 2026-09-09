@@ -14,11 +14,19 @@ export async function POST(request) {
 
         client = await getConnection();
 
+        // رمز ISIN المحفوظ لكل سهم بالدفعة (إن وُجد)، يُجرَّب كبديل لو الرمز المختصر غير مدرج على Yahoo
+        const isinResult = await client.query(
+            `SELECT symbol, isin FROM stocks WHERE symbol = ANY($1)`,
+            [symbols]
+        );
+        const isinMap = Object.fromEntries(isinResult.rows.map(r => [r.symbol, r.isin]));
+
         const results = await Promise.all(symbols.map(async (symbol) => {
+            const isin = isinMap[symbol] || null;
             let historyCount = 0;
             let gotQuote = false;
 
-            const history = await fetchYahooHistory(symbol, '1y');
+            const history = await fetchYahooHistory(symbol, '1y', isin);
             if (history && history.length > 0) {
                 for (const row of history) {
                     await client.query(
@@ -32,7 +40,7 @@ export async function POST(request) {
                 historyCount = history.length;
             }
 
-            const quote = await fetchYahooQuote(symbol);
+            const quote = await fetchYahooQuote(symbol, isin);
             if (quote) {
                 await client.query(
                     `INSERT INTO stock_prices (symbol, price, change_percent, volume, updated_at)

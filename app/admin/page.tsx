@@ -19,7 +19,12 @@ const L = {
     save: 'حفظ',
     cancel: 'إلغاء',
     searchPh: 'ابحث بالاسم أو الرمز...',
-    columns: { symbol: 'الرمز', name: 'الشركة', sector: 'القطاع', price: 'السعر', change: 'التغيير', updated: 'آخر تحديث' },
+    columns: { symbol: 'الرمز', isin: 'ISIN', name: 'الشركة', sector: 'القطاع', price: 'السعر', change: 'التغيير', updated: 'آخر تحديث' },
+    isinLabel: 'رمز ISIN (اختياري)',
+    isinPh: 'مثال: EGS60081C014',
+    isinHint: 'يُستخدم كبديل للبحث على Yahoo Finance إذا لم يكن الرمز المختصر مدرجاً هناك',
+    addIsin: '+ إضافة',
+    isinSaved: '✅ تم حفظ رمز ISIN',
     actions: 'إجراءات',
     notSet: 'غير محدد',
     edit: 'تعديل',
@@ -143,7 +148,12 @@ const L = {
     save: 'Save',
     cancel: 'Cancel',
     searchPh: 'Search by name or symbol...',
-    columns: { symbol: 'Symbol', name: 'Company', sector: 'Sector', price: 'Price', change: 'Change', updated: 'Last Updated' },
+    columns: { symbol: 'Symbol', isin: 'ISIN', name: 'Company', sector: 'Sector', price: 'Price', change: 'Change', updated: 'Last Updated' },
+    isinLabel: 'ISIN Code (optional)',
+    isinPh: 'e.g. EGS60081C014',
+    isinHint: "Used as a fallback lookup on Yahoo Finance if the short symbol isn't listed there",
+    addIsin: '+ Add',
+    isinSaved: '✅ ISIN code saved',
     actions: 'Actions',
     notSet: 'Not set',
     edit: 'Edit',
@@ -261,7 +271,7 @@ export default function AdminPage() {
   const [sortBy, setSortBy] = useState<'symbol' | 'sector' | 'price' | 'change' | 'updated'>('symbol');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [editStock, setEditStock] = useState<any>(null);
-  const [formData, setFormData] = useState({ price: '', change_percent: '', volume: '' });
+  const [formData, setFormData] = useState({ price: '', change_percent: '', volume: '', isin: '' });
   const [message, setMessage] = useState('');
 
   // بيانات تاريخية
@@ -393,29 +403,41 @@ export default function AdminPage() {
     setFormData({
       price: price?.price || '',
       change_percent: price?.change_percent || '',
-      volume: price?.volume || ''
+      volume: price?.volume || '',
+      isin: stock.isin || ''
     });
   }
 
   async function handleSave() {
     if (!editStock) return;
-    const res = await fetch('/api/stock-prices', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        symbol: editStock.symbol,
-        price: parseFloat(formData.price),
-        change_percent: parseFloat(formData.change_percent),
-        volume: formData.volume
-      })
-    });
-    const data = await res.json();
-    if (data.success) {
-      setMessage(t.savedPrice(editStock.symbol));
-      setEditStock(null);
-      fetchPrices();
-      setTimeout(() => setMessage(''), 3000);
+
+    // السعر اختياري بهذا النموذج (قد يفتح الأدمن التعديل فقط لإضافة ISIN لسهم بدون سعر بعد)
+    if (formData.price.trim()) {
+      await fetch('/api/stock-prices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          symbol: editStock.symbol,
+          price: parseFloat(formData.price),
+          change_percent: parseFloat(formData.change_percent || '0'),
+          volume: formData.volume
+        })
+      });
     }
+
+    if (formData.isin !== (editStock.isin || '')) {
+      await fetch('/api/stocks', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: editStock.id, isin: formData.isin })
+      });
+      fetchStocks();
+    }
+
+    setMessage(t.savedPrice(editStock.symbol));
+    setEditStock(null);
+    fetchPrices();
+    setTimeout(() => setMessage(''), 3000);
   }
 
   async function handleDelete(symbol: string) {
@@ -642,6 +664,7 @@ export default function AdminPage() {
 
   const columns = [
     { label: t.columns.symbol, key: 'symbol' },
+    { label: t.columns.isin, key: 'isin' },
     { label: t.columns.name, key: 'name' },
     { label: t.columns.sector, key: 'sector' },
     { label: t.columns.price, key: 'price' },
@@ -699,6 +722,11 @@ export default function AdminPage() {
                   <div><label className="text-gray-400 text-xs mb-1 block">{t.price}</label><input value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder="126.00" /></div>
                   <div><label className="text-gray-400 text-xs mb-1 block">{t.changePercent}</label><input value={formData.change_percent} onChange={e => setFormData({...formData, change_percent: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder={t.changePercentPh} /></div>
                   <div><label className="text-gray-400 text-xs mb-1 block">{t.volume}</label><input value={formData.volume} onChange={e => setFormData({...formData, volume: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder="1,234,567" /></div>
+                  <div className="md:col-span-3">
+                    <label className="text-gray-400 text-xs mb-1 block">{t.isinLabel}</label>
+                    <input value={formData.isin} onChange={e => setFormData({...formData, isin: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm font-mono" placeholder={t.isinPh} dir="ltr" />
+                    <p className="text-gray-600 text-xs mt-1">{t.isinHint}</p>
+                  </div>
                 </div>
                 <div className="flex gap-3">
                   <button onClick={handleSave} className="bg-orange-500 text-black px-6 py-2 rounded font-bold text-sm hover:bg-orange-600">{t.save}</button>
@@ -726,6 +754,7 @@ export default function AdminPage() {
                     return (
                       <tr key={i} className="border-b border-gray-800 hover:bg-gray-800 transition">
                         <td className="px-4 py-3"><span className="text-orange-400 font-bold text-xs">{stock.symbol}</span></td>
+                        <td className="px-4 py-3">{stock.isin ? <span className="text-gray-400 text-xs font-mono" dir="ltr">{stock.isin}</span> : <span className="text-gray-600 text-xs">-</span>}</td>
                         <td className="px-4 py-3"><p className="text-white text-xs">{stock.name}</p><p className="text-gray-500 text-xs">{stock.name_en}</p></td>
                         <td className="px-4 py-3"><span className="text-xs bg-gray-800 text-gray-400 px-2 py-0.5 rounded">{stock.sector}</span></td>
                         <td className="px-4 py-3">{price ? <span className="text-white font-mono text-xs">{price.price} ج</span> : <span className="text-gray-600 text-xs">{t.notSet}</span>}</td>
