@@ -2,8 +2,63 @@
 
 import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useLanguage } from '../components/LanguageProvider';
+import LanguagePicker from '../components/LanguagePicker';
+
+const L = {
+  ar: {
+    title: 'تأكيد الإيميل',
+    subtitle: 'أدخل الكود المرسل على بريدك الإلكتروني',
+    code: 'كود التأكيد *',
+    codePh: '123456',
+    submit: 'تأكيد',
+    submitting: 'جاري التأكيد...',
+    resend: 'إعادة إرسال الكود',
+    resending: 'جاري الإرسال...',
+    errCode: '❌ يرجى إدخال الكود',
+    resendSuccess: '✅ تم إرسال كود جديد على إيميلك',
+    successTitle: 'تم تأكيد إيميلك!',
+    successBody: 'طلبك الآن قيد المراجعة من إدارة الموقع. بمجرد الموافقة تقدر تسجل الدخول ببريدك وكلمة السر.',
+    goSignin: 'الذهاب لتسجيل الدخول ←',
+    emailSubject: 'كود تأكيد إيميلك في بورصة 2026',
+    emailBody: (name: string, code: string) => `
+      <div dir="rtl" style="font-family: Arial; padding: 20px; background: #0a0a0a; color: #fff;">
+        <h2 style="color: #f97316;">مرحباً ${name}!</h2>
+        <p>كود التأكيد الجديد الخاص بك:</p>
+        <h1 style="color: #f97316; font-size: 36px; letter-spacing: 8px; text-align: center; padding: 20px; background: #1a1a1a; border-radius: 8px;">${code}</h1>
+        <p style="color: #999;">صالح لمدة 30 دقيقة.</p>
+      </div>
+    `,
+  },
+  en: {
+    title: 'Verify Email',
+    subtitle: 'Enter the code sent to your email',
+    code: 'Verification Code *',
+    codePh: '123456',
+    submit: 'Verify',
+    submitting: 'Verifying...',
+    resend: 'Resend Code',
+    resending: 'Sending...',
+    errCode: '❌ Please enter the code',
+    resendSuccess: '✅ A new code has been sent to your email',
+    successTitle: 'Email Verified!',
+    successBody: "Your request is now under review by the site admin. Once approved, you'll be able to sign in with your email and password.",
+    goSignin: 'Go to Sign In ←',
+    emailSubject: 'Your email verification code for Borsa 2026',
+    emailBody: (name: string, code: string) => `
+      <div dir="ltr" style="font-family: Arial; padding: 20px; background: #0a0a0a; color: #fff;">
+        <h2 style="color: #f97316;">Hi ${name}!</h2>
+        <p>Your new verification code:</p>
+        <h1 style="color: #f97316; font-size: 36px; letter-spacing: 8px; text-align: center; padding: 20px; background: #1a1a1a; border-radius: 8px;">${code}</h1>
+        <p style="color: #999;">Valid for 30 minutes.</p>
+      </div>
+    `,
+  },
+};
 
 function VerifyEmailContent() {
+  const { lang } = useLanguage();
+  const t = L[lang];
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
 
@@ -15,7 +70,7 @@ function VerifyEmailContent() {
 
   async function handleVerify() {
     if (!code) {
-      setMessage('❌ يرجى إدخال الكود');
+      setMessage(t.errCode);
       return;
     }
     setLoading(true);
@@ -49,18 +104,11 @@ function VerifyEmailContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           to: data.email,
-          subject: 'كود تأكيد إيميلك في بورصة 2026',
-          html: `
-            <div dir="rtl" style="font-family: Arial; padding: 20px; background: #0a0a0a; color: #fff;">
-              <h2 style="color: #f97316;">مرحباً ${data.name}!</h2>
-              <p>كود التأكيد الجديد الخاص بك:</p>
-              <h1 style="color: #f97316; font-size: 36px; letter-spacing: 8px; text-align: center; padding: 20px; background: #1a1a1a; border-radius: 8px;">${data.code}</h1>
-              <p style="color: #999;">صالح لمدة 30 دقيقة.</p>
-            </div>
-          `
+          subject: t.emailSubject,
+          html: t.emailBody(data.name, data.code),
         })
       });
-      setMessage('✅ تم إرسال كود جديد على إيميلك');
+      setMessage(t.resendSuccess);
     } else {
       setMessage(`❌ ${data.error}`);
     }
@@ -70,13 +118,12 @@ function VerifyEmailContent() {
   if (success) {
     return (
       <div className="bg-gray-900 border border-green-700 rounded-xl p-8 max-w-md w-full text-center">
+        <LanguagePicker />
         <p className="text-6xl mb-4">✅</p>
-        <h2 className="text-white font-bold text-xl mb-2">تم تأكيد إيميلك!</h2>
-        <p className="text-gray-400 text-sm leading-relaxed mb-6">
-          طلبك الآن قيد المراجعة من إدارة الموقع. بمجرد الموافقة تقدر تسجل الدخول ببريدك وكلمة السر.
-        </p>
+        <h2 className="text-white font-bold text-xl mb-2">{t.successTitle}</h2>
+        <p className="text-gray-400 text-sm leading-relaxed mb-6">{t.successBody}</p>
         <a href="/signin" className="bg-orange-500 text-black px-6 py-2 rounded-lg font-bold text-sm hover:bg-orange-600 transition">
-          الذهاب لتسجيل الدخول ←
+          {t.goSignin}
         </a>
       </div>
     );
@@ -84,10 +131,12 @@ function VerifyEmailContent() {
 
   return (
     <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 max-w-md w-full">
+      <LanguagePicker />
+
       <div className="text-center mb-6">
         <p className="text-4xl mb-2">📧</p>
-        <h1 className="text-orange-500 font-bold text-xl mb-1">تأكيد الإيميل</h1>
-        <p className="text-gray-500 text-sm">أدخل الكود المرسل على بريدك الإلكتروني</p>
+        <h1 className="text-orange-500 font-bold text-xl mb-1">{t.title}</h1>
+        <p className="text-gray-500 text-sm">{t.subtitle}</p>
       </div>
 
       {message && (
@@ -96,13 +145,13 @@ function VerifyEmailContent() {
 
       <div className="space-y-4">
         <div>
-          <label className="text-gray-400 text-xs mb-1 block">كود التأكيد *</label>
+          <label className="text-gray-400 text-xs mb-1 block">{t.code}</label>
           <input
             value={code}
             onChange={e => setCode(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleVerify()}
             className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm text-center font-bold tracking-widest"
-            placeholder="123456"
+            placeholder={t.codePh}
             maxLength={6}
           />
         </div>
@@ -111,14 +160,14 @@ function VerifyEmailContent() {
           disabled={loading}
           className="w-full bg-orange-500 text-black py-3 rounded-lg font-bold text-sm hover:bg-orange-600 transition disabled:opacity-50"
         >
-          {loading ? 'جاري التأكيد...' : 'تأكيد'}
+          {loading ? t.submitting : t.submit}
         </button>
         <button
           onClick={handleResend}
           disabled={resending}
           className="w-full text-gray-500 hover:text-orange-500 text-xs transition disabled:opacity-50"
         >
-          {resending ? 'جاري الإرسال...' : 'إعادة إرسال الكود'}
+          {resending ? t.resending : t.resend}
         </button>
       </div>
     </div>
@@ -128,7 +177,7 @@ function VerifyEmailContent() {
 export default function VerifyEmailPage() {
   return (
     <main className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-      <Suspense fallback={<div className="text-gray-500">جاري التحميل...</div>}>
+      <Suspense fallback={<div className="text-gray-500">...</div>}>
         <VerifyEmailContent />
       </Suspense>
     </main>

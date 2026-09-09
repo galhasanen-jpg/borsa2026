@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useLanguage } from '../components/LanguageProvider';
 
 export default function StockNewsPage() {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [lang, setLang] = useState<'ar' | 'en'>('ar');
+  const { lang } = useLanguage();
   const [stocks, setStocks] = useState<any[]>([]);
   const [sectors, setSectors] = useState<any[]>([]);
   const [activeSector, setActiveSector] = useState('الكل');

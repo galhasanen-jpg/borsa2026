@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useLanguage } from '../components/LanguageProvider';
 
 const categories = [
   { id: 'egypt', label: '🇪🇬 مصر', labelEn: '🇪🇬 Egypt', query: 'اقتصاد مصر البنك المركزي الجنيه المصري' },
@@ -72,7 +73,7 @@ function TradingViewChart({ symbol }: { symbol: string }) {
 }
 
 export default function GlobalNewsPage() {
-  const [lang, setLang] = useState<'ar' | 'en'>('ar');
+  const { lang } = useLanguage();
   const [activeCategory, setActiveCategory] = useState(categories[0]);
   const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);

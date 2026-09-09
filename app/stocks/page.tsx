@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import StockChart from '../components/StockChart';
 import StockAnalysis from '../components/StockAnalysis';
+import { useLanguage } from '../components/LanguageProvider';
 
 export default function StocksPage() {
-  const [lang, setLang] = useState<'ar' | 'en'>('ar');
+  const { lang } = useLanguage();
   const [activeSector, setActiveSector] = useState('الكل');
   const [sectors, setSectors] = useState<any[]>([]);
   const [stocks, setStocks] = useState<any[]>([]);

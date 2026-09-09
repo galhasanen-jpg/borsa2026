@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useLanguage } from './components/LanguageProvider';
 
 const stocksData = [
   { symbol: 'COMI.CA', name: 'البنك التجاري الدولي', nameEn: 'CIB' },
@@ -22,7 +23,7 @@ const newsData = [
 ];
 
 export default function Home() {
-  const [lang, setLang] = useState<'ar' | 'en'>('ar');
+  const { lang } = useLanguage();
   const [indices, setIndices] = useState<any[]>([]);
   const [stocks, setStocks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

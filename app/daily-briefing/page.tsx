@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useLanguage } from '../components/LanguageProvider';
 
 type BriefingStock = {
   id: number;
@@ -54,7 +55,7 @@ const L = {
 };
 
 export default function DailyBriefingPage() {
-  const [lang, setLang] = useState<'ar' | 'en'>('ar');
+  const { lang, toggle } = useLanguage();
   const [siteUser, setSiteUser] = useState<any>(null);
   const [stocks, setStocks] = useState<BriefingStock[]>([]);
   const [date, setDate] = useState('');
@@ -144,7 +145,7 @@ export default function DailyBriefingPage() {
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')}
+              onClick={toggle}
               className="text-xs border border-gray-700 px-3 py-1.5 rounded hover:border-orange-500 hover:text-orange-500 transition text-gray-400"
             >
               {lang === 'ar' ? 'English' : 'عربي'}
