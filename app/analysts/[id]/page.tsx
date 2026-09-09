@@ -2,8 +2,110 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import { useLanguage } from '../../components/LanguageProvider';
+
+const L = {
+  ar: {
+    loading: 'جاري التحميل...',
+    notFound: 'المحلل غير موجود',
+    back: '← العودة للمحللين',
+    whatsapp: '💬 واتساب',
+    telegram: '✈️ تيليجرام',
+    totalRecs: 'إجمالي التوصيات',
+    successfulRecs: 'توصيات ناجحة',
+    openRecs: 'توصيات مفتوحة',
+    successRate: 'نسبة النجاح',
+    tabRecs: '📊 التوصيات',
+    tabComments: '💬 ملاحظات الأعضاء',
+    tabPending: '⏳ طلبات المتابعة',
+    filters: { all: 'الكل', open: 'مفتوحة', success: 'ناجحة', failed: 'خاسرة' },
+    noRecs: 'لا توجد توصيات حتى الآن',
+    entryPrice: 'سعر الدخول',
+    target: 'الهدف',
+    stopLoss: 'وقف الخسارة',
+    reachedTarget: 'تم الوصول للهدف عند',
+    returnLabel: 'العائد',
+    addComment: '💬 أضف ملاحظتك',
+    yourName: 'اسمك *',
+    yourNamePh: 'اسمك',
+    subscriptionType: 'نوع الاشتراك',
+    basicOption: 'أساسي - ملاحظة خاصة للمحلل فقط',
+    premiumOption: 'متميز - ملاحظة عامة للأعضاء',
+    commentLabel: 'الملاحظة *',
+    commentPh: 'اكتب ملاحظتك هنا...',
+    sendComment: 'إرسال الملاحظة',
+    noComments: 'لا توجد ملاحظات عامة حتى الآن',
+    premiumBadge: 'متميز',
+    analystLabel: '👨‍💼 المحلل',
+    replyNamePh: 'اسمك',
+    replyPh: 'اكتب رداً...',
+    reply: 'رد',
+    noPending: 'لا توجد طلبات متابعة معلقة',
+    approve: '✅ قبول',
+    reject: '❌ رفض',
+    confirmReject: 'هل أنت متأكد من رفض هذا الطلب؟',
+    errFillComment: '❌ يرجى إدخال الاسم والملاحظة',
+    approveSuccess: '✅ تم قبول الطلب وإرساله للإدارة',
+    commentSuccess: '✅ تم إرسال ملاحظتك بنجاح',
+    statusLabels: { open: 'مفتوحة', success: '✅ ناجحة', failed: '❌ خاسرة', cancelled: 'ملغاة' } as Record<string, string>,
+    typeLabels: { 'شراء': 'شراء', 'بيع': 'بيع', 'احتفاظ': 'احتفاظ' } as Record<string, string>,
+    planLabels: { premium: 'متميز', basic: 'أساسي', free: 'مجاني' } as Record<string, string>,
+    dateLocale: 'ar-EG',
+    currency: 'ج',
+  },
+  en: {
+    loading: 'Loading...',
+    notFound: 'Analyst not found',
+    back: '← Back to Analysts',
+    whatsapp: '💬 WhatsApp',
+    telegram: '✈️ Telegram',
+    totalRecs: 'Total Recommendations',
+    successfulRecs: 'Successful',
+    openRecs: 'Open',
+    successRate: 'Success Rate',
+    tabRecs: '📊 Recommendations',
+    tabComments: '💬 Member Comments',
+    tabPending: '⏳ Follower Requests',
+    filters: { all: 'All', open: 'Open', success: 'Successful', failed: 'Failed' },
+    noRecs: 'No recommendations yet',
+    entryPrice: 'Entry Price',
+    target: 'Target',
+    stopLoss: 'Stop-Loss',
+    reachedTarget: 'Target reached at',
+    returnLabel: 'Return',
+    addComment: '💬 Add Your Comment',
+    yourName: 'Your Name *',
+    yourNamePh: 'Your name',
+    subscriptionType: 'Subscription Type',
+    basicOption: 'Basic - private note to the analyst only',
+    premiumOption: 'Premium - public comment for all members',
+    commentLabel: 'Comment *',
+    commentPh: 'Write your comment here...',
+    sendComment: 'Send Comment',
+    noComments: 'No public comments yet',
+    premiumBadge: 'Premium',
+    analystLabel: '👨‍💼 Analyst',
+    replyNamePh: 'Your name',
+    replyPh: 'Write a reply...',
+    reply: 'Reply',
+    noPending: 'No pending follower requests',
+    approve: '✅ Approve',
+    reject: '❌ Reject',
+    confirmReject: 'Are you sure you want to reject this request?',
+    errFillComment: '❌ Please enter your name and comment',
+    approveSuccess: '✅ Request approved and sent to admin',
+    commentSuccess: '✅ Your comment has been sent successfully',
+    statusLabels: { open: 'Open', success: '✅ Successful', failed: '❌ Failed', cancelled: 'Cancelled' } as Record<string, string>,
+    typeLabels: { 'شراء': 'Buy', 'بيع': 'Sell', 'احتفاظ': 'Hold' } as Record<string, string>,
+    planLabels: { premium: 'Premium', basic: 'Basic', free: 'Free' } as Record<string, string>,
+    dateLocale: 'en-US',
+    currency: 'EGP',
+  },
+};
 
 export default function AnalystPage() {
+  const { lang } = useLanguage();
+  const t = L[lang];
   const params = useParams();
   const id = params.id;
 
@@ -66,7 +168,7 @@ export default function AnalystPage() {
     });
     const data = await res.json();
     if (data.success) {
-      setMessage('✅ تم قبول الطلب وإرساله للإدارة');
+      setMessage(t.approveSuccess);
       fetchPendingFollowers();
       setTimeout(() => setMessage(''), 3000);
     }
@@ -74,7 +176,7 @@ export default function AnalystPage() {
 
   async function handleAddComment() {
     if (!commentForm.user_name || !commentForm.content) {
-      setMessage('❌ يرجى إدخال الاسم والملاحظة');
+      setMessage(t.errFillComment);
       return;
     }
     const res = await fetch('/api/group-comments', {
@@ -90,7 +192,7 @@ export default function AnalystPage() {
     });
     const data = await res.json();
     if (data.success) {
-      setMessage('✅ تم إرسال ملاحظتك بنجاح');
+      setMessage(t.commentSuccess);
       setCommentForm({ user_name: '', content: '', plan: 'basic' });
       fetchComments();
       setTimeout(() => setMessage(''), 3000);
@@ -128,13 +230,7 @@ export default function AnalystPage() {
   }
 
   function getStatusLabel(status: string) {
-    switch (status) {
-      case 'open': return 'مفتوحة';
-      case 'success': return '✅ ناجحة';
-      case 'failed': return '❌ خاسرة';
-      case 'cancelled': return 'ملغاة';
-      default: return status;
-    }
+    return t.statusLabels[status] || status;
   }
 
   function getTypeStyle(type: string) {
@@ -144,6 +240,14 @@ export default function AnalystPage() {
       case 'احتفاظ': return 'bg-yellow-900 text-yellow-400';
       default: return 'bg-gray-700 text-gray-400';
     }
+  }
+
+  function getTypeLabel(type: string) {
+    return t.typeLabels[type] || type;
+  }
+
+  function getPlanLabel(plan: string) {
+    return t.planLabels[plan] || plan;
   }
 
   function getSuccessRate() {
@@ -158,13 +262,13 @@ export default function AnalystPage() {
     : recommendations.filter(r => r.status === filterStatus);
     if (loading) return (
     <main className="min-h-screen bg-gray-950 p-4 flex items-center justify-center">
-      <p className="text-gray-500 animate-pulse">جاري التحميل...</p>
+      <p className="text-gray-500 animate-pulse">{t.loading}</p>
     </main>
   );
 
   if (!analyst) return (
     <main className="min-h-screen bg-gray-950 p-4 flex items-center justify-center">
-      <p className="text-gray-500">المحلل غير موجود</p>
+      <p className="text-gray-500">{t.notFound}</p>
     </main>
   );
 
@@ -173,26 +277,26 @@ export default function AnalystPage() {
       <div className="max-w-5xl mx-auto">
 
         <a href="/analysts" className="text-gray-500 text-sm hover:text-orange-500 transition mb-4 block">
-          ← العودة للمحللين
+          {t.back}
         </a>
 
         {/* بيانات المحلل */}
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
           <div className="flex flex-col md:flex-row justify-between items-start gap-4">
             <div>
-              <h1 className="text-white font-bold text-2xl mb-1">{analyst.name}</h1>
+              <h1 className="text-white font-bold text-2xl mb-1">{lang === 'ar' ? analyst.name : (analyst.name_en || analyst.name)}</h1>
               <p className="text-orange-500 text-sm mb-2">{analyst.specialization}</p>
-              <p className="text-gray-400 text-sm leading-relaxed max-w-xl">{analyst.bio}</p>
+              <p className="text-gray-400 text-sm leading-relaxed max-w-xl">{lang === 'ar' ? analyst.bio : (analyst.bio_en || analyst.bio)}</p>
             </div>
             <div className="flex gap-3 flex-shrink-0">
               {analyst.whatsapp_link && (
                 <a href={analyst.whatsapp_link} target="_blank" className="bg-green-900 text-green-400 px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-800 transition">
-                  💬 واتساب
+                  {t.whatsapp}
                 </a>
               )}
               {analyst.telegram_link && (
                 <a href={analyst.telegram_link} target="_blank" className="bg-blue-900 text-blue-400 px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-800 transition">
-                  ✈️ تيليجرام
+                  {t.telegram}
                 </a>
               )}
             </div>
@@ -202,19 +306,19 @@ export default function AnalystPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
             <div className="bg-gray-800 rounded-lg p-3 text-center">
               <p className="text-white font-bold text-xl">{recommendations.length}</p>
-              <p className="text-gray-500 text-xs">إجمالي التوصيات</p>
+              <p className="text-gray-500 text-xs">{t.totalRecs}</p>
             </div>
             <div className="bg-gray-800 rounded-lg p-3 text-center">
               <p className="text-green-400 font-bold text-xl">{recommendations.filter(r => r.status === 'success').length}</p>
-              <p className="text-gray-500 text-xs">توصيات ناجحة</p>
+              <p className="text-gray-500 text-xs">{t.successfulRecs}</p>
             </div>
             <div className="bg-gray-800 rounded-lg p-3 text-center">
               <p className="text-blue-400 font-bold text-xl">{recommendations.filter(r => r.status === 'open').length}</p>
-              <p className="text-gray-500 text-xs">توصيات مفتوحة</p>
+              <p className="text-gray-500 text-xs">{t.openRecs}</p>
             </div>
             <div className="bg-gray-800 rounded-lg p-3 text-center">
               <p className="text-orange-500 font-bold text-xl">{getSuccessRate()}%</p>
-              <p className="text-gray-500 text-xs">نسبة النجاح</p>
+              <p className="text-gray-500 text-xs">{t.successRate}</p>
             </div>
           </div>
         </div>
@@ -225,19 +329,19 @@ export default function AnalystPage() {
             onClick={() => setActiveTab('recs')}
             className={`px-4 py-2 text-sm transition ${activeTab === 'recs' ? 'text-orange-500 border-b-2 border-orange-500 font-bold' : 'text-gray-400 hover:text-white'}`}
           >
-            📊 التوصيات ({recommendations.length})
+            {t.tabRecs} ({recommendations.length})
           </button>
           <button
             onClick={() => setActiveTab('comments')}
             className={`px-4 py-2 text-sm transition ${activeTab === 'comments' ? 'text-orange-500 border-b-2 border-orange-500 font-bold' : 'text-gray-400 hover:text-white'}`}
           >
-            💬 ملاحظات الأعضاء ({comments.length})
+            {t.tabComments} ({comments.length})
           </button>
           <button
             onClick={() => setActiveTab('pending')}
             className={`px-4 py-2 text-sm transition ${activeTab === 'pending' ? 'text-orange-500 border-b-2 border-orange-500 font-bold' : 'text-gray-400 hover:text-white'}`}
           >
-            ⏳ طلبات المتابعة
+            {t.tabPending}
             {pendingFollowers.length > 0 && (
               <span className="mr-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">{pendingFollowers.length}</span>
             )}
@@ -251,13 +355,13 @@ export default function AnalystPage() {
         {activeTab === 'recs' && (
           <div>
             <div className="flex gap-2 mb-4 flex-wrap">
-              {['all', 'open', 'success', 'failed'].map(s => (
+              {(['all', 'open', 'success', 'failed'] as const).map(s => (
                 <button
                   key={s}
                   onClick={() => setFilterStatus(s)}
                   className={`px-3 py-1.5 text-xs rounded transition ${filterStatus === s ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
                 >
-                  {s === 'all' ? 'الكل' : s === 'open' ? 'مفتوحة' : s === 'success' ? 'ناجحة' : 'خاسرة'}
+                  {t.filters[s]}
                   {' '}({s === 'all' ? recommendations.length : recommendations.filter(r => r.status === s).length})
                 </button>
               ))}
@@ -266,7 +370,7 @@ export default function AnalystPage() {
             {filteredRecs.length === 0 ? (
               <div className="text-center py-16 text-gray-500">
                 <p className="text-4xl mb-3">📊</p>
-                <p>لا توجد توصيات حتى الآن</p>
+                <p>{t.noRecs}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -276,25 +380,25 @@ export default function AnalystPage() {
                       <div>
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-orange-400 font-bold text-lg">{rec.symbol}</span>
-                          <span className={`text-xs font-bold px-2 py-0.5 rounded ${getTypeStyle(rec.type)}`}>{rec.type}</span>
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded ${getTypeStyle(rec.type)}`}>{getTypeLabel(rec.type)}</span>
                           <span className={`text-xs px-2 py-0.5 rounded ${getStatusStyle(rec.status)}`}>{getStatusLabel(rec.status)}</span>
                         </div>
                         <p className="text-gray-400 text-xs">{rec.stock_name}</p>
                       </div>
-                      <span className="text-gray-500 text-xs">{new Date(rec.created_at).toLocaleDateString('ar-EG')}</span>
+                      <span className="text-gray-500 text-xs">{new Date(rec.created_at).toLocaleDateString(t.dateLocale)}</span>
                     </div>
                     <div className="grid grid-cols-3 gap-3 mb-4">
                       <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-500 text-xs mb-1">سعر الدخول</p>
-                        <p className="text-white font-bold text-sm">{rec.entry_price} ج</p>
+                        <p className="text-gray-500 text-xs mb-1">{t.entryPrice}</p>
+                        <p className="text-white font-bold text-sm">{rec.entry_price} {t.currency}</p>
                       </div>
                       <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-500 text-xs mb-1">الهدف</p>
-                        <p className="text-green-400 font-bold text-sm">{rec.target_price ? `${rec.target_price} ج` : '-'}</p>
+                        <p className="text-gray-500 text-xs mb-1">{t.target}</p>
+                        <p className="text-green-400 font-bold text-sm">{rec.target_price ? `${rec.target_price} ${t.currency}` : '-'}</p>
                       </div>
                       <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-500 text-xs mb-1">وقف الخسارة</p>
-                        <p className="text-red-400 font-bold text-sm">{rec.stop_loss ? `${rec.stop_loss} ج` : '-'}</p>
+                        <p className="text-gray-500 text-xs mb-1">{t.stopLoss}</p>
+                        <p className="text-red-400 font-bold text-sm">{rec.stop_loss ? `${rec.stop_loss} ${t.currency}` : '-'}</p>
                       </div>
                     </div>
                     {rec.description && (
@@ -303,9 +407,9 @@ export default function AnalystPage() {
                     {rec.status === 'success' && rec.result_price && (
                       <div className="mt-3 bg-green-900 bg-opacity-30 rounded p-2 text-center">
                         <p className="text-green-400 text-xs">
-                          ✅ تم الوصول للهدف عند {rec.result_price} ج
+                          ✅ {t.reachedTarget} {rec.result_price} {t.currency}
                           {' • '}
-                          العائد: {((rec.result_price - rec.entry_price) / rec.entry_price * 100).toFixed(1)}%
+                          {t.returnLabel}: {((rec.result_price - rec.entry_price) / rec.entry_price * 100).toFixed(1)}%
                         </p>
                       </div>
                     )}
@@ -320,31 +424,31 @@ export default function AnalystPage() {
         {activeTab === 'comments' && (
           <div>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 mb-6">
-              <h3 className="text-white font-bold text-sm mb-3">💬 أضف ملاحظتك</h3>
+              <h3 className="text-white font-bold text-sm mb-3">{t.addComment}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">اسمك *</label>
-                  <input value={commentForm.user_name} onChange={e => setCommentForm({...commentForm, user_name: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder="اسمك" />
+                  <label className="text-gray-400 text-xs mb-1 block">{t.yourName}</label>
+                  <input value={commentForm.user_name} onChange={e => setCommentForm({...commentForm, user_name: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder={t.yourNamePh} />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">نوع الاشتراك</label>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.subscriptionType}</label>
                   <select value={commentForm.plan} onChange={e => setCommentForm({...commentForm, plan: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm">
-                    <option value="basic">أساسي - ملاحظة خاصة للمحلل فقط</option>
-                    <option value="premium">متميز - ملاحظة عامة للأعضاء</option>
+                    <option value="basic">{t.basicOption}</option>
+                    <option value="premium">{t.premiumOption}</option>
                   </select>
                 </div>
               </div>
               <div className="mb-3">
-                <label className="text-gray-400 text-xs mb-1 block">الملاحظة *</label>
-                <textarea value={commentForm.content} onChange={e => setCommentForm({...commentForm, content: e.target.value})} rows={3} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder="اكتب ملاحظتك هنا..." />
+                <label className="text-gray-400 text-xs mb-1 block">{t.commentLabel}</label>
+                <textarea value={commentForm.content} onChange={e => setCommentForm({...commentForm, content: e.target.value})} rows={3} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder={t.commentPh} />
               </div>
-              <button onClick={handleAddComment} className="bg-orange-500 text-black px-4 py-2 rounded text-sm font-bold hover:bg-orange-600 transition">إرسال الملاحظة</button>
+              <button onClick={handleAddComment} className="bg-orange-500 text-black px-4 py-2 rounded text-sm font-bold hover:bg-orange-600 transition">{t.sendComment}</button>
             </div>
 
             {comments.length === 0 ? (
               <div className="text-center py-16 text-gray-500">
                 <p className="text-4xl mb-3">💬</p>
-                <p>لا توجد ملاحظات عامة حتى الآن</p>
+                <p>{t.noComments}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -355,10 +459,10 @@ export default function AnalystPage() {
                         <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-black font-bold text-sm">{comment.user_name[0]}</div>
                         <div>
                           <p className="text-white text-sm font-bold">{comment.user_name}</p>
-                          <p className="text-gray-500 text-xs">{new Date(comment.created_at).toLocaleDateString('ar-EG')}</p>
+                          <p className="text-gray-500 text-xs">{new Date(comment.created_at).toLocaleDateString(t.dateLocale)}</p>
                         </div>
                       </div>
-                      <span className="text-xs bg-blue-900 text-blue-400 px-2 py-0.5 rounded">متميز</span>
+                      <span className="text-xs bg-blue-900 text-blue-400 px-2 py-0.5 rounded">{t.premiumBadge}</span>
                     </div>
                     <p className="text-gray-300 text-sm leading-relaxed mb-3">{comment.content}</p>
                     {comment.replies && comment.replies.length > 0 && (
@@ -366,8 +470,8 @@ export default function AnalystPage() {
                         {comment.replies.map((reply: any, j: number) => (
                           <div key={j} className={`p-2 rounded text-xs ${reply.is_analyst ? 'bg-orange-900 bg-opacity-30 border border-orange-800' : 'bg-gray-800'}`}>
                             <div className="flex justify-between mb-1">
-                              <span className={`font-bold ${reply.is_analyst ? 'text-orange-400' : 'text-gray-300'}`}>{reply.is_analyst ? '👨‍💼 المحلل' : reply.user_name}</span>
-                              <span className="text-gray-500">{new Date(reply.created_at).toLocaleDateString('ar-EG')}</span>
+                              <span className={`font-bold ${reply.is_analyst ? 'text-orange-400' : 'text-gray-300'}`}>{reply.is_analyst ? t.analystLabel : reply.user_name}</span>
+                              <span className="text-gray-500">{new Date(reply.created_at).toLocaleDateString(t.dateLocale)}</span>
                             </div>
                             <p className="text-gray-300">{reply.content}</p>
                           </div>
@@ -376,9 +480,9 @@ export default function AnalystPage() {
                     )}
                     <div className="border-t border-gray-800 pt-3 mt-3">
                       <div className="flex gap-2">
-                        <input value={replyForm[comment.id]?.user_name || ''} onChange={e => setReplyForm((prev: any) => ({...prev, [comment.id]: {...prev[comment.id], user_name: e.target.value}}))} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1 text-xs w-24 flex-shrink-0" placeholder="اسمك" />
-                        <input value={replyForm[comment.id]?.content || ''} onChange={e => setReplyForm((prev: any) => ({...prev, [comment.id]: {...prev[comment.id], content: e.target.value}}))} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1 text-xs flex-1" placeholder="اكتب رداً..." />
-                        <button onClick={() => handleAddReply(comment.id)} className="bg-orange-500 text-black px-3 py-1 rounded text-xs font-bold hover:bg-orange-600 transition flex-shrink-0">رد</button>
+                        <input value={replyForm[comment.id]?.user_name || ''} onChange={e => setReplyForm((prev: any) => ({...prev, [comment.id]: {...prev[comment.id], user_name: e.target.value}}))} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1 text-xs w-24 flex-shrink-0" placeholder={t.replyNamePh} />
+                        <input value={replyForm[comment.id]?.content || ''} onChange={e => setReplyForm((prev: any) => ({...prev, [comment.id]: {...prev[comment.id], content: e.target.value}}))} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1 text-xs flex-1" placeholder={t.replyPh} />
+                        <button onClick={() => handleAddReply(comment.id)} className="bg-orange-500 text-black px-3 py-1 rounded text-xs font-bold hover:bg-orange-600 transition flex-shrink-0">{t.reply}</button>
                       </div>
                     </div>
                   </div>
@@ -394,7 +498,7 @@ export default function AnalystPage() {
             {pendingFollowers.length === 0 ? (
               <div className="text-center py-16 text-gray-500">
                 <p className="text-4xl mb-3">👥</p>
-                <p>لا توجد طلبات متابعة معلقة</p>
+                <p>{t.noPending}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -410,20 +514,20 @@ export default function AnalystPage() {
                           follower.plan === 'basic' ? 'bg-blue-900 text-blue-400' :
                           'bg-gray-700 text-gray-400'
                         }`}>
-                          {follower.plan === 'premium' ? 'متميز' : follower.plan === 'basic' ? 'أساسي' : 'مجاني'}
+                          {getPlanLabel(follower.plan)}
                         </span>
                       </div>
                       <div className="flex gap-2">
-                        <button onClick={() => handleAnalystApprove(follower.id)} className="bg-green-900 text-green-400 px-3 py-1.5 rounded text-xs font-bold hover:bg-green-800">✅ قبول</button>
+                        <button onClick={() => handleAnalystApprove(follower.id)} className="bg-green-900 text-green-400 px-3 py-1.5 rounded text-xs font-bold hover:bg-green-800">{t.approve}</button>
                         <button
                           onClick={async () => {
-                            if (!confirm('هل أنت متأكد من رفض هذا الطلب؟')) return;
+                            if (!confirm(t.confirmReject)) return;
                             await fetch(`/api/followers?id=${follower.id}`, { method: 'DELETE' });
                             fetchPendingFollowers();
                           }}
                           className="bg-red-900 text-red-400 px-3 py-1.5 rounded text-xs font-bold hover:bg-red-800"
                         >
-                          ❌ رفض
+                          {t.reject}
                         </button>
                       </div>
                     </div>

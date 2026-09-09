@@ -1,15 +1,43 @@
 'use client';
 
 import { useState } from 'react';
+import { useLanguage } from '../components/LanguageProvider';
+
+const L = {
+  ar: {
+    title: 'تسجيل الدخول',
+    subtitle: 'أهلاً بك في بورصة 2026',
+    email: 'البريد الإلكتروني *',
+    password: 'كلمة السر *',
+    submit: 'تسجيل الدخول',
+    submitting: 'جاري الدخول...',
+    noAccount: 'ليس لديك حساب؟',
+    register: 'سجل الآن',
+    errFill: '❌ يرجى إدخال الإيميل وكلمة السر',
+  },
+  en: {
+    title: 'Sign In',
+    subtitle: 'Welcome to Borsa 2026',
+    email: 'Email *',
+    password: 'Password *',
+    submit: 'Sign In',
+    submitting: 'Signing in...',
+    noAccount: "Don't have an account?",
+    register: 'Register now',
+    errFill: '❌ Please enter your email and password',
+  },
+};
 
 export default function LoginPage() {
+  const { lang } = useLanguage();
+  const t = L[lang];
   const [form, setForm] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleLogin() {
     if (!form.email || !form.password) {
-      setMessage('❌ يرجى إدخال الإيميل وكلمة السر');
+      setMessage(t.errFill);
       return;
     }
 
@@ -37,8 +65,8 @@ export default function LoginPage() {
       <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 max-w-md w-full">
 
         <div className="text-center mb-6">
-          <h1 className="text-orange-500 font-bold text-2xl mb-1">تسجيل الدخول</h1>
-          <p className="text-gray-500 text-sm">أهلاً بك في بورصة 2026</p>
+          <h1 className="text-orange-500 font-bold text-2xl mb-1">{t.title}</h1>
+          <p className="text-gray-500 text-sm">{t.subtitle}</p>
         </div>
 
         {message && (
@@ -47,7 +75,7 @@ export default function LoginPage() {
 
         <div className="space-y-4">
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">البريد الإلكتروني *</label>
+            <label className="text-gray-400 text-xs mb-1 block">{t.email}</label>
             <input
               type="email"
               value={form.email}
@@ -58,14 +86,14 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">كلمة السر *</label>
+            <label className="text-gray-400 text-xs mb-1 block">{t.password}</label>
             <input
               type="password"
               value={form.password}
               onChange={e => setForm({...form, password: e.target.value})}
               onKeyDown={e => e.key === 'Enter' && handleLogin()}
               className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
-              placeholder="كلمة السر"
+              placeholder={t.password}
             />
           </div>
 
@@ -74,13 +102,13 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full bg-orange-500 text-black py-3 rounded-lg font-bold text-sm hover:bg-orange-600 transition disabled:opacity-50"
           >
-            {loading ? 'جاري الدخول...' : 'تسجيل الدخول'}
+            {loading ? t.submitting : t.submit}
           </button>
 
           <p className="text-center text-gray-500 text-sm">
-            ليس لديك حساب؟{' '}
+            {t.noAccount}{' '}
             <a href="/register" className="text-orange-500 hover:text-orange-400">
-              سجل الآن
+              {t.register}
             </a>
           </p>
         </div>
