@@ -1,13 +1,5 @@
 import { getConnection } from '../../lib/db';
-
-const DEFAULT_STOCKS = [
-    { id: -1, name: 'أبوظبي الإسلامي', name_en: 'ADIB Egypt', symbol: 'ADIB.CA' },
-    { id: -2, name: 'العربية للأسمنت', name_en: 'Arabian Cement', symbol: 'ARCC.CA' },
-    { id: -3, name: 'بلتون المالية', name_en: 'Beltone Financial', symbol: 'BTFH.CA' },
-    { id: -4, name: 'راميدا', name_en: 'Ramda', symbol: 'RMDA.CA' },
-    { id: -5, name: 'أوراسكوم للتنمية', name_en: 'Orascom Development', symbol: 'ORHD.CA' },
-    { id: -6, name: 'المنصورة للدواجن', name_en: 'Mansoura Poultry', symbol: null },
-];
+import { guestPreviewStocks, getUserBriefingStocks } from '../../lib/briefing-stocks';
 
 // تاريخ اليوم بتوقيت القاهرة بصيغة YYYY-MM-DD، لمقارنة الأيام التقويمية بدل الفرق الزمني الخام
 function cairoDateString(date) {
@@ -16,17 +8,15 @@ function cairoDateString(date) {
     }).format(date);
 }
 
-async function getBriefingStocks() {
+async function getStocksForRequest(userId) {
+    if (!userId) return guestPreviewStocks();
+
     let client;
     try {
         client = await getConnection();
-        const result = await client.query(
-            `SELECT id, name, name_en, symbol FROM briefing_stocks ORDER BY id ASC`
-        );
-        if (result.rows.length > 0) return result.rows;
-        return DEFAULT_STOCKS;
+        return await getUserBriefingStocks(client, userId);
     } catch (err) {
-        return DEFAULT_STOCKS;
+        return guestPreviewStocks();
     } finally {
         if (client) client.release();
     }
@@ -63,8 +53,10 @@ async function fetchStockNews(name, symbol) {
     }
 }
 
-export async function GET() {
-    const stocks = await getBriefingStocks();
+export async function GET(request) {
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('user_id');
+    const stocks = await getStocksForRequest(userId);
 
     const now = new Date();
     const today = cairoDateString(now);
@@ -91,5 +83,5 @@ export async function GET() {
         };
     }));
 
-    return Response.json({ date: today, stocks: briefing });
+    return Response.json({ date: today, personalized: !!userId, stocks: briefing });
 }

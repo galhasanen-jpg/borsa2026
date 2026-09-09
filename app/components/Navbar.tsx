@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from './LanguageProvider';
 
@@ -17,7 +17,21 @@ const navItems = [
 export default function Navbar() {
   const { lang, toggle } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [siteUser, setSiteUser] = useState<any>(null);
   const pathname = usePathname();
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('siteUser');
+      if (stored) setSiteUser(JSON.parse(stored));
+    } catch (e) {}
+  }, [pathname]);
+
+  function handleLogout() {
+    localStorage.removeItem('siteUser');
+    setSiteUser(null);
+    window.location.href = '/';
+  }
 
   return (
     <nav className="bg-black border-b border-gray-800 sticky top-0 z-50">
@@ -29,6 +43,25 @@ export default function Navbar() {
         </a>
 
         <div className="flex items-center gap-4">
+          {siteUser ? (
+            <div className="hidden sm:flex items-center gap-2 text-xs">
+              <span className="text-gray-400">{lang === 'ar' ? 'مرحباً' : 'Hi'}, {siteUser.name}</span>
+              <button
+                onClick={handleLogout}
+                className="text-gray-500 hover:text-orange-500 transition"
+              >
+                {lang === 'ar' ? 'خروج' : 'Logout'}
+              </button>
+            </div>
+          ) : (
+            <a
+              href="/signin"
+              className="hidden sm:block text-xs border border-gray-600 px-4 py-1.5 rounded hover:border-orange-500 hover:text-orange-500 transition text-gray-300"
+            >
+              {lang === 'ar' ? 'تسجيل الدخول' : 'Sign in'}
+            </a>
+          )}
+
           <button
             onClick={toggle}
             className="text-xs border border-gray-600 px-4 py-1.5 rounded hover:border-orange-500 hover:text-orange-500 transition"
@@ -82,6 +115,23 @@ export default function Navbar() {
               {lang === 'ar' ? item.label : item.labelEn}
             </a>
           ))}
+
+          {siteUser ? (
+            <button
+              onClick={handleLogout}
+              className="px-6 py-4 text-sm text-right text-gray-400 hover:text-white hover:bg-gray-900 transition"
+            >
+              {lang === 'ar' ? `خروج (${siteUser.name})` : `Logout (${siteUser.name})`}
+            </button>
+          ) : (
+            <a
+              href="/signin"
+              onClick={() => setMenuOpen(false)}
+              className="px-6 py-4 text-sm text-right text-orange-500 hover:bg-gray-900 transition"
+            >
+              {lang === 'ar' ? 'تسجيل الدخول' : 'Sign in'}
+            </a>
+          )}
         </div>
       )}
 
