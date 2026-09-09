@@ -9,6 +9,7 @@ const content = {
     subtitle: 'كل ما تحتاج معرفته للاستفادة من منصة بورصة 2026',
     tabs: { pages: '🗺️ صفحات الموقع', follower: '👤 للمتابع', analyst: '👨‍💼 للمحلل', glossary: '📚 مصطلحات البورصة' },
     pagesIntro: '🗺️ شرح مبسّط لكل صفحة في الموقع: ما البيانات التي تراها فيها، وما المهام التي يمكنك تنفيذها بها',
+    accessNote: '🔒 كل صفحات الموقع أصبحت الآن تتطلب حساب زائر مفعّل (راجع صفحتي "إنشاء حساب زائر" و"تسجيل دخول الزوار" أدناه) — ما عدا لوحة الإدارة التي تُحمى بكلمة مرور خاصة بها. هذا حساب عام لأي زائر، منفصل تماماً عن حساب "المتابع" الخاص باشتراكات المحللين.',
     followerIntro: '👋 أهلاً بك! هذا الدليل سيساعدك على الاستفادة القصوى من منصة بورصة 2026 كمتابع',
     analystIntro: '👨‍💼 هذا الدليل مخصص للمحللين الراغبين في نشر توصياتهم على المنصة',
     glossaryIntro: '📚 قاموس المصطلحات الأساسية في البورصة المصرية',
@@ -16,6 +17,32 @@ const content = {
     tasksLabel: 'ما يمكنك فعله',
     registerCta: 'سجل كمحلل الآن ←',
     pagesGuide: [
+      {
+        title: 'إنشاء حساب زائر', icon: '🧑‍💻', path: '/signup',
+        data: [],
+        tasks: [
+          'إنشاء حساب عام لأي زائر (اسم، إيميل، كلمة سر) — بدون اختيار محلل أو أي موافقة مسبقة',
+          'بعد الإنشاء يصلك كود تأكيد على إيميلك تدخله بصفحة "تأكيد الإيميل"',
+        ],
+        note: 'هذا الحساب مطلوب للوصول لأي صفحة في الموقع، ومنفصل تماماً عن حساب "المتابع" (الخاص باشتراكات المحللين).',
+      },
+      {
+        title: 'تأكيد الإيميل', icon: '📧', path: '/verify-email',
+        data: [],
+        tasks: [
+          'إدخال الكود المكوّن من 6 أرقام المرسل على بريدك لتأكيد أنك شخص حقيقي',
+          'إعادة إرسال الكود لو انتهت صلاحيته (صالح لمدة 30 دقيقة)',
+        ],
+        note: 'بعد التأكيد، حسابك يصير بانتظار موافقة إدارة الموقع قبل ما تقدر تسجل دخول.',
+      },
+      {
+        title: 'تسجيل دخول الزوار', icon: '🔑', path: '/signin',
+        data: [],
+        tasks: [
+          'تسجيل الدخول بالإيميل وكلمة السر بعد ما توافق الإدارة على حسابك',
+          'لو حسابك ما أكّد إيميله بعد، بيحولك تلقائياً لصفحة تأكيد الإيميل',
+        ],
+      },
       {
         title: 'الرئيسية', icon: '🏠', path: '/',
         data: [
@@ -33,7 +60,7 @@ const content = {
         data: [
           'كل أسهم البورصة المصرية مقسّمة حسب القطاع (بنوك، عقارات، اتصالات...)',
           'السعر اللحظي ونسبة التغيير والحجم لكل سهم',
-          'رسم بياني وتحليل مبسّط للسهم الذي تختاره',
+          'رسم بياني وتحليل مبسّط للسهم الذي تختاره — يعتمد على بيانات تاريخية حقيقية عند توفرها (محفوظة بالموقع أو من Yahoo Finance)، وإلا بيانات تقديرية مرتبطة بالسعر الحالي الفعلي حتى يبقى الرسم منطقياً',
         ],
         tasks: [
           'تصفية الأسهم حسب القطاع أو البحث عنها',
@@ -64,6 +91,19 @@ const content = {
           'متابعة البث المباشر',
           'تصفح الأخبار حسب التصنيف الذي يهمك',
         ],
+      },
+      {
+        title: 'النشرة اليومية', icon: '🗞️', path: '/daily-briefing',
+        data: [
+          'قائمة أسهم تختارها بنفسك (خاصة بحسابك، منفصلة عن أي مستخدم آخر)',
+          'أخبار كل سهم من نفس اليوم أو اليوم السابق فقط — لا تظهر أخبار أقدم من ذلك',
+        ],
+        tasks: [
+          'إضافة أو حذف أي سهم من قائمتك عبر قسم "إدارة قائمتي"',
+          'الضغط على أي خبر لفتح مصدره الأصلي',
+          'إعادة تحديث النشرة يدوياً بزر التحديث',
+        ],
+        note: 'أول مرة تفتح الصفحة بعد تسجيل الدخول، تُنشأ لك قائمة بستة أسهم افتراضية تقدر تعدّلها كما تحب.',
       },
       {
         title: 'المحللون', icon: '👨‍💼', path: '/analysts',
@@ -104,14 +144,16 @@ const content = {
           'إنشاء حساب جديد كمتابع باختيار محلل وخطة اشتراك',
           'بعد موافقة المحلل ثم الإدارة، يصلك كود تفعيل على بريدك لإكمال التسجيل',
         ],
+        note: 'اشتراك إضافي خاص بمتابعة محلل معيّن — منفصل عن حساب الزائر العام (/signup) المطلوب أصلاً للدخول للموقع.',
       },
       {
-        title: 'تسجيل الدخول', icon: '🔑', path: '/login',
+        title: 'تسجيل دخول المتابعين', icon: '🔑', path: '/login',
         data: [],
         tasks: [
           'الدخول لحسابك كمتابع بالبريد الإلكتروني وكلمة السر',
           'إذا كان حسابك بانتظار التفعيل سيتم تحويلك تلقائياً لصفحة إدخال كود التفعيل',
         ],
+        note: 'هذا لحساب "المتابع" فقط، وليس حساب الزائر العام — إذا ما سجّلت دخولك للموقع أصلاً استخدم /signin.',
       },
       {
         title: 'لوحة تحكم المتابع', icon: '🗂️', path: '/dashboard',
@@ -140,6 +182,7 @@ const content = {
           'قبول أو رفض طلبات تسجيل المحللين',
           'إضافة توصية جديدة لأي محلل، وتحديث حالتها (ناجحة/خاسرة) عند تحقق النتيجة',
           'قبول أو رفض طلبات المتابعين — القبول يرسل كود تفعيل تلقائياً على بريد المتابع',
+          'قبول أو رفض حسابات الزوار الجديدة (تبويب "حسابات الزوار") بعد ما يأكدوا إيميلهم — القبول يرسل إيميل يقول للزائر إنه يقدر يسجّل دخول',
         ],
         note: '🔒 هذه الصفحة مخصّصة لإدارة الموقع فقط، وتتطلب كلمة مرور للدخول إليها.',
       },
@@ -267,6 +310,7 @@ const content = {
     subtitle: 'Everything you need to know to get the most out of Borsa 2026',
     tabs: { pages: '🗺️ Site Pages', follower: '👤 For Followers', analyst: '👨‍💼 For Analysts', glossary: '📚 Market Glossary' },
     pagesIntro: '🗺️ A simple walkthrough of every page on the site: what data you see there, and what you can do on it',
+    accessNote: '🔒 Every page on the site now requires an active visitor account (see the "Create a Visitor Account" and "Visitor Sign In" pages below) — except the admin dashboard, which has its own separate password. This is a general account open to any visitor, entirely separate from the "Follower" account used for analyst subscriptions.',
     followerIntro: "👋 Welcome! This guide will help you get the most out of Borsa 2026 as a follower",
     analystIntro: '👨‍💼 This guide is for analysts who want to publish their recommendations on the platform',
     glossaryIntro: '📚 A dictionary of the essential terms used in the Egyptian stock market',
@@ -274,6 +318,32 @@ const content = {
     tasksLabel: 'What you can do',
     registerCta: 'Register as an analyst now ←',
     pagesGuide: [
+      {
+        title: 'Create a Visitor Account', icon: '🧑‍💻', path: '/signup',
+        data: [],
+        tasks: [
+          'Create a general account open to any visitor (name, email, password) — no analyst to choose, no upfront approval needed',
+          'After creating it, a confirmation code is emailed to you to enter on the "Verify Email" page',
+        ],
+        note: 'This account is required to access any page on the site, and is entirely separate from the "Follower" account (used for analyst subscriptions).',
+      },
+      {
+        title: 'Verify Email', icon: '📧', path: '/verify-email',
+        data: [],
+        tasks: [
+          'Enter the 6-digit code emailed to you to confirm you\'re a real person',
+          'Resend the code if it expired (valid for 30 minutes)',
+        ],
+        note: "After verifying, your account waits for the site admin's approval before you can sign in.",
+      },
+      {
+        title: 'Visitor Sign In', icon: '🔑', path: '/signin',
+        data: [],
+        tasks: [
+          'Sign in with your email and password once the admin has approved your account',
+          "If your email isn't verified yet, you'll be redirected to the verify-email page automatically",
+        ],
+      },
       {
         title: 'Home', icon: '🏠', path: '/',
         data: [
@@ -291,7 +361,7 @@ const content = {
         data: [
           'Every EGX-listed stock, grouped by sector (banks, real estate, telecom...)',
           'Live price, change % and volume for each stock',
-          'A chart and a simplified analysis for whichever stock you pick',
+          "A chart and a simplified analysis for whichever stock you pick — built from real historical data when available (saved on the site or pulled from Yahoo Finance), otherwise an estimate anchored to the actual current price so the chart still looks realistic",
         ],
         tasks: [
           'Filter stocks by sector or search for one',
@@ -322,6 +392,19 @@ const content = {
           'Watch the live stream',
           'Browse news by the category you care about',
         ],
+      },
+      {
+        title: 'Daily Briefing', icon: '🗞️', path: '/daily-briefing',
+        data: [
+          'A list of stocks you choose yourself (tied to your account, separate from every other user)',
+          "Each stock's news from today or yesterday only — nothing older is shown",
+        ],
+        tasks: [
+          'Add or remove any stock from your list via "Manage my list"',
+          "Click any news item to open its original source",
+          'Manually refresh the briefing with the refresh button',
+        ],
+        note: 'The first time you open the page after signing in, a default list of six stocks is created for you, which you can then edit freely.',
       },
       {
         title: 'Analysts', icon: '👨‍💼', path: '/analysts',
@@ -362,14 +445,16 @@ const content = {
           'Create a new follower account by choosing an analyst and a plan',
           'Once the analyst and then the admin approve you, an activation code is emailed to you to finish signing up',
         ],
+        note: "An additional subscription for following a specific analyst — separate from the general visitor account (/signup) already required to access the site.",
       },
       {
-        title: 'Login', icon: '🔑', path: '/login',
+        title: 'Follower Login', icon: '🔑', path: '/login',
         data: [],
         tasks: [
           'Sign in to your follower account with your email and password',
           "If your account is still pending activation, you'll be redirected to enter your activation code",
         ],
+        note: "This is for the \"Follower\" account only, not the general visitor account — if you haven't signed in to the site at all yet, use /signin.",
       },
       {
         title: 'Follower Dashboard', icon: '🗂️', path: '/dashboard',
@@ -398,6 +483,7 @@ const content = {
           'Approve or reject new analyst registrations',
           "Add a new recommendation for any analyst, and update its status (successful/failed) once the outcome is known",
           "Approve or reject follower requests — approval automatically emails the follower their activation code",
+          'Approve or reject new visitor accounts (the "Visitor Accounts" tab) once they\'ve verified their email — approval emails the visitor to let them know they can sign in',
         ],
         note: '🔒 This page is for site administrators only and requires a password to access.',
       },
@@ -570,6 +656,9 @@ export default function GuidePage() {
           <div className="space-y-4">
             <div className="bg-gray-900 border border-orange-500 border-opacity-30 rounded-xl p-4 mb-6">
               <p className="text-gray-400 text-sm text-center">{t.pagesIntro}</p>
+            </div>
+            <div className="bg-red-900 bg-opacity-20 border border-red-800 rounded-xl p-4 mb-6">
+              <p className="text-red-300 text-sm text-center leading-relaxed">{t.accessNote}</p>
             </div>
             {t.pagesGuide.map((page, i) => (
               <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-5">

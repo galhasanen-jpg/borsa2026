@@ -27,10 +27,15 @@ export default function Navbar() {
     } catch (e) {}
   }, [pathname]);
 
-  function handleLogout() {
+  async function handleLogout() {
+    await fetch('/api/site-auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'logout' }),
+    });
     localStorage.removeItem('siteUser');
     setSiteUser(null);
-    window.location.href = '/';
+    window.location.href = '/signin';
   }
 
   return (

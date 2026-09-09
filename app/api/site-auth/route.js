@@ -1,5 +1,6 @@
 import { getConnection } from '../../lib/db';
 import bcrypt from 'bcryptjs';
+import { signSession, sessionCookieHeader, clearSessionCookieHeader } from '../../lib/session';
 
 // حساب زوار عام (منفصل عن نظام "المتابعين" المرتبط بمحلل)
 // المسار: تسجيل -> كود تأكيد بالإيميل -> موافقة إدارية -> يقدر يدخل بإيميله وكلمة سره
@@ -14,6 +15,13 @@ export async function POST(request) {
     try {
         const body = await request.json();
         const { action } = body;
+
+        if (action === 'logout') {
+            return new Response(JSON.stringify({ success: true }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json', 'Set-Cookie': clearSessionCookieHeader() },
+            });
+        }
 
         client = await getConnection();
 
@@ -114,7 +122,11 @@ export async function POST(request) {
             }
 
             const { password_hash, status, ...safeUser } = user;
-            return Response.json({ success: true, user: safeUser });
+            const token = await signSession(user.id);
+            return new Response(JSON.stringify({ success: true, user: safeUser }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json', 'Set-Cookie': sessionCookieHeader(token) },
+            });
         }
 
         return Response.json({ error: 'action required' }, { status: 400 });
