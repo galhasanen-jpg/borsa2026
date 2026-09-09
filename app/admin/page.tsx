@@ -42,6 +42,14 @@ const L = {
     import: 'استيراد',
     importResult: (success: number, errors: number) => `✅ تم استيراد ${success} سجل${errors > 0 ? ` • ❌ ${errors} خطأ` : ''}`,
 
+    // مزامنة Yahoo
+    yahooSyncTitle: '🔄 مزامنة تلقائية من Yahoo Finance',
+    yahooSyncDesc: 'يجلب سنة كاملة من البيانات التاريخية الحقيقية والسعر الحالي لكل الأسهم من Yahoo Finance، ويحدّث بها الجداول مباشرة — حل مرحلي ريثما تتوفر واجهة رسمية من البورصة المصرية.',
+    yahooSyncStart: '▶️ بدء المزامنة',
+    yahooSyncRunning: (done: number, total: number) => `⏳ جاري المزامنة... (${done} من ${total})`,
+    yahooSyncDone: (success: number, total: number) => `✅ اكتملت المزامنة: ${success} من ${total} سهم تم تحديثه بنجاح`,
+    yahooSyncFailedList: 'الأسهم التي لم تتحدث (غير مدرجة في Yahoo على الأغلب):',
+
     // المحللون
     pendingRequests: (n: number) => `⏳ طلبات تسجيل معلقة (${n})`,
     approve: '✅ قبول',
@@ -157,6 +165,13 @@ const L = {
     import: 'Import',
     importResult: (success: number, errors: number) => `✅ Imported ${success} record(s)${errors > 0 ? ` • ❌ ${errors} error(s)` : ''}`,
 
+    yahooSyncTitle: '🔄 Auto-Sync from Yahoo Finance',
+    yahooSyncDesc: "Pulls a full year of real historical data and the current price for every stock from Yahoo Finance and updates the tables directly — an interim solution until an official EGX API is available.",
+    yahooSyncStart: '▶️ Start Sync',
+    yahooSyncRunning: (done: number, total: number) => `⏳ Syncing... (${done} of ${total})`,
+    yahooSyncDone: (success: number, total: number) => `✅ Sync complete: ${success} of ${total} stocks updated successfully`,
+    yahooSyncFailedList: 'Stocks that did not update (likely not listed on Yahoo):',
+
     pendingRequests: (n: number) => `⏳ Pending Registration Requests (${n})`,
     approve: '✅ Approve',
     reject: '❌ Reject',
@@ -254,6 +269,10 @@ export default function AdminPage() {
   const [historyDate, setHistoryDate] = useState('');
   const [historyForm, setHistoryForm] = useState({ open: '', high: '', low: '', close: '', volume: '' });
   const [bulkHistory, setBulkHistory] = useState('');
+  const [syncing, setSyncing] = useState(false);
+  const [syncProgress, setSyncProgress] = useState({ done: 0, total: 0 });
+  const [syncFailed, setSyncFailed] = useState<string[]>([]);
+  const [syncSuccessCount, setSyncSuccessCount] = useState(0);
 
   // بيانات المحللين
   const [analysts, setAnalysts] = useState<any[]>([]);
@@ -457,6 +476,42 @@ export default function AdminPage() {
     setMessage(t.importResult(success, errors));
     setBulkHistory('');
     setTimeout(() => setMessage(''), 5000);
+  }
+
+  async function handleYahooSync() {
+    if (stocks.length === 0 || syncing) return;
+    setSyncing(true);
+    setSyncFailed([]);
+    setSyncSuccessCount(0);
+    setSyncProgress({ done: 0, total: stocks.length });
+
+    const BATCH_SIZE = 5;
+    let successCount = 0;
+    const failed: string[] = [];
+
+    for (let i = 0; i < stocks.length; i += BATCH_SIZE) {
+      const batch = stocks.slice(i, i + BATCH_SIZE).map(s => s.symbol);
+      try {
+        const res = await fetch('/api/admin/sync-history', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ symbols: batch })
+        });
+        const data = await res.json();
+        for (const r of data.results || []) {
+          if (r.success) successCount++;
+          else failed.push(r.symbol);
+        }
+      } catch (e) {
+        failed.push(...batch);
+      }
+      setSyncProgress({ done: Math.min(i + BATCH_SIZE, stocks.length), total: stocks.length });
+    }
+
+    setSyncSuccessCount(successCount);
+    setSyncFailed(failed);
+    setSyncing(false);
+    fetchPrices();
   }
 
   async function handleApproveAnalyst(id: number) {
@@ -694,6 +749,36 @@ export default function AdminPage() {
         {/* تبويب البيانات التاريخية */}
         {activeTab === 'history' && (
           <div className="space-y-6">
+            <div className="bg-gray-900 border border-orange-900 rounded-lg p-6">
+              <h2 className="text-orange-500 font-bold mb-2">{t.yahooSyncTitle}</h2>
+              <p className="text-gray-500 text-xs mb-4 leading-relaxed">{t.yahooSyncDesc}</p>
+              <button
+                onClick={handleYahooSync}
+                disabled={syncing || stocks.length === 0}
+                className="bg-orange-500 text-black px-6 py-2 rounded font-bold text-sm hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {syncing ? t.yahooSyncRunning(syncProgress.done, syncProgress.total) : t.yahooSyncStart}
+              </button>
+
+              {syncing && (
+                <div className="mt-4 w-full bg-gray-800 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-orange-500 h-2 transition-all"
+                    style={{ width: `${syncProgress.total > 0 ? (syncProgress.done / syncProgress.total) * 100 : 0}%` }}
+                  />
+                </div>
+              )}
+
+              {!syncing && syncProgress.total > 0 && (
+                <div className="mt-4">
+                  <p className="text-green-400 text-sm font-bold">{t.yahooSyncDone(syncSuccessCount, syncProgress.total)}</p>
+                  {syncFailed.length > 0 && (
+                    <p className="text-gray-500 text-xs mt-2">{t.yahooSyncFailedList} {syncFailed.join(', ')}</p>
+                  )}
+                </div>
+              )}
+            </div>
+
             <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
               <h2 className="text-orange-500 font-bold mb-4">{t.manualEntry}</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">

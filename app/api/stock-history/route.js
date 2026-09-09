@@ -1,5 +1,6 @@
 import { getConnection } from '../../lib/db';
 import { getMockPrice } from '../../lib/mock-prices';
+import { fetchYahooHistory as fetchYahooHistoryRange } from '../../lib/yahoo';
 
 // مطابقة الفترة الزمنية المطلوبة مع صيغة المدى التي يفهمها Yahoo Finance
 const YAHOO_RANGE = {
@@ -61,7 +62,7 @@ export async function GET(request) {
         }
 
         // ثانياً: لا توجد بيانات محفوظة؛ نجلب بيانات تاريخية حقيقية من Yahoo Finance
-        const yahooHistory = await fetchYahooHistory(symbol, period);
+        const yahooHistory = await fetchYahooHistoryRange(symbol, YAHOO_RANGE[period] || '1mo');
         if (yahooHistory && yahooHistory.length > 0) {
             if (client) await cacheHistory(client, symbol, yahooHistory);
             return Response.json(yahooHistory.map(r => ({ ...r, source: 'yahoo' })));
@@ -74,44 +75,6 @@ export async function GET(request) {
 
     } finally {
         if (client) client.release();
-    }
-}
-
-// يجلب بيانات OHLCV تاريخية حقيقية من Yahoo Finance عبر واجهة الرسم البياني العامة (بدون مفتاح API)
-async function fetchYahooHistory(symbol, period) {
-    const range = YAHOO_RANGE[period] || '1mo';
-    const yahooSymbol = symbol.includes('.') ? symbol : `${symbol}.CA`;
-
-    try {
-        const res = await fetch(
-            `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?range=${range}&interval=1d`,
-            { headers: { 'User-Agent': 'Mozilla/5.0' }, cache: 'no-store' }
-        );
-        const data = await res.json();
-        const result = data?.chart?.result?.[0];
-        const timestamps = result?.timestamp;
-        const quote = result?.indicators?.quote?.[0];
-
-        if (!timestamps || !quote) return null;
-
-        const history = [];
-        for (let i = 0; i < timestamps.length; i++) {
-            const close = quote.close?.[i];
-            if (close == null) continue; // تجاهل الأيام بدون تداول (عطلات)
-
-            history.push({
-                date: new Date(timestamps[i] * 1000).toISOString().split('T')[0],
-                open: parseFloat((quote.open?.[i] ?? close).toFixed(2)),
-                high: parseFloat((quote.high?.[i] ?? close).toFixed(2)),
-                low: parseFloat((quote.low?.[i] ?? close).toFixed(2)),
-                close: parseFloat(close.toFixed(2)),
-                volume: quote.volume?.[i] || 0,
-            });
-        }
-
-        return history;
-    } catch (err) {
-        return null;
     }
 }
 
