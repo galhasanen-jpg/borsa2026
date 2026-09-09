@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState<'prices' | 'history' | 'analysts' | 'followers'>('prices');
+  const [activeTab, setActiveTab] = useState<'prices' | 'history' | 'analysts' | 'followers' | 'visitors'>('prices');
 
   // بيانات الأسعار
   const [stocks, setStocks] = useState<any[]>([]);
@@ -37,11 +37,16 @@ export default function AdminPage() {
   const [followers, setFollowers] = useState<any[]>([]);
   const [pendingFollowers, setPendingFollowers] = useState<any[]>([]);
 
+  // بيانات حسابات الزوار العامة
+  const [activeSiteUsers, setActiveSiteUsers] = useState<any[]>([]);
+  const [pendingSiteUsers, setPendingSiteUsers] = useState<any[]>([]);
+
   useEffect(() => {
     fetchStocks();
     fetchPrices();
     fetchAnalysts();
     fetchFollowers();
+    fetchSiteUsers();
   }, []);
 
   async function fetchStocks() {
@@ -76,6 +81,62 @@ export default function AdminPage() {
     const all = Array.isArray(data) ? data : [];
     setFollowers(all.filter((f: any) => f.status === 'active'));
     setPendingFollowers(all.filter((f: any) => f.status === 'pending' || f.status === 'approved'));
+  }
+
+  async function fetchSiteUsers() {
+    const res = await fetch('/api/site-users');
+    const data = await res.json();
+    const all = Array.isArray(data) ? data : [];
+    setActiveSiteUsers(all.filter((u: any) => u.status === 'active' || u.status === 'rejected'));
+    // pending_email = لسا ما أكد إيميله، ما نعرضه للإدارة إلا بعد ما يوصل pending_admin
+    setPendingSiteUsers(all.filter((u: any) => u.status === 'pending_admin'));
+  }
+
+  async function handleApproveSiteUser(id: number, email: string, name: string) {
+    const res = await fetch('/api/site-users', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, action: 'approve' })
+    });
+    const data = await res.json();
+    if (data.success) {
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: email,
+          subject: 'تم تفعيل حسابك في بورصة 2026',
+          html: `
+            <div dir="rtl" style="font-family: Arial; padding: 20px; background: #0a0a0a; color: #fff;">
+              <h2 style="color: #f97316;">مرحباً ${name}!</h2>
+              <p>تمت الموافقة على حسابك في بورصة 2026. تقدر الآن تسجل الدخول بإيميلك وكلمة السر اللي اخترتها.</p>
+              <a href="https://borsa2026cd.vercel.app/signin" style="background: #f97316; color: #000; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 12px;">تسجيل الدخول</a>
+            </div>
+          `
+        })
+      });
+      setMessage('✅ تم قبول الحساب وإشعار صاحبه بالإيميل');
+      fetchSiteUsers();
+      setTimeout(() => setMessage(''), 3000);
+    }
+  }
+
+  async function handleRejectSiteUser(id: number) {
+    if (!confirm('هل أنت متأكد من رفض هذا الحساب؟')) return;
+    await fetch('/api/site-users', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, action: 'reject' })
+    });
+    setMessage('✅ تم رفض الحساب');
+    fetchSiteUsers();
+    setTimeout(() => setMessage(''), 3000);
+  }
+
+  async function handleDeleteSiteUser(id: number) {
+    if (!confirm('هل أنت متأكد من حذف هذا الحساب نهائياً؟')) return;
+    await fetch(`/api/site-users?id=${id}`, { method: 'DELETE' });
+    fetchSiteUsers();
   }
 
   function getPrice(symbol: string) {
@@ -354,6 +415,10 @@ export default function AdminPage() {
             👥 المتابعون
             {pendingFollowers.length > 0 && <span className="mr-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">{pendingFollowers.length}</span>}
           </button>
+          <button onClick={() => setActiveTab('visitors')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'visitors' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
+            🧑‍💻 حسابات الزوار
+            {pendingSiteUsers.length > 0 && <span className="mr-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">{pendingSiteUsers.length}</span>}
+          </button>
         </div>
 
         {/* تبويب الأسعار */}
@@ -611,6 +676,72 @@ export default function AdminPage() {
                           {follower.plan === 'premium' ? 'متميز' : follower.plan === 'basic' ? 'أساسي' : 'مجاني'}
                         </span>
                         <button onClick={() => handleRejectFollower(follower.id)} className="bg-red-900 text-red-400 px-2 py-1 rounded text-xs hover:bg-red-800">حذف</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+          </div>
+        )}
+
+        {/* تبويب حسابات الزوار */}
+        {activeTab === 'visitors' && (
+          <div className="space-y-6">
+
+            {/* طلبات معلقة (أكدوا إيميلهم وينتظرون الموافقة) */}
+            {pendingSiteUsers.length > 0 && (
+              <div className="bg-gray-900 border border-red-800 rounded-lg p-4">
+                <h2 className="text-red-400 font-bold mb-4">⏳ حسابات بانتظار الموافقة ({pendingSiteUsers.length})</h2>
+                <div className="space-y-3">
+                  {pendingSiteUsers.map((user, i) => (
+                    <div key={i} className="bg-gray-800 rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-white font-bold text-sm">{user.name}</p>
+                          <p className="text-gray-400 text-xs mt-1">📧 {user.email}</p>
+                          <p className="text-gray-500 text-xs mt-1">{new Date(user.created_at).toLocaleString('ar-EG')}</p>
+                        </div>
+                        <div className="flex gap-2 flex-shrink-0">
+                          <button
+                            onClick={() => handleApproveSiteUser(user.id, user.email, user.name)}
+                            className="bg-green-900 text-green-400 px-3 py-1.5 rounded text-xs font-bold hover:bg-green-800"
+                          >
+                            ✅ قبول
+                          </button>
+                          <button
+                            onClick={() => handleRejectSiteUser(user.id)}
+                            className="bg-red-900 text-red-400 px-3 py-1.5 rounded text-xs font-bold hover:bg-red-800"
+                          >
+                            ❌ رفض
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* الحسابات المفعّلة أو المرفوضة */}
+            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+              <h2 className="text-orange-500 font-bold mb-4">🧑‍💻 كل الحسابات ({activeSiteUsers.length})</h2>
+              {activeSiteUsers.length === 0 ? (
+                <p className="text-gray-500 text-sm text-center py-4">لا توجد حسابات مفعّلة أو مرفوضة بعد</p>
+              ) : (
+                <div className="space-y-2">
+                  {activeSiteUsers.map((user, i) => (
+                    <div key={i} className="bg-gray-800 rounded-lg p-3 flex justify-between items-center">
+                      <div>
+                        <p className="text-white font-bold text-sm">{user.name}</p>
+                        <p className="text-gray-400 text-xs">📧 {user.email}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs px-2 py-1 rounded font-bold ${user.status === 'active' ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'}`}>
+                          {user.status === 'active' ? 'مفعّل' : 'مرفوض'}
+                        </span>
+                        <button onClick={() => handleDeleteSiteUser(user.id)} className="bg-red-900 text-red-400 px-2 py-1 rounded text-xs hover:bg-red-800">حذف</button>
                       </div>
                     </div>
                   ))}

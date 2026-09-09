@@ -25,6 +25,8 @@ export default function SigninPage() {
     if (data.success) {
       localStorage.setItem('siteUser', JSON.stringify(data.user));
       window.location.href = '/daily-briefing';
+    } else if (data.needEmailVerify) {
+      window.location.href = `/verify-email?id=${data.id}`;
     } else {
       setMessage(`❌ ${data.error}`);
     }

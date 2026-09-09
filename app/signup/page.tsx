@@ -24,12 +24,28 @@ export default function SignupPage() {
       body: JSON.stringify({ action: 'register', name: form.name, email: form.email, password: form.password }),
     });
     const data = await res.json();
-    setLoading(false);
 
     if (data.success) {
-      localStorage.setItem('siteUser', JSON.stringify(data.user));
-      window.location.href = '/daily-briefing';
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: data.email,
+          subject: 'كود تأكيد إيميلك في بورصة 2026',
+          html: `
+            <div dir="rtl" style="font-family: Arial; padding: 20px; background: #0a0a0a; color: #fff;">
+              <h2 style="color: #f97316;">مرحباً ${data.name}!</h2>
+              <p>شكراً لتسجيلك في بورصة 2026. أدخل الكود التالي لتأكيد بريدك الإلكتروني:</p>
+              <h1 style="color: #f97316; font-size: 36px; letter-spacing: 8px; text-align: center; padding: 20px; background: #1a1a1a; border-radius: 8px;">${data.code}</h1>
+              <p style="color: #999;">صالح لمدة 30 دقيقة. بعد التأكيد، سيُراجع طلبك من الإدارة قبل تفعيل حسابك.</p>
+            </div>
+          `
+        })
+      });
+      setLoading(false);
+      window.location.href = `/verify-email?id=${data.id}`;
     } else {
+      setLoading(false);
       setMessage(`❌ ${data.error}`);
     }
   }
