@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/sync-history",
+      "schedule": "30 12 * * 0-4"
+    }
+  ]
+}
