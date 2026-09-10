@@ -19,8 +19,9 @@ const L = {
     save: 'حفظ',
     cancel: 'إلغاء',
     searchPh: 'ابحث بالاسم أو الرمز...',
-    columns: { symbol: 'الرمز', isin: 'ISIN', name: 'الشركة', sector: 'القطاع', price: 'السعر', change: 'التغيير', updated: 'آخر مزامنة', quoteTime: 'تاريخ السعر' },
+    columns: { symbol: 'الرمز', isin: 'ISIN', name: 'الشركة', sector: 'القطاع', price: 'السعر', change: 'التغيير', updated: 'آخر مزامنة', quoteTime: 'تاريخ السعر', egx30: 'EGX30' },
     quoteTimeHint: 'وقت مزامنتنا شيء، وتاريخ السعر نفسه كما يعود عند Yahoo شيء آخر — لو تاريخ السعر قديم رغم مزامنة حديثة، فالبيانات متأخرة من مصدر Yahoo نفسه وليست مشكلة بموقعنا',
+    egx30Hint: 'حدد الأسهم الثلاثين المكوّنة لمؤشر EGX30 فعلياً (راجع القائمة الرسمية من البورصة المصرية) — شريط الأسعار بالصفحة الرئيسية يعرض فقط الأسهم المحددة هنا',
     isinLabel: 'رمز ISIN (اختياري)',
     isinPh: 'مثال: EGS60081C014',
     isinHint: 'يُستخدم كبديل للبحث على Yahoo Finance إذا لم يكن الرمز المختصر مدرجاً هناك',
@@ -149,8 +150,9 @@ const L = {
     save: 'Save',
     cancel: 'Cancel',
     searchPh: 'Search by name or symbol...',
-    columns: { symbol: 'Symbol', isin: 'ISIN', name: 'Company', sector: 'Sector', price: 'Price', change: 'Change', updated: 'Last Synced', quoteTime: 'Price Date' },
+    columns: { symbol: 'Symbol', isin: 'ISIN', name: 'Company', sector: 'Sector', price: 'Price', change: 'Change', updated: 'Last Synced', quoteTime: 'Price Date', egx30: 'EGX30' },
     quoteTimeHint: "Our sync time is one thing; the price's own date as reported by Yahoo is another — if the price date is old despite a recent sync, Yahoo's own data is delayed, not a bug on our side",
+    egx30Hint: "Mark the actual 30 constituents of the EGX30 index (check EGX's official list) — the homepage ticker bar only shows stocks checked here",
     isinLabel: 'ISIN Code (optional)',
     isinPh: 'e.g. EGS60081C014',
     isinHint: "Used as a fallback lookup on Yahoo Finance if the short symbol isn't listed there",
@@ -270,7 +272,7 @@ export default function AdminPage() {
   const [stocks, setStocks] = useState<any[]>([]);
   const [prices, setPrices] = useState<any[]>([]);
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState<'symbol' | 'sector' | 'price' | 'change' | 'updated' | 'quoteTime'>('symbol');
+  const [sortBy, setSortBy] = useState<'symbol' | 'sector' | 'price' | 'change' | 'updated' | 'quoteTime' | 'egx30'>('symbol');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [editStock, setEditStock] = useState<any>(null);
   const [formData, setFormData] = useState({ price: '', change_percent: '', volume: '', isin: '' });
@@ -397,6 +399,16 @@ export default function AdminPage() {
 
   function getPrice(symbol: string) {
     return prices.find(p => p.symbol === symbol);
+  }
+
+  async function handleToggleEgx30(stock: any) {
+    const next = !stock.is_egx30;
+    setStocks(prev => prev.map(s => s.id === stock.id ? { ...s, is_egx30: next } : s));
+    await fetch('/api/stocks', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: stock.id, is_egx30: next })
+    });
   }
 
   function handleEdit(stock: any) {
@@ -659,6 +671,7 @@ export default function AdminPage() {
         case 'change': valA = parseFloat(priceA?.change_percent || '0'); valB = parseFloat(priceB?.change_percent || '0'); break;
         case 'updated': valA = priceA?.updated_at || ''; valB = priceB?.updated_at || ''; break;
         case 'quoteTime': valA = priceA?.quote_time || ''; valB = priceB?.quote_time || ''; break;
+        case 'egx30': valA = a.is_egx30 ? 1 : 0; valB = b.is_egx30 ? 1 : 0; break;
         default: valA = a.symbol; valB = b.symbol;
       }
       if (sortDir === 'asc') return valA > valB ? 1 : -1;
@@ -674,6 +687,7 @@ export default function AdminPage() {
     { label: t.columns.change, key: 'change' },
     { label: t.columns.updated, key: 'updated' },
     { label: t.columns.quoteTime, key: 'quoteTime' },
+    { label: t.columns.egx30, key: 'egx30' },
   ];
   return (
     <main className="min-h-screen bg-gray-950 p-4">
@@ -739,7 +753,8 @@ export default function AdminPage() {
               </div>
             )}
             <div className="mb-4"><input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.searchPh} className="bg-gray-900 text-white border border-gray-700 rounded px-4 py-2 w-full md:w-96 text-sm" /></div>
-            <p className="text-gray-600 text-xs mb-3">💡 {t.quoteTimeHint}</p>
+            <p className="text-gray-600 text-xs mb-1">💡 {t.quoteTimeHint}</p>
+            <p className="text-gray-600 text-xs mb-3">💡 {t.egx30Hint}</p>
             <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
@@ -770,6 +785,9 @@ export default function AdminPage() {
                             const stale = Date.now() - new Date(price.quote_time).getTime() > 3 * 24 * 60 * 60 * 1000;
                             return <span className={`text-xs ${stale ? 'text-red-400' : 'text-gray-500'}`}>{new Date(price.quote_time).toLocaleString(t.dateLocale)}</span>;
                           })() : <span className="text-gray-600 text-xs">-</span>}
+                        </td>
+                        <td className="px-4 py-3">
+                          <input type="checkbox" checked={!!stock.is_egx30} onChange={() => handleToggleEgx30(stock)} className="w-4 h-4 accent-orange-500 cursor-pointer" />
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex gap-2">

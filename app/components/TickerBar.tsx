@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react';
 
-const STOCK_SYMBOLS = ['COMI', 'SWDY', 'TMGH', 'ETEL', 'EAST', 'EFIH', 'FWRY'];
-
 type Ticker = { symbol: string; price: string; change: string; up: boolean };
 
 export default function TickerBar() {
@@ -17,20 +15,27 @@ export default function TickerBar() {
 
   async function fetchTickers() {
     try {
-      const [marketsRes, pricesRes] = await Promise.all([
+      const [marketsRes, pricesRes, stocksRes] = await Promise.all([
         fetch('/api/markets'),
         fetch('/api/stock-prices'),
+        fetch('/api/stocks'),
       ]);
       const marketsData = await marketsRes.json();
       const pricesData = await pricesRes.json();
+      const stocksData = await stocksRes.json();
 
       const result: Ticker[] = [];
 
       const egx = marketsData.indices?.find((idx: any) => idx.name === 'EGX30');
       if (egx) result.push({ symbol: 'EGX30', price: egx.price, change: egx.change, up: egx.up });
 
+      // أسهم مؤشر EGX30 فعلياً كما حُدِّدت بلوحة الإدارة (تبويب الأسعار، عمود EGX30)
+      const egx30Symbols = Array.isArray(stocksData)
+        ? stocksData.filter((s: any) => s.is_egx30).map((s: any) => s.symbol)
+        : [];
+
       if (Array.isArray(pricesData)) {
-        for (const sym of STOCK_SYMBOLS) {
+        for (const sym of egx30Symbols) {
           const p = pricesData.find((x: any) => x.symbol === sym);
           if (!p) continue;
           const change = parseFloat(p.change_percent);
