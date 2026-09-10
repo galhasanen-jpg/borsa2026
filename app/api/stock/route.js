@@ -1,5 +1,6 @@
 import { getConnection } from '../../lib/db';
 import { mockPrices as mockData, generateMockData } from '../../lib/mock-prices';
+import { fetchYahooQuote } from '../../lib/yahoo';
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
@@ -30,21 +31,12 @@ export async function GET(request) {
         if (client) client.release();
     }
 
-    // ثانياً: جلب من Yahoo Finance
+    // ثانياً: جلب من Yahoo Finance (عبر واجهة الرسم البياني، أوثق من واجهة quote
+    // المباشرة التي باتت تتطلب مصادقة إضافية من Yahoo وتفشل بصمت لأسهم كثيرة)
     try {
-        const res = await fetch(
-            `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbolParam}`,
-            { headers: { 'User-Agent': 'Mozilla/5.0' }, cache: 'no-store' }
-        );
-        const data = await res.json();
-        const quote = data.quoteResponse?.result?.[0];
-
-        if (quote && quote.regularMarketPrice) {
-            return Response.json({
-                price: quote.regularMarketPrice?.toFixed(2),
-                changePercent: quote.regularMarketChangePercent?.toFixed(2),
-                volume: quote.regularMarketVolume?.toLocaleString(),
-            });
+        const quote = await fetchYahooQuote(symbol);
+        if (quote) {
+            return Response.json(quote);
         }
     } catch (err) {}
 

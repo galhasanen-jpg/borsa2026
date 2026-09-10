@@ -1,5 +1,11 @@
 // جلب بيانات حقيقية (تاريخية وسعر حالي) من Yahoo Finance — واجهة عامة بدون حاجة لمفتاح API،
 // تُستخدم كحل مرحلي ريثما تتوفر واجهة رسمية من البورصة المصرية نفسها.
+//
+// نعتمد فقط على واجهة الرسم البياني (v8/finance/chart) لكل من التاريخ والسعر الحالي معاً
+// (نستخرج السعر من حقل meta بنفس استجابة الرسم البياني). كنا نستخدم واجهة v7/finance/quote
+// المنفصلة لجلب السعر الحالي فقط، لكنها أصبحت تتطلب مصادقة إضافية (crumb/cookie) من Yahoo
+// وبدأت تفشل بصمت لأسهم كثيرة — كانت تنجح مزامنة البيانات التاريخية لسهم معيّن بينما يفشل
+// سعره الحالي بدون أي إشارة خطأ واضحة. استخدام مصدر واحد موثوق للاثنين يمنع هذا التضارب.
 
 // بعض الأسهم مدرجة على Yahoo برمز ISIN (مثل EGS...) بدل الرمز المختصر المعتاد.
 // كل ما نتأكد من رمز صحيح لسهم فشلت مزامنته، نضيفه هنا.
@@ -17,7 +23,9 @@ function candidateYahooSymbols(symbol, isin) {
     return candidates;
 }
 
-async function fetchHistoryForYahooSymbol(yahooSymbol, range) {
+// يجلب استجابة الرسم البياني لرمز Yahoo محدد، ويستخرج منها كلاً من التاريخ اليومي
+// (من indicators.quote) والسعر الحالي (من meta) بنفس الطلب الواحد.
+async function fetchChartForYahooSymbol(yahooSymbol, range) {
     try {
         const res = await fetch(
             `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?range=${range}&interval=1d`,
@@ -25,66 +33,75 @@ async function fetchHistoryForYahooSymbol(yahooSymbol, range) {
         );
         const data = await res.json();
         const result = data?.chart?.result?.[0];
-        const timestamps = result?.timestamp;
-        const quote = result?.indicators?.quote?.[0];
+        if (!result) return null;
 
-        if (!timestamps || !quote) return null;
+        const timestamps = result.timestamp;
+        const quoteSeries = result.indicators?.quote?.[0];
+        const meta = result.meta;
 
-        const history = [];
-        for (let i = 0; i < timestamps.length; i++) {
-            const close = quote.close?.[i];
-            if (close == null) continue; // تجاهل الأيام بدون تداول (عطلات)
+        let history = null;
+        if (timestamps && quoteSeries) {
+            history = [];
+            for (let i = 0; i < timestamps.length; i++) {
+                const close = quoteSeries.close?.[i];
+                if (close == null) continue; // تجاهل الأيام بدون تداول (عطلات)
 
-            history.push({
-                date: new Date(timestamps[i] * 1000).toISOString().split('T')[0],
-                open: parseFloat((quote.open?.[i] ?? close).toFixed(2)),
-                high: parseFloat((quote.high?.[i] ?? close).toFixed(2)),
-                low: parseFloat((quote.low?.[i] ?? close).toFixed(2)),
-                close: parseFloat(close.toFixed(2)),
-                volume: quote.volume?.[i] || 0,
-            });
+                history.push({
+                    date: new Date(timestamps[i] * 1000).toISOString().split('T')[0],
+                    open: parseFloat((quoteSeries.open?.[i] ?? close).toFixed(2)),
+                    high: parseFloat((quoteSeries.high?.[i] ?? close).toFixed(2)),
+                    low: parseFloat((quoteSeries.low?.[i] ?? close).toFixed(2)),
+                    close: parseFloat(close.toFixed(2)),
+                    volume: quoteSeries.volume?.[i] || 0,
+                });
+            }
+            if (history.length === 0) history = null;
         }
 
-        return history.length > 0 ? history : null;
-    } catch (err) {
-        return null;
-    }
-}
+        let quote = null;
+        if (meta?.regularMarketPrice != null) {
+            const price = meta.regularMarketPrice;
+            const prevClose = meta.previousClose ?? meta.chartPreviousClose;
+            const changePercent = prevClose ? ((price - prevClose) / prevClose) * 100 : 0;
+            const lastVolume = quoteSeries?.volume?.filter(v => v != null).slice(-1)[0];
 
-async function fetchQuoteForYahooSymbol(yahooSymbol) {
-    try {
-        const res = await fetch(
-            `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${yahooSymbol}`,
-            { headers: { 'User-Agent': 'Mozilla/5.0' }, cache: 'no-store' }
-        );
-        const data = await res.json();
-        const quote = data?.quoteResponse?.result?.[0];
+            quote = {
+                price: price.toFixed(2),
+                changePercent: changePercent.toFixed(2),
+                volume: (meta.regularMarketVolume ?? lastVolume ?? 0).toString(),
+            };
+        }
 
-        if (!quote || !quote.regularMarketPrice) return null;
-
-        return {
-            price: quote.regularMarketPrice.toFixed(2),
-            changePercent: quote.regularMarketChangePercent?.toFixed(2) || '0',
-            volume: quote.regularMarketVolume?.toString() || '0',
-        };
+        return { history, quote };
     } catch (err) {
         return null;
     }
 }
 
 // symbol: الرمز المختصر عندنا. isin (اختياري): رمز ISIN المحفوظ لهذا السهم، يُجرَّب إذا فشل الرمز المختصر
+
 export async function fetchYahooHistory(symbol, range = '1y', isin = null) {
     for (const yahooSymbol of candidateYahooSymbols(symbol, isin)) {
-        const history = await fetchHistoryForYahooSymbol(yahooSymbol, range);
-        if (history) return history;
+        const result = await fetchChartForYahooSymbol(yahooSymbol, range);
+        if (result?.history) return result.history;
     }
     return null;
 }
 
 export async function fetchYahooQuote(symbol, isin = null) {
     for (const yahooSymbol of candidateYahooSymbols(symbol, isin)) {
-        const quote = await fetchQuoteForYahooSymbol(yahooSymbol);
-        if (quote) return quote;
+        const result = await fetchChartForYahooSymbol(yahooSymbol, '5d');
+        if (result?.quote) return result.quote;
     }
     return null;
+}
+
+// يجلب التاريخ والسعر الحالي معاً بطلب واحد فقط لكل رمز مرشّح (بدل طلبين منفصلين)،
+// ويضمن أن يكونا من نفس الاستجابة فلا يتضارب نجاح أحدهما مع فشل الآخر
+export async function fetchYahooChart(symbol, range = '1y', isin = null) {
+    for (const yahooSymbol of candidateYahooSymbols(symbol, isin)) {
+        const result = await fetchChartForYahooSymbol(yahooSymbol, range);
+        if (result?.history || result?.quote) return result;
+    }
+    return { history: null, quote: null };
 }

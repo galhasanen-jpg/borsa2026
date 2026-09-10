@@ -1,13 +1,13 @@
-import { fetchYahooHistory, fetchYahooQuote } from './yahoo';
+import { fetchYahooChart } from './yahoo';
 
-// يزامن سهماً واحداً: يجلب سنة من البيانات التاريخية والسعر الحالي من Yahoo
-// ويكتبها بقاعدة البيانات. تُستخدم من زر المزامنة اليدوي بلوحة الإدارة ومن
-// المزامنة اليومية التلقائية (Cron) على حد سواء، لتفادي تكرار نفس المنطق.
+// يزامن سهماً واحداً: يجلب سنة من البيانات التاريخية والسعر الحالي من Yahoo بطلب واحد
+// (فحص chart لكل رمز مرشّح، فيضمن أن التاريخ والسعر من نفس الاستجابة) ويكتبها بقاعدة
+// البيانات. تُستخدم من زر المزامنة اليدوي بلوحة الإدارة ومن المزامنة اليومية التلقائية
+// (Cron) على حد سواء، لتفادي تكرار نفس المنطق.
 export async function syncStockFromYahoo(client, symbol, isin) {
-    let historyCount = 0;
-    let gotQuote = false;
+    const { history, quote } = await fetchYahooChart(symbol, '1y', isin);
 
-    const history = await fetchYahooHistory(symbol, '1y', isin);
+    let historyCount = 0;
     if (history && history.length > 0) {
         for (const row of history) {
             await client.query(
@@ -21,7 +21,7 @@ export async function syncStockFromYahoo(client, symbol, isin) {
         historyCount = history.length;
     }
 
-    const quote = await fetchYahooQuote(symbol, isin);
+    let gotQuote = false;
     if (quote) {
         await client.query(
             `INSERT INTO stock_prices (symbol, price, change_percent, volume, updated_at)
