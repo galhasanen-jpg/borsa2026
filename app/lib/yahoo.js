@@ -65,10 +65,18 @@ async function fetchChartForYahooSymbol(yahooSymbol, range) {
             const changePercent = prevClose ? ((price - prevClose) / prevClose) * 100 : 0;
             const lastVolume = quoteSeries?.volume?.filter(v => v != null).slice(-1)[0];
 
+            // وقت السعر نفسه كما يراه Yahoo (قد يكون أقدم من وقت مزامنتنا نحن إذا كانت
+            // بيانات ياهو لهذا السهم متأخرة أصلاً — نعرضه بشكل منفصل عن "آخر تحديث"
+            // لتمييز "متى زامنّا" عن "السعر يعود فعلياً لمتى")
+            const quoteTime = meta.regularMarketTime
+                ? new Date(meta.regularMarketTime * 1000).toISOString()
+                : null;
+
             quote = {
                 price: price.toFixed(2),
                 changePercent: changePercent.toFixed(2),
                 volume: (meta.regularMarketVolume ?? lastVolume ?? 0).toString(),
+                quoteTime,
             };
         }
 

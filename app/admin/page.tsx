@@ -19,7 +19,8 @@ const L = {
     save: 'حفظ',
     cancel: 'إلغاء',
     searchPh: 'ابحث بالاسم أو الرمز...',
-    columns: { symbol: 'الرمز', isin: 'ISIN', name: 'الشركة', sector: 'القطاع', price: 'السعر', change: 'التغيير', updated: 'آخر تحديث' },
+    columns: { symbol: 'الرمز', isin: 'ISIN', name: 'الشركة', sector: 'القطاع', price: 'السعر', change: 'التغيير', updated: 'آخر مزامنة', quoteTime: 'تاريخ السعر' },
+    quoteTimeHint: 'وقت مزامنتنا شيء، وتاريخ السعر نفسه كما يعود عند Yahoo شيء آخر — لو تاريخ السعر قديم رغم مزامنة حديثة، فالبيانات متأخرة من مصدر Yahoo نفسه وليست مشكلة بموقعنا',
     isinLabel: 'رمز ISIN (اختياري)',
     isinPh: 'مثال: EGS60081C014',
     isinHint: 'يُستخدم كبديل للبحث على Yahoo Finance إذا لم يكن الرمز المختصر مدرجاً هناك',
@@ -148,7 +149,8 @@ const L = {
     save: 'Save',
     cancel: 'Cancel',
     searchPh: 'Search by name or symbol...',
-    columns: { symbol: 'Symbol', isin: 'ISIN', name: 'Company', sector: 'Sector', price: 'Price', change: 'Change', updated: 'Last Updated' },
+    columns: { symbol: 'Symbol', isin: 'ISIN', name: 'Company', sector: 'Sector', price: 'Price', change: 'Change', updated: 'Last Synced', quoteTime: 'Price Date' },
+    quoteTimeHint: "Our sync time is one thing; the price's own date as reported by Yahoo is another — if the price date is old despite a recent sync, Yahoo's own data is delayed, not a bug on our side",
     isinLabel: 'ISIN Code (optional)',
     isinPh: 'e.g. EGS60081C014',
     isinHint: "Used as a fallback lookup on Yahoo Finance if the short symbol isn't listed there",
@@ -656,6 +658,7 @@ export default function AdminPage() {
         case 'price': valA = parseFloat(priceA?.price || '0'); valB = parseFloat(priceB?.price || '0'); break;
         case 'change': valA = parseFloat(priceA?.change_percent || '0'); valB = parseFloat(priceB?.change_percent || '0'); break;
         case 'updated': valA = priceA?.updated_at || ''; valB = priceB?.updated_at || ''; break;
+        case 'quoteTime': valA = priceA?.quote_time || ''; valB = priceB?.quote_time || ''; break;
         default: valA = a.symbol; valB = b.symbol;
       }
       if (sortDir === 'asc') return valA > valB ? 1 : -1;
@@ -670,6 +673,7 @@ export default function AdminPage() {
     { label: t.columns.price, key: 'price' },
     { label: t.columns.change, key: 'change' },
     { label: t.columns.updated, key: 'updated' },
+    { label: t.columns.quoteTime, key: 'quoteTime' },
   ];
   return (
     <main className="min-h-screen bg-gray-950 p-4">
@@ -735,6 +739,7 @@ export default function AdminPage() {
               </div>
             )}
             <div className="mb-4"><input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.searchPh} className="bg-gray-900 text-white border border-gray-700 rounded px-4 py-2 w-full md:w-96 text-sm" /></div>
+            <p className="text-gray-600 text-xs mb-3">💡 {t.quoteTimeHint}</p>
             <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
@@ -760,6 +765,12 @@ export default function AdminPage() {
                         <td className="px-4 py-3">{price ? <span className="text-white font-mono text-xs">{price.price} ج</span> : <span className="text-gray-600 text-xs">{t.notSet}</span>}</td>
                         <td className="px-4 py-3">{price ? <span className={`text-xs font-bold ${up ? 'text-green-400' : 'text-red-400'}`}>{up ? '▲' : '▼'} {Math.abs(parseFloat(price.change_percent))}%</span> : <span className="text-gray-600 text-xs">-</span>}</td>
                         <td className="px-4 py-3">{price ? <span className="text-gray-500 text-xs">{new Date(price.updated_at).toLocaleString(t.dateLocale)}</span> : <span className="text-gray-600 text-xs">-</span>}</td>
+                        <td className="px-4 py-3">
+                          {price?.quote_time ? (() => {
+                            const stale = Date.now() - new Date(price.quote_time).getTime() > 3 * 24 * 60 * 60 * 1000;
+                            return <span className={`text-xs ${stale ? 'text-red-400' : 'text-gray-500'}`}>{new Date(price.quote_time).toLocaleString(t.dateLocale)}</span>;
+                          })() : <span className="text-gray-600 text-xs">-</span>}
+                        </td>
                         <td className="px-4 py-3">
                           <div className="flex gap-2">
                             <button onClick={() => handleEdit(stock)} className="bg-orange-500 text-black px-2 py-1 rounded text-xs hover:bg-orange-600">{t.edit}</button>

@@ -10,7 +10,7 @@ export async function GET(request) {
 
         if (symbol) {
             const result = await client.query(
-                `SELECT symbol, price, change_percent, volume, updated_at
+                `SELECT symbol, price, change_percent, volume, updated_at, quote_time
                 FROM stock_prices WHERE symbol = $1`,
                 [symbol]
             );
@@ -21,7 +21,7 @@ export async function GET(request) {
         }
 
         const result = await client.query(
-            `SELECT symbol, price, change_percent, volume, updated_at
+            `SELECT symbol, price, change_percent, volume, updated_at, quote_time
             FROM stock_prices ORDER BY symbol`
         );
         return Response.json(result.rows);

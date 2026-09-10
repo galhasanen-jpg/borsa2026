@@ -361,8 +361,14 @@ export default function StocksPage() {
                 </div>
                 {prices[selectedStock.symbol]?.updatedAt && (
                   <p className="text-gray-600 text-xs mt-3">
-                    {lang === 'ar' ? 'آخر تحديث: ' : 'Last updated: '}
+                    {lang === 'ar' ? 'آخر مزامنة: ' : 'Last synced: '}
                     {new Date(prices[selectedStock.symbol].updatedAt).toLocaleString(lang === 'ar' ? 'ar-EG' : 'en-US')}
+                  </p>
+                )}
+                {prices[selectedStock.symbol]?.quoteTime && (
+                  <p className="text-gray-600 text-xs mt-1">
+                    {lang === 'ar' ? 'تاريخ السعر (حسب المصدر): ' : 'Price date (per source): '}
+                    {new Date(prices[selectedStock.symbol].quoteTime).toLocaleString(lang === 'ar' ? 'ar-EG' : 'en-US')}
                   </p>
                 )}
               </div>
