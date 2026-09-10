@@ -6,6 +6,7 @@ type Ticker = { symbol: string; price: string; change: string; up: boolean };
 
 export default function TickerBar() {
   const [tickers, setTickers] = useState<Ticker[]>([]);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     fetchTickers();
@@ -76,7 +77,11 @@ export default function TickerBar() {
           {allTickers.length > 0 && (
             <div
               className="flex w-max"
-              style={{ animation: 'ticker 70s linear infinite' }}
+              style={{ animation: 'ticker 70s linear infinite', animationPlayState: paused ? 'paused' : 'running' }}
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => setPaused(false)}
+              onTouchStart={() => setPaused(true)}
+              onTouchEnd={() => setPaused(false)}
             >
               {allTickers.map((ticker, index) => (
                 <div
