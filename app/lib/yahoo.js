@@ -86,30 +86,43 @@ async function fetchChartForYahooSymbol(yahooSymbol, range) {
     }
 }
 
-// symbol: الرمز المختصر عندنا. isin (اختياري): رمز ISIN المحفوظ لهذا السهم، يُجرَّب إذا فشل الرمز المختصر
+// symbol: الرمز المختصر عندنا. isin (اختياري): رمز ISIN المحفوظ لهذا السهم، يُجرَّب أيضاً كمرشح.
+//
+// بعض الأسهم لها أكثر من قيد على Yahoo (رمز مختصر + رمز ISIN)، وأحدهما قد يكون قيداً
+// قديماً متجمداً منذ إجراء على السهم (توزيع أسهم مجانية، تجزئة) بينما الآخر هو المتداول
+// فعلياً. رمز كهذا يرجع استجابة "صالحة" شكلياً (فيها سعر) فلا يكفي إيقاف البحث عند أول
+// رمز ناجح — لازم نجرب كل المرشحين ونختار الأحدث زمنياً (بحسب meta.regularMarketTime).
+async function fetchFreshestChart(symbol, range, isin) {
+    const candidates = candidateYahooSymbols(symbol, isin);
+    let best = null;
+    let bestTime = -Infinity;
+
+    for (const yahooSymbol of candidates) {
+        const result = await fetchChartForYahooSymbol(yahooSymbol, range);
+        if (!result || (!result.history && !result.quote)) continue;
+
+        const time = result.quote?.quoteTime ? new Date(result.quote.quoteTime).getTime() : -1;
+        if (!best || time > bestTime) {
+            best = result;
+            bestTime = time;
+        }
+    }
+
+    return best || { history: null, quote: null };
+}
 
 export async function fetchYahooHistory(symbol, range = '1y', isin = null) {
-    for (const yahooSymbol of candidateYahooSymbols(symbol, isin)) {
-        const result = await fetchChartForYahooSymbol(yahooSymbol, range);
-        if (result?.history) return result.history;
-    }
-    return null;
+    const { history } = await fetchFreshestChart(symbol, range, isin);
+    return history;
 }
 
 export async function fetchYahooQuote(symbol, isin = null) {
-    for (const yahooSymbol of candidateYahooSymbols(symbol, isin)) {
-        const result = await fetchChartForYahooSymbol(yahooSymbol, '5d');
-        if (result?.quote) return result.quote;
-    }
-    return null;
+    const { quote } = await fetchFreshestChart(symbol, '5d', isin);
+    return quote;
 }
 
-// يجلب التاريخ والسعر الحالي معاً بطلب واحد فقط لكل رمز مرشّح (بدل طلبين منفصلين)،
-// ويضمن أن يكونا من نفس الاستجابة فلا يتضارب نجاح أحدهما مع فشل الآخر
+// يجلب التاريخ والسعر الحالي معاً، مقارناً كل الرموز المرشّحة واختيار الأحدث،
+// ويضمن أن التاريخ والسعر المُرجَعان من نفس الاستجابة فلا يتضارب نجاح أحدهما مع فشل الآخر
 export async function fetchYahooChart(symbol, range = '1y', isin = null) {
-    for (const yahooSymbol of candidateYahooSymbols(symbol, isin)) {
-        const result = await fetchChartForYahooSymbol(yahooSymbol, range);
-        if (result?.history || result?.quote) return result;
-    }
-    return { history: null, quote: null };
+    return fetchFreshestChart(symbol, range, isin);
 }
