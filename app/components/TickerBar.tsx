@@ -76,7 +76,7 @@ export default function TickerBar() {
           {allTickers.length > 0 && (
             <div
               className="flex w-max"
-              style={{ animation: 'ticker 35s linear infinite' }}
+              style={{ animation: 'ticker 70s linear infinite' }}
             >
               {allTickers.map((ticker, index) => (
                 <div
