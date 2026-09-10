@@ -270,7 +270,7 @@ export default function AdminPage() {
   const [stocks, setStocks] = useState<any[]>([]);
   const [prices, setPrices] = useState<any[]>([]);
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState<'symbol' | 'sector' | 'price' | 'change' | 'updated'>('symbol');
+  const [sortBy, setSortBy] = useState<'symbol' | 'sector' | 'price' | 'change' | 'updated' | 'quoteTime'>('symbol');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [editStock, setEditStock] = useState<any>(null);
   const [formData, setFormData] = useState({ price: '', change_percent: '', volume: '', isin: '' });
