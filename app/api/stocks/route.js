@@ -36,6 +36,35 @@ export async function GET(request) {
     }
 }
 
+export async function POST(request) {
+    let client;
+    try {
+        const { symbol, name, name_en, sector_id, isin } = await request.json();
+        if (!symbol?.trim() || !name?.trim() || !name_en?.trim() || !sector_id) {
+            return Response.json({ error: 'symbol, name, name_en and sector_id are required' }, { status: 400 });
+        }
+
+        client = await getConnection();
+        const result = await client.query(
+            `INSERT INTO stocks (symbol, name, name_en, sector_id, isin)
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING id`,
+            [symbol.trim().toUpperCase(), name.trim(), name_en.trim(), sector_id, isin?.trim() || null]
+        );
+
+        return Response.json({ success: true, id: result.rows[0].id });
+
+    } catch (err) {
+        // unique_violation: الرمز مسجّل بالفعل
+        if (err.code === '23505') {
+            return Response.json({ error: 'رمز السهم موجود بالفعل' }, { status: 409 });
+        }
+        return Response.json({ error: err.message }, { status: 500 });
+    } finally {
+        if (client) client.release();
+    }
+}
+
 export async function PUT(request) {
     let client;
     try {

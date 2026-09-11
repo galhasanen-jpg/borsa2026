@@ -34,6 +34,20 @@ const L = {
     savedPrice: (symbol: string) => `✅ تم حفظ بيانات ${symbol}`,
     confirmDeletePrice: (symbol: string) => `هل أنت متأكد من حذف بيانات ${symbol}؟`,
 
+    // سهم جديد
+    addStockBtn: '+ سهم جديد',
+    addStockTitle: 'إضافة سهم جديد',
+    symbolField: 'الرمز',
+    symbolPh: 'مثال: COMI',
+    nameArField: 'اسم الشركة (عربي)',
+    nameEnField: 'اسم الشركة (إنجليزي)',
+    sectorField: 'القطاع',
+    sectorPh: '-- اختر القطاع --',
+    addStockSubmit: 'إضافة السهم',
+    addStockFillRequired: '❌ يرجى تعبئة الرمز والاسم بالعربي والإنجليزي واختيار القطاع',
+    addStockGenericError: '❌ تعذّر إضافة السهم',
+    addStockSaved: (symbol: string) => `✅ تمت إضافة ${symbol} بنجاح`,
+
     // البيانات التاريخية
     manualEntry: '📝 إدخال يدوي',
     symbolLabel: 'رمز السهم',
@@ -165,6 +179,19 @@ const L = {
     savedPrice: (symbol: string) => `✅ Saved data for ${symbol}`,
     confirmDeletePrice: (symbol: string) => `Are you sure you want to delete ${symbol}'s data?`,
 
+    addStockBtn: '+ New Stock',
+    addStockTitle: 'Add a New Stock',
+    symbolField: 'Symbol',
+    symbolPh: 'e.g. COMI',
+    nameArField: 'Company Name (Arabic)',
+    nameEnField: 'Company Name (English)',
+    sectorField: 'Sector',
+    sectorPh: '-- Select sector --',
+    addStockSubmit: 'Add Stock',
+    addStockFillRequired: '❌ Please fill in the symbol, both names, and pick a sector',
+    addStockGenericError: '❌ Could not add the stock',
+    addStockSaved: (symbol: string) => `✅ ${symbol} added successfully`,
+
     manualEntry: '📝 Manual Entry',
     symbolLabel: 'Stock Symbol',
     dateLabel: 'Date',
@@ -278,6 +305,12 @@ export default function AdminPage() {
   const [formData, setFormData] = useState({ price: '', change_percent: '', volume: '', isin: '' });
   const [message, setMessage] = useState('');
 
+  // سهم جديد
+  const [sectors, setSectors] = useState<any[]>([]);
+  const [showAddStock, setShowAddStock] = useState(false);
+  const [newStock, setNewStock] = useState({ symbol: '', name: '', name_en: '', sector_id: '', isin: '' });
+  const [addStockError, setAddStockError] = useState('');
+
   // بيانات تاريخية
   const [historySymbol, setHistorySymbol] = useState('');
   const [historyDate, setHistoryDate] = useState('');
@@ -311,6 +344,7 @@ export default function AdminPage() {
   useEffect(() => {
     fetchStocks();
     fetchPrices();
+    fetchSectors();
     fetchAnalysts();
     fetchFollowers();
     fetchSiteUsers();
@@ -326,6 +360,12 @@ export default function AdminPage() {
     const res = await fetch('/api/stock-prices');
     const data = await res.json();
     setPrices(Array.isArray(data) ? data : []);
+  }
+
+  async function fetchSectors() {
+    const res = await fetch('/api/sectors');
+    const data = await res.json();
+    setSectors(Array.isArray(data) ? data : []);
   }
 
   async function fetchAnalysts() {
@@ -458,6 +498,38 @@ export default function AdminPage() {
     if (!confirm(t.confirmDeletePrice(symbol))) return;
     await fetch(`/api/stock-prices?symbol=${symbol}`, { method: 'DELETE' });
     fetchPrices();
+  }
+
+  async function handleAddStock() {
+    setAddStockError('');
+    if (!newStock.symbol.trim() || !newStock.name.trim() || !newStock.name_en.trim() || !newStock.sector_id) {
+      setAddStockError(t.addStockFillRequired);
+      return;
+    }
+
+    const res = await fetch('/api/stocks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        symbol: newStock.symbol.trim().toUpperCase(),
+        name: newStock.name.trim(),
+        name_en: newStock.name_en.trim(),
+        sector_id: newStock.sector_id,
+        isin: newStock.isin.trim() || null,
+      })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      setAddStockError(data.error || t.addStockGenericError);
+      return;
+    }
+
+    setMessage(t.addStockSaved(newStock.symbol.trim().toUpperCase()));
+    setNewStock({ symbol: '', name: '', name_en: '', sector_id: '', isin: '' });
+    setShowAddStock(false);
+    fetchStocks();
+    setTimeout(() => setMessage(''), 3000);
   }
 
   async function handleSaveHistory() {
@@ -752,7 +824,52 @@ export default function AdminPage() {
                 </div>
               </div>
             )}
-            <div className="mb-4"><input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.searchPh} className="bg-gray-900 text-white border border-gray-700 rounded px-4 py-2 w-full md:w-96 text-sm" /></div>
+
+            {showAddStock && (
+              <div className="bg-gray-900 border border-orange-500 rounded-lg p-6 mb-6">
+                <h2 className="text-orange-500 font-bold mb-4">{t.addStockTitle}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="text-gray-400 text-xs mb-1 block">{t.symbolField}</label>
+                    <input value={newStock.symbol} onChange={e => setNewStock({...newStock, symbol: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm font-mono" placeholder={t.symbolPh} dir="ltr" />
+                  </div>
+                  <div>
+                    <label className="text-gray-400 text-xs mb-1 block">{t.sectorField}</label>
+                    <select value={newStock.sector_id} onChange={e => setNewStock({...newStock, sector_id: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm">
+                      <option value="">{t.sectorPh}</option>
+                      {sectors.map(sec => (
+                        <option key={sec.id} value={sec.id}>{lang === 'ar' ? sec.name : sec.name_en}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-gray-400 text-xs mb-1 block">{t.nameArField}</label>
+                    <input value={newStock.name} onChange={e => setNewStock({...newStock, name: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                  </div>
+                  <div>
+                    <label className="text-gray-400 text-xs mb-1 block">{t.nameEnField}</label>
+                    <input value={newStock.name_en} onChange={e => setNewStock({...newStock, name_en: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" dir="ltr" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="text-gray-400 text-xs mb-1 block">{t.isinLabel}</label>
+                    <input value={newStock.isin} onChange={e => setNewStock({...newStock, isin: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm font-mono" placeholder={t.isinPh} dir="ltr" />
+                    <p className="text-gray-600 text-xs mt-1">{t.isinHint}</p>
+                  </div>
+                </div>
+                {addStockError && <p className="text-red-400 text-sm mb-3">{addStockError}</p>}
+                <div className="flex gap-3">
+                  <button onClick={handleAddStock} className="bg-orange-500 text-black px-6 py-2 rounded font-bold text-sm hover:bg-orange-600">{t.addStockSubmit}</button>
+                  <button onClick={() => { setShowAddStock(false); setAddStockError(''); }} className="bg-gray-700 text-white px-6 py-2 rounded text-sm hover:bg-gray-600">{t.cancel}</button>
+                </div>
+              </div>
+            )}
+
+            <div className="mb-4 flex flex-col md:flex-row gap-3 md:items-center">
+              <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.searchPh} className="bg-gray-900 text-white border border-gray-700 rounded px-4 py-2 w-full md:w-96 text-sm" />
+              {!showAddStock && (
+                <button onClick={() => setShowAddStock(true)} className="bg-orange-500 text-black px-4 py-2 rounded font-bold text-sm hover:bg-orange-600 w-fit">{t.addStockBtn}</button>
+              )}
+            </div>
             <p className="text-gray-600 text-xs mb-1">💡 {t.quoteTimeHint}</p>
             <p className="text-gray-600 text-xs mb-3">💡 {t.egx30Hint}</p>
             <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
