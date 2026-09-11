@@ -53,3 +53,7 @@ export function clearSessionCookieHeader() {
 }
 
 export const SESSION_COOKIE_NAME = SESSION_COOKIE;
+
+// كوكي بسيط (غير موقّع — مجرد بوابة واجهة، وليس صلاحية حقيقية) يُضبط من زر
+// "الدخول كزائر" بصفحة تسجيل الدخول. بدونه لا يمكن تصفح حتى الصفحات المفتوحة للزوار.
+export const GUEST_COOKIE_NAME = 'site_guest';

@@ -9,7 +9,7 @@ const content = {
     subtitle: 'كل ما تحتاج معرفته للاستفادة من منصة بورصة 2026',
     tabs: { pages: '🗺️ صفحات الموقع', follower: '👤 للمتابع', analyst: '👨‍💼 للمحلل', glossary: '📚 مصطلحات البورصة' },
     pagesIntro: '🗺️ شرح مبسّط لكل صفحة في الموقع: ما البيانات التي تراها فيها، وما المهام التي يمكنك تنفيذها بها',
-    accessNote: '🔒 كل صفحات الموقع أصبحت الآن تتطلب حساب زائر مفعّل (راجع صفحتي "إنشاء حساب زائر" و"تسجيل دخول الزوار" أدناه) — ما عدا لوحة الإدارة التي تُحمى بكلمة مرور خاصة بها. هذا حساب عام لأي زائر، منفصل تماماً عن حساب "المتابع" الخاص باشتراكات المحللين.',
+    accessNote: '🔓 تحديث: الموقع بقى مفتوحاً لأي زائر بدون إنشاء حساب — يكفي الضغط على زر "الدخول كزائر" بصفحة تسجيل الدخول (/signin) لتصفح كل الصفحات. ثلاث أقسام فقط تتطلب حساباً حقيقياً مسجَّلاً (الدخول كزائر وحده لا يكفي لها): النشرة اليومية، لوحة تحكم المتابع، وصفحات المحللين — الضغط على أي منها وأنت غير مسجّل دخول يعرض لك رسالة توضيحية ويوجّهك لصفحة تسجيل الدخول. لوحة الإدارة منفصلة تماماً وتُحمى بكلمة مرور خاصة بها.',
     followerIntro: '👋 أهلاً بك! هذا الدليل سيساعدك على الاستفادة القصوى من منصة بورصة 2026 كمتابع',
     analystIntro: '👨‍💼 هذا الدليل مخصص للمحللين الراغبين في نشر توصياتهم على المنصة',
     glossaryIntro: '📚 قاموس المصطلحات الأساسية في البورصة المصرية',
@@ -41,7 +41,9 @@ const content = {
         tasks: [
           'تسجيل الدخول بالإيميل وكلمة السر بعد ما توافق الإدارة على حسابك',
           'لو حسابك ما أكّد إيميله بعد، بيحولك تلقائياً لصفحة تأكيد الإيميل',
+          'أو الضغط على زر "الدخول كزائر" لتصفح الموقع فوراً بدون إنشاء حساب أصلاً',
         ],
+        note: 'الدخول كزائر بيفتحلك كل الصفحات ما عدا النشرة اليومية ولوحة تحكم المتابع وصفحات المحللين — دي لازم حساب حقيقي مسجَّل دخول.',
       },
       {
         title: 'الرئيسية', icon: '🏠', path: '/',
@@ -49,6 +51,7 @@ const content = {
           'بطاقات المؤشرات الرئيسية (مثل EGX30) مع السعر ونسبة التغيير',
           'جدول بأبرز الأسهم المصرية مع السعر والتغيير والحجم، يتحدث تلقائياً كل دقيقة',
           'لوحة بآخر الأخبار الاقتصادية',
+          'شريط أسعار متحرك ثابت أسفل كل صفحات الموقع، يعرض أسهم مؤشر EGX30 — مرّر الماوس عليه (أو المسه على الموبايل) ليتوقف مؤقتاً وتقرأ بسهولة',
         ],
         tasks: [
           'إلقاء نظرة سريعة على حالة السوق العامة',
@@ -103,7 +106,7 @@ const content = {
           'الضغط على أي خبر لفتح مصدره الأصلي',
           'إعادة تحديث النشرة يدوياً بزر التحديث',
         ],
-        note: 'أول مرة تفتح الصفحة بعد تسجيل الدخول، تُنشأ لك قائمة بستة أسهم افتراضية تقدر تعدّلها كما تحب.',
+        note: '🔒 تتطلب حساباً حقيقياً مسجَّلاً دخول (الدخول كزائر لا يكفي). أول مرة تفتح الصفحة بعد تسجيل الدخول، تُنشأ لك قائمة بستة أسهم افتراضية تقدر تعدّلها كما تحب.',
       },
       {
         title: 'المحللون', icon: '👨‍💼', path: '/analysts',
@@ -117,6 +120,7 @@ const content = {
           'الضغط على "عرض" لدخول صفحة محلل معيّن ورؤية كل توصياته',
           'التسجيل كمحلل جديد عبر نموذج "سجل كمحلل" (يحتاج موافقة الإدارة)',
         ],
+        note: '🔒 تتطلب حساباً حقيقياً مسجَّلاً دخول (الدخول كزائر لا يكفي).',
       },
       {
         title: 'صفحة المحلل', icon: '📊', path: '/analysts/[id]',
@@ -168,6 +172,7 @@ const content = {
           'ترقية خطة اشتراكك من نفس الصفحة',
           'تسجيل الخروج',
         ],
+        note: '🔒 تتطلب حساباً حقيقياً مسجَّلاً دخول (الدخول كزائر لا يكفي).',
       },
       {
         title: 'لوحة الإدارة 🔒', icon: '⚙️', path: '/admin',
@@ -310,7 +315,7 @@ const content = {
     subtitle: 'Everything you need to know to get the most out of Borsa 2026',
     tabs: { pages: '🗺️ Site Pages', follower: '👤 For Followers', analyst: '👨‍💼 For Analysts', glossary: '📚 Market Glossary' },
     pagesIntro: '🗺️ A simple walkthrough of every page on the site: what data you see there, and what you can do on it',
-    accessNote: '🔒 Every page on the site now requires an active visitor account (see the "Create a Visitor Account" and "Visitor Sign In" pages below) — except the admin dashboard, which has its own separate password. This is a general account open to any visitor, entirely separate from the "Follower" account used for analyst subscriptions.',
+    accessNote: '🔓 Update: the site is now open to any visitor without creating an account — just click "Continue as Guest" on the sign-in page (/signin) to browse every page. Three sections still require a real, signed-in account (guest access alone isn\'t enough): the Daily Briefing, the Follower Dashboard, and the Analysts pages — clicking any of them while signed out shows an explanatory message and sends you to sign in. The admin dashboard is entirely separate and protected by its own password.',
     followerIntro: "👋 Welcome! This guide will help you get the most out of Borsa 2026 as a follower",
     analystIntro: '👨‍💼 This guide is for analysts who want to publish their recommendations on the platform',
     glossaryIntro: '📚 A dictionary of the essential terms used in the Egyptian stock market',
@@ -342,7 +347,9 @@ const content = {
         tasks: [
           'Sign in with your email and password once the admin has approved your account',
           "If your email isn't verified yet, you'll be redirected to the verify-email page automatically",
+          'Or click "Continue as Guest" to start browsing the site instantly without creating an account',
         ],
+        note: 'Guest access opens every page except the Daily Briefing, Follower Dashboard, and Analysts pages — those require a real, signed-in account.',
       },
       {
         title: 'Home', icon: '🏠', path: '/',
@@ -350,6 +357,7 @@ const content = {
           'Cards for the main market indices (e.g. EGX30) with price and change %',
           "A table of Egypt's top stocks with price, change and volume, auto-refreshing every minute",
           'A panel with the latest economic news',
+          'A scrolling price ticker fixed to the bottom of every page, showing the EGX30 stocks — hover over it (or touch it on mobile) to pause it and read comfortably',
         ],
         tasks: [
           'Get a quick read on the overall market at a glance',
@@ -404,7 +412,7 @@ const content = {
           "Click any news item to open its original source",
           'Manually refresh the briefing with the refresh button',
         ],
-        note: 'The first time you open the page after signing in, a default list of six stocks is created for you, which you can then edit freely.',
+        note: '🔒 Requires a real, signed-in account (guest access alone is not enough). The first time you open the page after signing in, a default list of six stocks is created for you, which you can then edit freely.',
       },
       {
         title: 'Analysts', icon: '👨‍💼', path: '/analysts',
@@ -418,6 +426,7 @@ const content = {
           'Click "View" to open an analyst\'s page and see all their recommendations',
           'Register as a new analyst via the "Register as Analyst" form (requires admin approval)',
         ],
+        note: '🔒 Requires a real, signed-in account (guest access alone is not enough).',
       },
       {
         title: 'Analyst Page', icon: '📊', path: '/analysts/[id]',
@@ -469,6 +478,7 @@ const content = {
           'Upgrade your subscription plan from the same page',
           'Log out',
         ],
+        note: '🔒 Requires a real, signed-in account (guest access alone is not enough).',
       },
       {
         title: 'Admin Dashboard 🔒', icon: '⚙️', path: '/admin',

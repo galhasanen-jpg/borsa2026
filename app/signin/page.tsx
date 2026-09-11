@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useLanguage } from '../components/LanguageProvider';
 import LanguagePicker from '../components/LanguagePicker';
+import { GUEST_COOKIE_NAME } from '../lib/session';
 
 const L = {
   ar: {
@@ -21,6 +22,9 @@ const L = {
     lockedSections: { '/daily-briefing': 'النشرة اليومية', '/dashboard': 'لوحة تحكم المتابع', '/analysts': 'بيانات المحللين' } as Record<string, string>,
     lockedGeneric: 'هذا القسم',
     lockedMessage: (section: string) => `🔒 ${section} متاحة فقط بعد تسجيل الدخول`,
+    orDivider: 'أو',
+    guestButton: '🔓 الدخول كزائر',
+    guestHint: 'يتيح لك تصفح الموقع بدون حساب، ما عدا النشرة اليومية ولوحة تحكم المتابع وبيانات المحللين — دي محتاجة تسجيل دخول فعلي',
   },
   en: {
     title: 'Sign In',
@@ -37,6 +41,9 @@ const L = {
     lockedSections: { '/daily-briefing': 'Daily Briefing', '/dashboard': 'Follower Dashboard', '/analysts': 'Analysts data' } as Record<string, string>,
     lockedGeneric: 'This section',
     lockedMessage: (section: string) => `🔒 ${section} is available after signing in only`,
+    orDivider: 'or',
+    guestButton: '🔓 Continue as Guest',
+    guestHint: "Lets you browse the site without an account, except the Daily Briefing, Follower Dashboard and Analysts data — those still need a real account",
   },
 };
 
@@ -76,6 +83,12 @@ function SigninForm() {
     } else {
       setMessage(`❌ ${data.error}`);
     }
+  }
+
+  function handleGuestEntry() {
+    const maxAge = 60 * 60 * 24 * 30; // 30 يوم، يطابق مدة جلسة تسجيل الدخول
+    document.cookie = `${GUEST_COOKIE_NAME}=1; Path=/; Max-Age=${maxAge}; SameSite=Lax`;
+    window.location.href = next;
   }
 
   return (
@@ -136,6 +149,20 @@ function SigninForm() {
             {t.signUp}
           </a>
         </p>
+
+        <div className="flex items-center gap-3">
+          <div className="flex-1 h-px bg-gray-800" />
+          <span className="text-gray-600 text-xs">{t.orDivider}</span>
+          <div className="flex-1 h-px bg-gray-800" />
+        </div>
+
+        <button
+          onClick={handleGuestEntry}
+          className="w-full bg-gray-800 text-gray-200 py-3 rounded-lg font-bold text-sm hover:bg-gray-700 transition border border-gray-700"
+        >
+          {t.guestButton}
+        </button>
+        <p className="text-center text-gray-600 text-xs leading-relaxed">{t.guestHint}</p>
       </div>
 
     </div>
