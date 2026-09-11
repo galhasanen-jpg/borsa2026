@@ -24,8 +24,10 @@ export default function RootLayout({
             ⚠️ الموقع تحت التجربة - بيانات البورصة المصرية ليست بيانات فعلية &nbsp;|&nbsp; ⚠️ This site is under testing - Egyptian stock market data is not real
           </div>
           <Navbar />
+          <div className="pb-11">
+            {children}
+          </div>
           <TickerBar />
-          {children}
         </LanguageProvider>
         <Analytics />
       </body>

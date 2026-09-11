@@ -64,7 +64,7 @@ export default function TickerBar() {
   const allTickers = [...tickers, ...tickers];
 
   return (
-    <div className="bg-black border-b border-gray-800 overflow-hidden">
+    <div className="fixed bottom-0 inset-x-0 z-40 bg-black border-t border-gray-800 overflow-hidden">
       <div className="flex items-center">
 
         {/* Label ثابت */}
@@ -77,7 +77,7 @@ export default function TickerBar() {
           {allTickers.length > 0 && (
             <div
               className="flex w-max"
-              style={{ animation: 'ticker 70s linear infinite', animationPlayState: paused ? 'paused' : 'running' }}
+              style={{ animation: 'ticker 100s linear infinite', animationPlayState: paused ? 'paused' : 'running' }}
               onMouseEnter={() => setPaused(true)}
               onMouseLeave={() => setPaused(false)}
               onTouchStart={() => setPaused(true)}

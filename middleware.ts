@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifySession, SESSION_COOKIE_NAME } from './app/lib/session';
 
-// الصفحات المطلوبة لإنشاء/تفعيل الحساب نفسه تبقى متاحة بدون جلسة، وإلا يستحيل على أي زائر يدخل الموقع أصلاً
-const PUBLIC_PATHS = ['/signin', '/signup', '/verify-email'];
+// الموقع مفتوح لأي زائر بدون تسجيل، ما عدا الأقسام دي اللي تتطلب حساب مفعّل:
+// النشرة اليومية، لوحة تحكم المتابع، وصفحات المحللين.
+const PROTECTED_PATHS = ['/daily-briefing', '/dashboard', '/analysts'];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -26,12 +27,12 @@ export async function middleware(request: NextRequest) {
     });
   }
 
-  // صفحات إنشاء/تفعيل الحساب تبقى مفتوحة دائماً
-  if (PUBLIC_PATHS.some(p => pathname.startsWith(p))) {
+  // باقي الموقع مفتوح لأي زائر بدون تسجيل، ما عدا الأقسام المحمية دي
+  const isProtected = PROTECTED_PATHS.some(p => pathname === p || pathname.startsWith(`${p}/`));
+  if (!isProtected) {
     return NextResponse.next();
   }
 
-  // باقي صفحات الموقع (كلها) تتطلب حساب زائر مفعّل وموافق عليه إدارياً
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const userId = await verifySession(token);
 
@@ -39,6 +40,7 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = '/signin';
     url.searchParams.set('next', pathname);
+    url.searchParams.set('locked', '1');
     return NextResponse.redirect(url);
   }
 

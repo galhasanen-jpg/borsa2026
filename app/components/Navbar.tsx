@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from './LanguageProvider';
 
+// restricted: يتطلب تسجيل دخول (يتطابق مع PROTECTED_PATHS في middleware.ts)
 const navItems = [
   { id: 'home', label: 'الرئيسية', labelEn: 'Home', href: '/' },
   { id: 'stocks', label: 'سوق الأسهم', labelEn: 'Stock Market', href: '/stocks' },  { id: 'stock-news', label: 'أخبار الأسهم', labelEn: 'Stock News', href: '/stock-news' },
-  { id: 'daily-briefing', label: 'النشرة اليومية', labelEn: 'Daily Briefing', href: '/daily-briefing' },
+  { id: 'daily-briefing', label: 'النشرة اليومية', labelEn: 'Daily Briefing', href: '/daily-briefing', restricted: true },
   { id: 'global-news', label: 'أخبار عالمية', labelEn: 'Global News', href: '/global-news' },
-  { id: 'analysts', label: 'المحللون', labelEn: 'Analysts', href: '/analysts' },
+  { id: 'analysts', label: 'المحللون', labelEn: 'Analysts', href: '/analysts', restricted: true },
   { id: 'contact', label: 'اتصل بنا', labelEn: 'Contact Us', href: '/contact' },
   { id: 'guide', label: 'دليل الاستخدام', labelEn: 'User Guide', href: '/guide' },
 ];
@@ -36,6 +37,16 @@ export default function Navbar() {
     localStorage.removeItem('siteUser');
     setSiteUser(null);
     window.location.href = '/signin';
+  }
+
+  // الأقسام المحمية (النشرة اليومية، المحللون) نوجّه الزائر غير المسجّل مباشرة
+  // لصفحة الدخول مع رسالة توضيحية، بدل ما يدخل الصفحة المحمية ويترد منها
+  function handleNavClick(e: React.MouseEvent, item: typeof navItems[number]) {
+    setMenuOpen(false);
+    if (item.restricted && !siteUser) {
+      e.preventDefault();
+      window.location.href = `/signin?next=${encodeURIComponent(item.href)}&locked=1`;
+    }
   }
 
   return (
@@ -89,6 +100,7 @@ export default function Navbar() {
           <a
             key={item.id}
             href={item.href}
+            onClick={e => handleNavClick(e, item)}
             className={`px-4 py-3 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
               pathname === item.href
                 ? 'border-orange-500 text-orange-500'
@@ -110,8 +122,8 @@ export default function Navbar() {
             <a
               key={item.id}
               href={item.href}
-              onClick={() => setMenuOpen(false)}
-              className={`px-6 py-4 text-sm text-right border-b border-gray-800 transition ${
+              onClick={e => handleNavClick(e, item)}
+              className={`px-6 py-5 text-lg font-medium text-right border-b border-gray-800 transition ${
                 pathname === item.href
                   ? 'text-orange-500 bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
@@ -124,7 +136,7 @@ export default function Navbar() {
           {siteUser ? (
             <button
               onClick={handleLogout}
-              className="px-6 py-4 text-sm text-right text-gray-400 hover:text-white hover:bg-gray-900 transition"
+              className="px-6 py-5 text-lg font-medium text-right text-gray-400 hover:text-white hover:bg-gray-900 transition"
             >
               {lang === 'ar' ? `خروج (${siteUser.name})` : `Logout (${siteUser.name})`}
             </button>
@@ -132,7 +144,7 @@ export default function Navbar() {
             <a
               href="/signin"
               onClick={() => setMenuOpen(false)}
-              className="px-6 py-4 text-sm text-right text-orange-500 hover:bg-gray-900 transition"
+              className="px-6 py-5 text-lg font-medium text-right text-orange-500 hover:bg-gray-900 transition"
             >
               {lang === 'ar' ? 'تسجيل الدخول' : 'Sign in'}
             </a>

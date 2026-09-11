@@ -18,6 +18,9 @@ const L = {
     noAccount: 'ليس لديك حساب؟',
     signUp: 'أنشئ حساباً',
     errFill: '❌ يرجى إدخال الإيميل وكلمة السر',
+    lockedSections: { '/daily-briefing': 'النشرة اليومية', '/dashboard': 'لوحة تحكم المتابع', '/analysts': 'بيانات المحللين' } as Record<string, string>,
+    lockedGeneric: 'هذا القسم',
+    lockedMessage: (section: string) => `🔒 ${section} متاحة فقط بعد تسجيل الدخول`,
   },
   en: {
     title: 'Sign In',
@@ -31,6 +34,9 @@ const L = {
     noAccount: "Don't have an account?",
     signUp: 'Create one',
     errFill: '❌ Please enter your email and password',
+    lockedSections: { '/daily-briefing': 'Daily Briefing', '/dashboard': 'Follower Dashboard', '/analysts': 'Analysts data' } as Record<string, string>,
+    lockedGeneric: 'This section',
+    lockedMessage: (section: string) => `🔒 ${section} is available after signing in only`,
   },
 };
 
@@ -39,6 +45,9 @@ function SigninForm() {
   const t = L[lang];
   const searchParams = useSearchParams();
   const next = searchParams.get('next') || '/';
+  const locked = searchParams.get('locked') === '1';
+  const lockedSectionKey = Object.keys(t.lockedSections).find(p => next.startsWith(p));
+  const lockedSection = lockedSectionKey ? t.lockedSections[lockedSectionKey] : t.lockedGeneric;
 
   const [form, setForm] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
@@ -78,6 +87,12 @@ function SigninForm() {
         <h1 className="text-orange-500 font-bold text-2xl mb-1">{t.title}</h1>
         <p className="text-gray-500 text-sm">{t.subtitle}</p>
       </div>
+
+      {locked && (
+        <div className="bg-orange-900/40 border border-orange-800 text-orange-300 p-3 rounded-lg mb-4 text-sm">
+          {t.lockedMessage(lockedSection)}
+        </div>
+      )}
 
       {message && (
         <div className="bg-red-900 text-red-400 p-3 rounded-lg mb-4 text-sm">{message}</div>
