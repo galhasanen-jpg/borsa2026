@@ -54,8 +54,8 @@ export default function TickerBar() {
       }
       const gold = marketsData.indices?.find((idx: any) => idx.name === 'الذهب');
       if (gold) result.push({ symbol: 'XAU', price: gold.price, change: gold.change, up: gold.up });
-      const oil = marketsData.indices?.find((idx: any) => idx.name === 'البترول');
-      if (oil) result.push({ symbol: 'OIL', price: oil.price, change: oil.change, up: oil.up });
+      const brent = marketsData.indices?.find((idx: any) => idx.name === 'خام برنت');
+      if (brent) result.push({ symbol: 'BRENT', price: brent.price, change: brent.change, up: brent.up });
 
       if (result.length > 0) setTickers(result);
     } catch (e) {}

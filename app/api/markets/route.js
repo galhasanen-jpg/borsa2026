@@ -21,10 +21,13 @@ function yahooChange(data) {
 }
 
 export async function GET() {
-    const [currencyData, goldData, oilData, sp500Data, tasiData, egxData, abuData] = await Promise.all([
+    const [currencyData, goldData, brentData, sp500Data, tasiData, egxData, abuData] = await Promise.all([
         safeFetchJson('https://api.exchangerate-api.com/v4/latest/USD', { cache: 'no-store' }),
         safeFetchJson('https://api.gold-api.com/price/XAU', { cache: 'no-store' }),
-        FINNHUB_KEY ? safeFetchJson(`https://finnhub.io/api/v1/quote?symbol=USO&token=${FINNHUB_KEY}`, { cache: 'no-store' }) : null,
+        // عقود خام برنت الآجلة (BZ=F) عبر نفس واجهة Yahoo المستخدمة لباقي المؤشرات —
+        // كنا نستخدم USO (صندوق ETF يتتبع خام WTI الأمريكي، مش برنت، وسعره سعر وحدة
+        // الصندوق مش سعر البرميل الفعلي) عبر Finnhub، فاستبدلناه بمصدر السعر الصحيح
+        safeFetchJson('https://query1.finance.yahoo.com/v8/finance/chart/BZ%3DF?interval=1d&range=1d', { headers: { 'User-Agent': 'Mozilla/5.0' }, cache: 'no-store' }),
         safeFetchJson('https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?interval=1d&range=1d', { headers: { 'User-Agent': 'Mozilla/5.0' }, cache: 'no-store' }),
         safeFetchJson('https://query1.finance.yahoo.com/v8/finance/chart/%5ETASI.SR?interval=1d&range=1d', { headers: { 'User-Agent': 'Mozilla/5.0' }, cache: 'no-store' }),
         safeFetchJson('https://query1.finance.yahoo.com/v8/finance/chart/%5ECASE30?interval=1d&range=1d', { headers: { 'User-Agent': 'Mozilla/5.0' }, cache: 'no-store' }),
@@ -36,6 +39,7 @@ export async function GET() {
     const egx = yahooChange(egxData);
     const sp500 = yahooChange(sp500Data);
     const tasi = yahooChange(tasiData);
+    const brent = yahooChange(brentData);
 
     return Response.json({
         indices: [
@@ -80,11 +84,11 @@ export async function GET() {
                 flag: '🥇'
             },
             {
-                name: 'البترول', nameEn: 'Oil',
-                price: oilData?.c ? oilData.c.toFixed(2) : '82.30',
-                change: oilData?.dp != null ? `${oilData.dp >= 0 ? '+' : ''}${oilData.dp.toFixed(2)}%` : '+0%',
-                up: oilData?.dp != null ? oilData.dp >= 0 : true,
-                live: !!oilData?.c,
+                name: 'خام برنت', nameEn: 'Brent Crude',
+                price: brent ? brent.price.toFixed(2) : '75.00',
+                change: brent ? `${brent.change >= 0 ? '+' : ''}${brent.change.toFixed(2)}%` : '+0%',
+                up: brent ? brent.change >= 0 : true,
+                live: !!brent,
                 flag: '🛢️'
             },
         ],
