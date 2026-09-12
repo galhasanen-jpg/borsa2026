@@ -44,6 +44,16 @@ export default function TickerBar() {
         ? stocksData.filter((s: any) => s.is_egx30).map((s: any) => s.symbol)
         : [];
 
+      // eslint-disable-next-line no-console
+      console.log('[TickerBar] fetch debug', {
+        stocksDataIsArray: Array.isArray(stocksData),
+        stocksDataLength: Array.isArray(stocksData) ? stocksData.length : null,
+        egx30SymbolsCount: egx30Symbols.length,
+        egx30Symbols,
+        pricesDataIsArray: Array.isArray(pricesData),
+        pricesDataLength: Array.isArray(pricesData) ? pricesData.length : null,
+      });
+
       if (Array.isArray(pricesData)) {
         for (const sym of egx30Symbols) {
           const p = pricesData.find((x: any) => x.symbol === sym);
@@ -66,8 +76,14 @@ export default function TickerBar() {
       const brent = marketsData?.indices?.find((idx: any) => idx.name === 'خام برنت');
       if (brent) result.push({ symbol: 'BRENT', price: brent.price, change: brent.change, up: brent.up });
 
+      // eslint-disable-next-line no-console
+      console.log('[TickerBar] result', { length: result.length, symbols: result.map(r => r.symbol) });
+
       if (result.length > 0) setTickers(result);
-    } catch (e) {}
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log('[TickerBar] fetchTickers error', e);
+    }
   }
 
   const allTickers = [...tickers, ...tickers];
