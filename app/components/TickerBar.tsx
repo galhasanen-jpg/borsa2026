@@ -88,7 +88,7 @@ export default function TickerBar() {
           {allTickers.length > 0 && (
             <div
               className="flex w-max"
-              style={{ animation: 'ticker 35s linear infinite', animationPlayState: paused ? 'paused' : 'running' }}
+              style={{ animation: 'ticker 40s linear infinite', animationPlayState: paused ? 'paused' : 'running' }}
               onMouseEnter={() => setPaused(true)}
               onMouseLeave={() => setPaused(false)}
               onTouchStart={() => setPaused(true)}
