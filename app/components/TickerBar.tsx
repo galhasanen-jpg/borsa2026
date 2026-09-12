@@ -44,16 +44,6 @@ export default function TickerBar() {
         ? stocksData.filter((s: any) => s.is_egx30).map((s: any) => s.symbol)
         : [];
 
-      // eslint-disable-next-line no-console
-      console.log('[TickerBar] fetch debug', {
-        stocksDataIsArray: Array.isArray(stocksData),
-        stocksDataLength: Array.isArray(stocksData) ? stocksData.length : null,
-        egx30SymbolsCount: egx30Symbols.length,
-        egx30Symbols,
-        pricesDataIsArray: Array.isArray(pricesData),
-        pricesDataLength: Array.isArray(pricesData) ? pricesData.length : null,
-      });
-
       if (Array.isArray(pricesData)) {
         for (const sym of egx30Symbols) {
           const p = pricesData.find((x: any) => x.symbol === sym);
@@ -76,14 +66,8 @@ export default function TickerBar() {
       const brent = marketsData?.indices?.find((idx: any) => idx.name === 'خام برنت');
       if (brent) result.push({ symbol: 'BRENT', price: brent.price, change: brent.change, up: brent.up });
 
-      // eslint-disable-next-line no-console
-      console.log('[TickerBar] result', { length: result.length, symbols: result.map(r => r.symbol) });
-
       if (result.length > 0) setTickers(result);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log('[TickerBar] fetchTickers error', e);
-    }
+    } catch (e) {}
   }
 
   const allTickers = [...tickers, ...tickers];
@@ -97,8 +81,10 @@ export default function TickerBar() {
           LIVE
         </div>
 
-        {/* الشريط المتحرك */}
-        <div className="overflow-hidden flex-1">
+        {/* الشريط المتحرك — بنفرض LTR هنا تحديداً بغض النظر عن اتجاه الصفحة (RTL)، لأن
+            حساب transform/overflow لعنصر أعرض من حاويته بيتصرف بشكل مختلف وغير متوقع
+            تحت RTL، وده كان بيخلي جزء كبير من الأسهم يترسم برّه نطاق الحركة الفعلي */}
+        <div className="overflow-hidden flex-1" dir="ltr">
           {allTickers.length > 0 && (
             <div
               className="flex w-max"
