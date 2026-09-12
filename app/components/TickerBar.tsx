@@ -1,18 +1,32 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 type Ticker = { symbol: string; price: string; change: string; up: boolean };
+
+// سرعة ثابتة بالبكسل/الثانية بدل مدة ثابتة بالثواني — عدد الأسهم بالشريط بيتغيّر
+// (حسب تحديد EGX30 من لوحة الإدارة)، فلو المدة ثابتة والمحتوى اختلف طوله، تتغيّر
+// السرعة الفعلية الظاهرة. بنحسب المدة ديناميكياً من عرض المحتوى الفعلي عشان السرعة تفضل ثابتة دايماً.
+const PIXELS_PER_SECOND = 45;
 
 export default function TickerBar() {
   const [tickers, setTickers] = useState<Ticker[]>([]);
   const [paused, setPaused] = useState(false);
+  const [duration, setDuration] = useState(100);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchTickers();
     const interval = setInterval(fetchTickers, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (!trackRef.current) return;
+    // العرض بتاع مجموعة واحدة فقط (المحتوى مكرر مرتين، والحركة تقطع نص العرض الكلي فقط)
+    const singleSetWidth = trackRef.current.scrollWidth / 2;
+    if (singleSetWidth > 0) setDuration(singleSetWidth / PIXELS_PER_SECOND);
+  }, [tickers]);
 
   async function fetchTickers() {
     try {
@@ -76,8 +90,9 @@ export default function TickerBar() {
         <div className="overflow-hidden flex-1">
           {allTickers.length > 0 && (
             <div
+              ref={trackRef}
               className="flex w-max"
-              style={{ animation: 'ticker 100s linear infinite', animationPlayState: paused ? 'paused' : 'running' }}
+              style={{ animation: `ticker ${duration}s linear infinite`, animationPlayState: paused ? 'paused' : 'running' }}
               onMouseEnter={() => setPaused(true)}
               onMouseLeave={() => setPaused(false)}
               onTouchStart={() => setPaused(true)}
