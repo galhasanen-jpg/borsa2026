@@ -12,8 +12,8 @@ const PIXELS_PER_SECOND = 45;
 export default function TickerBar() {
   const [tickers, setTickers] = useState<Ticker[]>([]);
   const [paused, setPaused] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(0);
   const [singleWidth, setSingleWidth] = useState(0);
-  const [repeatCount, setRepeatCount] = useState(2);
   const containerRef = useRef<HTMLDivElement>(null);
   const singleSetRef = useRef<HTMLDivElement>(null);
   const lastLayoutKeyRef = useRef('');
@@ -24,23 +24,25 @@ export default function TickerBar() {
     return () => clearInterval(interval);
   }, []);
 
-  // نحسب عرض نسخة واحدة من الأسهم، وعدد النسخ المطلوبة عشان يفضل فيه محتوى كافٍ
-  // يملأ عرض الشاشة طول وقت الحركة — من غير كده، لو الأسهم قليلة أو الشاشة عريضة،
-  // بيظهر فراغ فاضي في نهاية كل دورة قبل ما الحركة ترجع تبدأ من الأول
+  // كل نسخة من الأسهم (فيه نسختان دايماً) لازم لا يقل عرضها عن عرض الحاوية الظاهرة،
+  // وإلا يظهر فراغ فاضي عند نهاية كل دورة قبل ما تبدأ من جديد. بنستخدم عرض مقاس
+  // بالبكسل (min-width صريح) بدل نسبة مئوية، لأن نسبة % جوه عنصر عرضه max-content
+  // (الشريط المتحرك نفسه) بترجع غير معرّفة بحسب مواصفات CSS ومش هتشتغل بشكل موثوق
   const recomputeLayout = useCallback(() => {
-    if (!singleSetRef.current || !containerRef.current) return;
-    const w = singleSetRef.current.scrollWidth;
-    if (w <= 0) return;
-    setSingleWidth(w);
-    const containerWidth = containerRef.current.clientWidth;
-    setRepeatCount(Math.max(2, Math.ceil(containerWidth / w) + 1));
+    if (!containerRef.current) return;
+    const cw = containerRef.current.clientWidth;
+    setContainerWidth(cw);
+    // ننتظر فريم واحد عشان الـ DOM يطبّق min-width الجديد فعلياً قبل قياس عرض النسخة
+    requestAnimationFrame(() => {
+      if (!singleSetRef.current) return;
+      const w = singleSetRef.current.scrollWidth;
+      if (w > 0) setSingleWidth(w);
+    });
   }, []);
 
   useEffect(() => {
-    // نعيد حساب التخطيط (وبالتالي حركة CSS تبدأ من جديد) فقط لما تتغيّر مجموعة الرموز
-    // نفسها (إضافة/حذف سهم من EGX30) — مش عند كل تحديث سعر كل دقيقة. لو كنا بنعيد
-    // الحساب مع كل تحديث سعر، الحركة كانت بتنقطع وترجع تبدأ من الصفر كل 60 ثانية،
-    // وده كان بيظهر بالظبط كفجوة/قفزة متكررة رغم إصلاح مشكلة نقطة الالتفاف نفسها
+    // نعيد الحساب فقط لما تتغيّر مجموعة الرموز نفسها (إضافة/حذف سهم من EGX30) —
+    // مش عند كل تحديث سعر كل دقيقة، وإلا كانت الحركة بتنقطع وترجع تبدأ من الصفر
     const layoutKey = tickers.map(t => t.symbol).join(',');
     if (layoutKey !== lastLayoutKeyRef.current) {
       lastLayoutKeyRef.current = layoutKey;
@@ -101,6 +103,7 @@ export default function TickerBar() {
   }
 
   const duration = singleWidth > 0 ? singleWidth / PIXELS_PER_SECOND : 100;
+  const copyMinWidth = containerWidth > 0 ? `${containerWidth}px` : undefined;
 
   function renderTicker(ticker: Ticker, key: string) {
     return (
@@ -128,7 +131,9 @@ export default function TickerBar() {
           LIVE
         </div>
 
-        {/* الشريط المتحرك */}
+        {/* الشريط المتحرك: نسختان متطابقتان، كل واحدة بعرض لا يقل عن عرض الحاوية
+            الظاهرة (min-width بالبكسل) — يضمن حركة متصلة بلا أي فجوة عند الالتفاف،
+            بغض النظر عن عدد الأسهم أو عرض الشاشة */}
         <div ref={containerRef} className="overflow-hidden flex-1">
           {tickers.length > 0 && (
             <div
@@ -139,11 +144,12 @@ export default function TickerBar() {
               onTouchStart={() => setPaused(true)}
               onTouchEnd={() => setPaused(false)}
             >
-              {Array.from({ length: repeatCount }).map((_, copyIndex) => (
-                <div key={copyIndex} ref={copyIndex === 0 ? singleSetRef : undefined} className="flex">
-                  {tickers.map((ticker, i) => renderTicker(ticker, `${copyIndex}-${i}`))}
-                </div>
-              ))}
+              <div ref={singleSetRef} className="flex flex-shrink-0" style={{ minWidth: copyMinWidth }}>
+                {tickers.map((ticker, i) => renderTicker(ticker, `a-${i}`))}
+              </div>
+              <div className="flex flex-shrink-0" style={{ minWidth: copyMinWidth }} aria-hidden="true">
+                {tickers.map((ticker, i) => renderTicker(ticker, `b-${i}`))}
+              </div>
             </div>
           )}
         </div>
@@ -153,7 +159,7 @@ export default function TickerBar() {
       <style>{`
         @keyframes ticker {
           0% { transform: translateX(0); }
-          100% { transform: translateX(-${singleWidth}px); }
+          100% { transform: translateX(-50%); }
         }
       `}</style>
     </div>
