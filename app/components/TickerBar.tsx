@@ -16,6 +16,7 @@ export default function TickerBar() {
   const [repeatCount, setRepeatCount] = useState(2);
   const containerRef = useRef<HTMLDivElement>(null);
   const singleSetRef = useRef<HTMLDivElement>(null);
+  const lastLayoutKeyRef = useRef('');
 
   useEffect(() => {
     fetchTickers();
@@ -36,10 +37,21 @@ export default function TickerBar() {
   }, []);
 
   useEffect(() => {
-    recomputeLayout();
+    // نعيد حساب التخطيط (وبالتالي حركة CSS تبدأ من جديد) فقط لما تتغيّر مجموعة الرموز
+    // نفسها (إضافة/حذف سهم من EGX30) — مش عند كل تحديث سعر كل دقيقة. لو كنا بنعيد
+    // الحساب مع كل تحديث سعر، الحركة كانت بتنقطع وترجع تبدأ من الصفر كل 60 ثانية،
+    // وده كان بيظهر بالظبط كفجوة/قفزة متكررة رغم إصلاح مشكلة نقطة الالتفاف نفسها
+    const layoutKey = tickers.map(t => t.symbol).join(',');
+    if (layoutKey !== lastLayoutKeyRef.current) {
+      lastLayoutKeyRef.current = layoutKey;
+      recomputeLayout();
+    }
+  }, [tickers, recomputeLayout]);
+
+  useEffect(() => {
     window.addEventListener('resize', recomputeLayout);
     return () => window.removeEventListener('resize', recomputeLayout);
-  }, [tickers, recomputeLayout]);
+  }, [recomputeLayout]);
 
   async function fetchTickers() {
     try {
