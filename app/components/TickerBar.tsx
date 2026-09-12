@@ -4,22 +4,53 @@ import { useState, useEffect, useRef, useCallback, type RefObject } from 'react'
 
 type Ticker = { symbol: string; price: string; change: string; up: boolean };
 
-// سرعة ثابتة بالبكسل/الثانية بدل مدة ثابتة بالثواني — عدد الأسهم بالشريط بيتغيّر
-// (حسب تحديد EGX30 من لوحة الإدارة)، فلو المدة ثابتة والمحتوى اختلف طوله، تتغيّر
-// السرعة الفعلية الظاهرة. بنحسب المدة ديناميكياً من عرض المحتوى الفعلي عشان السرعة تفضل ثابتة دايماً.
+// سرعة ثابتة بالبكسل/الثانية — عدد الأسهم بيتغيّر (حسب تحديد EGX30 من لوحة الإدارة)
+// فلازم نحسب السرعة من عرض المحتوى الفعلي، مش مدة CSS ثابتة، عشان تفضل ثابتة دايماً
 const PIXELS_PER_SECOND = 45;
 
 export default function TickerBar() {
   const [tickers, setTickers] = useState<Ticker[]>([]);
   const [paused, setPaused] = useState(false);
-  // عدد مرات تكرار قائمة الأسهم الحقيقية داخل "الوحدة" الواحدة، وعرض الوحدة الكاملة
-  // بعد التكرار. لازم تكرار محتوى حقيقي (مش مساحة فاضية بـ min-width) لأن أي مساحة
-  // فاضية بتتحرك زي أي عنصر تاني وتظهر كفراغ طويل على الشاشة وقت مرورها
+  // عدد مرات تكرار قائمة الأسهم الحقيقية داخل "الوحدة" الواحدة، بعرض كافٍ يغطي
+  // عرض الشاشة بمحتوى فعلي كامل (مش مساحة فاضية) عشان محدش يشوف فراغ وقت المرور
   const [repeatCount, setRepeatCount] = useState(1);
-  const [unitWidth, setUnitWidth] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const unitRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const lastLayoutKeyRef = useRef('');
+
+  // بنحرّك الشريط بـ requestAnimationFrame يدوياً بدل CSS animation: بنتحكم في
+  // موضع التمرير مباشرة (transform على الـ DOM) من غير ما نعتمد على "مدة" حركة
+  // CSS طويلة (فوق 100 ثانية أحياناً) ممكن تتصرف بشكل غريب في بعض المتصفحات، وده
+  // كمان بيمنع أي إعادة تشغيل للحركة لما الـ React state يتغيّر (تحديث سعر كل دقيقة)
+  const unitWidthRef = useRef(0);
+  const offsetRef = useRef(0);
+  const pausedRef = useRef(false);
+  const lastFrameTimeRef = useRef<number | null>(null);
+  const rafIdRef = useRef<number | null>(null);
+
+  useEffect(() => { pausedRef.current = paused; }, [paused]);
+
+  useEffect(() => {
+    function tick(now: number) {
+      const unitWidth = unitWidthRef.current;
+      if (lastFrameTimeRef.current == null) lastFrameTimeRef.current = now;
+      const dt = now - lastFrameTimeRef.current;
+      lastFrameTimeRef.current = now;
+
+      if (!pausedRef.current && unitWidth > 0) {
+        offsetRef.current = (offsetRef.current + (PIXELS_PER_SECOND * dt) / 1000) % unitWidth;
+        if (trackRef.current) {
+          trackRef.current.style.transform = `translateX(-${offsetRef.current}px)`;
+        }
+      }
+      rafIdRef.current = requestAnimationFrame(tick);
+    }
+    rafIdRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafIdRef.current != null) cancelAnimationFrame(rafIdRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     fetchTickers();
@@ -34,30 +65,30 @@ export default function TickerBar() {
     // عرض نسخة واحدة فقط من قائمة الأسهم الحقيقية (بغض النظر عن عدد التكرارات الحالي)
     const currentRepeat = Math.max(1, Math.round(unitRef.current.children.length / tickers.length));
     const naturalWidth = unitRef.current.scrollWidth / currentRepeat;
-    // eslint-disable-next-line no-console
-    console.log('[TickerBar] recompute', { tickersCount: tickers.length, containerWidth, currentRepeat, childrenBefore: unitRef.current.children.length, naturalWidth });
     if (naturalWidth <= 0) return;
 
-    // كم مرة نكرر القائمة الحقيقية عشان "الوحدة" تملأ عرض الشاشة بمحتوى فعلي كامل،
-    // بدل ما تعتمد على مساحة فاضية ممتدة (وهو اللي كان بيظهر كفراغ طويل عند التمرير)
+    // كم مرة نكرر القائمة الحقيقية عشان "الوحدة" تملأ عرض الشاشة بمحتوى فعلي كامل
     const neededRepeat = Math.max(1, Math.ceil(containerWidth / naturalWidth));
     setRepeatCount(neededRepeat);
-    // eslint-disable-next-line no-console
-    console.log('[TickerBar] setRepeatCount', neededRepeat);
 
-    // ننتظر فريم واحد عشان الـ DOM يطبّق عدد التكرار الجديد قبل قياس عرض الوحدة الفعلي لحساب السرعة
+    // ننتظر فريم واحد عشان الـ DOM يطبّق عدد التكرار الجديد قبل قياس عرض الوحدة الفعلي
     requestAnimationFrame(() => {
       if (!unitRef.current) return;
       const w = unitRef.current.scrollWidth;
-      // eslint-disable-next-line no-console
-      console.log('[TickerBar] measured unitWidth', { w, childrenAfter: unitRef.current.children.length, duration: w > 0 ? w / PIXELS_PER_SECOND : null });
-      if (w > 0) setUnitWidth(w);
+      if (w > 0) {
+        // لو عرض الوحدة اتغيّر، نصحّح موضع التمرير الحالي نسبياً بدل ما نرجعه للصفر
+        // (يمنع أي قفزة مفاجئة محسوسة لو عدد الأسهم اتغيّر أثناء التشغيل)
+        if (unitWidthRef.current > 0) {
+          offsetRef.current = (offsetRef.current % w + w) % w;
+        }
+        unitWidthRef.current = w;
+      }
     });
   }, [tickers]);
 
   useEffect(() => {
     // نعيد الحساب فقط لما تتغيّر مجموعة الرموز نفسها (إضافة/حذف سهم من EGX30) —
-    // مش عند كل تحديث سعر كل دقيقة، وإلا كانت الحركة بتنقطع وترجع تبدأ من الصفر
+    // مش عند كل تحديث سعر كل دقيقة
     const layoutKey = tickers.map(t => t.symbol).join(',');
     if (layoutKey !== lastLayoutKeyRef.current) {
       lastLayoutKeyRef.current = layoutKey;
@@ -122,17 +153,9 @@ export default function TickerBar() {
       const brent = marketsData?.indices?.find((idx: any) => idx.name === 'خام برنت');
       if (brent) result.push({ symbol: 'BRENT', price: brent.price, change: brent.change, up: brent.up });
 
-      if (result.length > 0) {
-        // eslint-disable-next-line no-console
-        console.log('[TickerBar] fetchTickers success', { count: result.length, symbols: result.map(r => r.symbol), at: new Date().toISOString() });
-        setTickers(result);
-      }
+      if (result.length > 0) setTickers(result);
     } catch (e) {}
   }
-
-  const duration = unitWidth > 0 ? unitWidth / PIXELS_PER_SECOND : 100;
-  // eslint-disable-next-line no-console
-  console.log('[TickerBar] render', { tickersCount: tickers.length, repeatCount, unitWidth, duration, paused, at: new Date().toISOString() });
 
   function renderTicker(ticker: Ticker, key: string) {
     return (
@@ -180,8 +203,8 @@ export default function TickerBar() {
         <div ref={containerRef} className="overflow-hidden flex-1">
           {tickers.length > 0 && (
             <div
-              className="flex w-max"
-              style={{ animation: `ticker ${duration}s linear infinite`, animationPlayState: paused ? 'paused' : 'running' }}
+              ref={trackRef}
+              className="flex w-max will-change-transform"
               onMouseEnter={() => setPaused(true)}
               onMouseLeave={() => setPaused(false)}
               onTouchStart={() => setPaused(true)}
@@ -194,13 +217,6 @@ export default function TickerBar() {
         </div>
 
       </div>
-
-      <style>{`
-        @keyframes ticker {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-${unitWidth}px); }
-        }
-      `}</style>
     </div>
   );
 }
