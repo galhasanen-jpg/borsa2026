@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 type Ticker = { symbol: string; price: string; change: string; up: boolean };
 
@@ -12,8 +12,10 @@ const PIXELS_PER_SECOND = 45;
 export default function TickerBar() {
   const [tickers, setTickers] = useState<Ticker[]>([]);
   const [paused, setPaused] = useState(false);
-  const [duration, setDuration] = useState(100);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const [singleWidth, setSingleWidth] = useState(0);
+  const [repeatCount, setRepeatCount] = useState(2);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const singleSetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchTickers();
@@ -21,12 +23,23 @@ export default function TickerBar() {
     return () => clearInterval(interval);
   }, []);
 
+  // نحسب عرض نسخة واحدة من الأسهم، وعدد النسخ المطلوبة عشان يفضل فيه محتوى كافٍ
+  // يملأ عرض الشاشة طول وقت الحركة — من غير كده، لو الأسهم قليلة أو الشاشة عريضة،
+  // بيظهر فراغ فاضي في نهاية كل دورة قبل ما الحركة ترجع تبدأ من الأول
+  const recomputeLayout = useCallback(() => {
+    if (!singleSetRef.current || !containerRef.current) return;
+    const w = singleSetRef.current.scrollWidth;
+    if (w <= 0) return;
+    setSingleWidth(w);
+    const containerWidth = containerRef.current.clientWidth;
+    setRepeatCount(Math.max(2, Math.ceil(containerWidth / w) + 1));
+  }, []);
+
   useEffect(() => {
-    if (!trackRef.current) return;
-    // العرض بتاع مجموعة واحدة فقط (المحتوى مكرر مرتين، والحركة تقطع نص العرض الكلي فقط)
-    const singleSetWidth = trackRef.current.scrollWidth / 2;
-    if (singleSetWidth > 0) setDuration(singleSetWidth / PIXELS_PER_SECOND);
-  }, [tickers]);
+    recomputeLayout();
+    window.addEventListener('resize', recomputeLayout);
+    return () => window.removeEventListener('resize', recomputeLayout);
+  }, [tickers, recomputeLayout]);
 
   async function fetchTickers() {
     try {
@@ -75,7 +88,24 @@ export default function TickerBar() {
     } catch (e) {}
   }
 
-  const allTickers = [...tickers, ...tickers];
+  const duration = singleWidth > 0 ? singleWidth / PIXELS_PER_SECOND : 100;
+
+  function renderTicker(ticker: Ticker, key: string) {
+    return (
+      <div
+        key={key}
+        className="flex items-center gap-2 px-4 py-2 border-r border-gray-800 flex-shrink-0 cursor-pointer hover:bg-gray-900 transition"
+      >
+        <span className="text-gray-300 text-xs font-bold tracking-wider">{ticker.symbol}</span>
+        <span className="text-white text-xs font-mono">{ticker.price}</span>
+        {ticker.change && (
+          <span className={`text-xs font-bold flex items-center gap-0.5 ${ticker.up ? 'text-green-400' : 'text-red-400'}`}>
+            {ticker.up ? '▲' : '▼'} {ticker.change}
+          </span>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="fixed bottom-0 inset-x-0 z-40 bg-black border-t border-gray-800 overflow-hidden">
@@ -87,10 +117,9 @@ export default function TickerBar() {
         </div>
 
         {/* الشريط المتحرك */}
-        <div className="overflow-hidden flex-1">
-          {allTickers.length > 0 && (
+        <div ref={containerRef} className="overflow-hidden flex-1">
+          {tickers.length > 0 && (
             <div
-              ref={trackRef}
               className="flex w-max"
               style={{ animation: `ticker ${duration}s linear infinite`, animationPlayState: paused ? 'paused' : 'running' }}
               onMouseEnter={() => setPaused(true)}
@@ -98,18 +127,9 @@ export default function TickerBar() {
               onTouchStart={() => setPaused(true)}
               onTouchEnd={() => setPaused(false)}
             >
-              {allTickers.map((ticker, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-2 px-4 py-2 border-r border-gray-800 flex-shrink-0 cursor-pointer hover:bg-gray-900 transition"
-                >
-                  <span className="text-gray-300 text-xs font-bold tracking-wider">{ticker.symbol}</span>
-                  <span className="text-white text-xs font-mono">{ticker.price}</span>
-                  {ticker.change && (
-                    <span className={`text-xs font-bold flex items-center gap-0.5 ${ticker.up ? 'text-green-400' : 'text-red-400'}`}>
-                      {ticker.up ? '▲' : '▼'} {ticker.change}
-                    </span>
-                  )}
+              {Array.from({ length: repeatCount }).map((_, copyIndex) => (
+                <div key={copyIndex} ref={copyIndex === 0 ? singleSetRef : undefined} className="flex">
+                  {tickers.map((ticker, i) => renderTicker(ticker, `${copyIndex}-${i}`))}
                 </div>
               ))}
             </div>
@@ -121,7 +141,7 @@ export default function TickerBar() {
       <style>{`
         @keyframes ticker {
           0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+          100% { transform: translateX(-${singleWidth}px); }
         }
       `}</style>
     </div>
