@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, type RefObject } from 'react';
 
 type Ticker = { symbol: string; price: string; change: string; up: boolean };
 
@@ -12,10 +12,13 @@ const PIXELS_PER_SECOND = 45;
 export default function TickerBar() {
   const [tickers, setTickers] = useState<Ticker[]>([]);
   const [paused, setPaused] = useState(false);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const [singleWidth, setSingleWidth] = useState(0);
+  // عدد مرات تكرار قائمة الأسهم الحقيقية داخل "الوحدة" الواحدة، وعرض الوحدة الكاملة
+  // بعد التكرار. لازم تكرار محتوى حقيقي (مش مساحة فاضية بـ min-width) لأن أي مساحة
+  // فاضية بتتحرك زي أي عنصر تاني وتظهر كفراغ طويل على الشاشة وقت مرورها
+  const [repeatCount, setRepeatCount] = useState(1);
+  const [unitWidth, setUnitWidth] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const singleSetRef = useRef<HTMLDivElement>(null);
+  const unitRef = useRef<HTMLDivElement>(null);
   const lastLayoutKeyRef = useRef('');
 
   useEffect(() => {
@@ -24,21 +27,27 @@ export default function TickerBar() {
     return () => clearInterval(interval);
   }, []);
 
-  // كل نسخة من الأسهم (فيه نسختان دايماً) لازم لا يقل عرضها عن عرض الحاوية الظاهرة،
-  // وإلا يظهر فراغ فاضي عند نهاية كل دورة قبل ما تبدأ من جديد. بنستخدم عرض مقاس
-  // بالبكسل (min-width صريح) بدل نسبة مئوية، لأن نسبة % جوه عنصر عرضه max-content
-  // (الشريط المتحرك نفسه) بترجع غير معرّفة بحسب مواصفات CSS ومش هتشتغل بشكل موثوق
   const recomputeLayout = useCallback(() => {
-    if (!containerRef.current) return;
-    const cw = containerRef.current.clientWidth;
-    setContainerWidth(cw);
-    // ننتظر فريم واحد عشان الـ DOM يطبّق min-width الجديد فعلياً قبل قياس عرض النسخة
+    if (!containerRef.current || !unitRef.current || tickers.length === 0) return;
+    const containerWidth = containerRef.current.clientWidth;
+
+    // عرض نسخة واحدة فقط من قائمة الأسهم الحقيقية (بغض النظر عن عدد التكرارات الحالي)
+    const currentRepeat = Math.max(1, Math.round(unitRef.current.children.length / tickers.length));
+    const naturalWidth = unitRef.current.scrollWidth / currentRepeat;
+    if (naturalWidth <= 0) return;
+
+    // كم مرة نكرر القائمة الحقيقية عشان "الوحدة" تملأ عرض الشاشة بمحتوى فعلي كامل،
+    // بدل ما تعتمد على مساحة فاضية ممتدة (وهو اللي كان بيظهر كفراغ طويل عند التمرير)
+    const neededRepeat = Math.max(1, Math.ceil(containerWidth / naturalWidth));
+    setRepeatCount(neededRepeat);
+
+    // ننتظر فريم واحد عشان الـ DOM يطبّق عدد التكرار الجديد قبل قياس عرض الوحدة الفعلي لحساب السرعة
     requestAnimationFrame(() => {
-      if (!singleSetRef.current) return;
-      const w = singleSetRef.current.scrollWidth;
-      if (w > 0) setSingleWidth(w);
+      if (!unitRef.current) return;
+      const w = unitRef.current.scrollWidth;
+      if (w > 0) setUnitWidth(w);
     });
-  }, []);
+  }, [tickers]);
 
   useEffect(() => {
     // نعيد الحساب فقط لما تتغيّر مجموعة الرموز نفسها (إضافة/حذف سهم من EGX30) —
@@ -57,8 +66,7 @@ export default function TickerBar() {
 
   async function fetchTickers() {
     // كل مصدر مستقل عن التاني: فشل واحد (شبكة، استجابة غير صالحة...) ما يمنعش عرض
-    // باقي البيانات. قبل كده كنا بنستخدم Promise.all فيرفض الكل لو مصدر واحد فشل،
-    // فيفضل الشريط فاضي تماماً غير "LIVE" لحد ما تنجح الثلاث طلبات مع بعض في نفس الوقت
+    // باقي البيانات، بدل ما يفشل الكل مع بعض ويفضل الشريط فاضي لحد نجاح الثلاثة معاً
     async function safeFetchJson(url: string) {
       try {
         const res = await fetch(url);
@@ -112,8 +120,7 @@ export default function TickerBar() {
     } catch (e) {}
   }
 
-  const duration = singleWidth > 0 ? singleWidth / PIXELS_PER_SECOND : 100;
-  const copyMinWidth = containerWidth > 0 ? `${containerWidth}px` : undefined;
+  const duration = unitWidth > 0 ? unitWidth / PIXELS_PER_SECOND : 100;
 
   function renderTicker(ticker: Ticker, key: string) {
     return (
@@ -132,6 +139,22 @@ export default function TickerBar() {
     );
   }
 
+  // "وحدة" = قائمة الأسهم مكرّرة repeatCount مرة (محتوى حقيقي بالكامل، بلا أي فراغ)
+  // بعرض كافٍ يغطي عرض الشاشة. نعرض وحدتين متطابقتين وراء بعض للحركة المتصلة بلا فجوة
+  function renderUnit(unitKey: string, ref?: RefObject<HTMLDivElement | null>) {
+    const items = [];
+    for (let r = 0; r < repeatCount; r++) {
+      for (let i = 0; i < tickers.length; i++) {
+        items.push(renderTicker(tickers[i], `${unitKey}-${r}-${i}`));
+      }
+    }
+    return (
+      <div ref={ref} className="flex flex-shrink-0">
+        {items}
+      </div>
+    );
+  }
+
   return (
     <div className="fixed bottom-0 inset-x-0 z-40 bg-black border-t border-gray-800 overflow-hidden">
       <div className="flex items-center">
@@ -141,9 +164,7 @@ export default function TickerBar() {
           LIVE
         </div>
 
-        {/* الشريط المتحرك: نسختان متطابقتان، كل واحدة بعرض لا يقل عن عرض الحاوية
-            الظاهرة (min-width بالبكسل) — يضمن حركة متصلة بلا أي فجوة عند الالتفاف،
-            بغض النظر عن عدد الأسهم أو عرض الشاشة */}
+        {/* الشريط المتحرك */}
         <div ref={containerRef} className="overflow-hidden flex-1">
           {tickers.length > 0 && (
             <div
@@ -154,12 +175,8 @@ export default function TickerBar() {
               onTouchStart={() => setPaused(true)}
               onTouchEnd={() => setPaused(false)}
             >
-              <div ref={singleSetRef} className="flex flex-shrink-0" style={{ minWidth: copyMinWidth }}>
-                {tickers.map((ticker, i) => renderTicker(ticker, `a-${i}`))}
-              </div>
-              <div className="flex flex-shrink-0" style={{ minWidth: copyMinWidth }} aria-hidden="true">
-                {tickers.map((ticker, i) => renderTicker(ticker, `b-${i}`))}
-              </div>
+              {renderUnit('a', unitRef)}
+              {renderUnit('b')}
             </div>
           )}
         </div>
@@ -169,7 +186,7 @@ export default function TickerBar() {
       <style>{`
         @keyframes ticker {
           0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+          100% { transform: translateX(-${unitWidth}px); }
         }
       `}</style>
     </div>
