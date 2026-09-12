@@ -24,7 +24,9 @@ const L = {
     lockedMessage: (section: string) => `🔒 ${section} متاحة فقط بعد تسجيل الدخول`,
     orDivider: 'أو',
     guestButton: '🔓 الدخول كزائر',
-    guestHint: 'يتيح لك تصفح الموقع بدون حساب، ما عدا النشرة اليومية ولوحة تحكم المتابع وبيانات المحللين — دي محتاجة تسجيل دخول فعلي',
+    guestHint: 'تصفح الموقع فوراً بدون حساب — ما عدا النشرة اليومية ولوحة تحكم المتابع وبيانات المحللين',
+    haveAccount: 'عندك حساب؟ سجّل دخولك',
+    hideForm: 'إخفاء نموذج الدخول',
   },
   en: {
     title: 'Sign In',
@@ -43,7 +45,9 @@ const L = {
     lockedMessage: (section: string) => `🔒 ${section} is available after signing in only`,
     orDivider: 'or',
     guestButton: '🔓 Continue as Guest',
-    guestHint: "Lets you browse the site without an account, except the Daily Briefing, Follower Dashboard and Analysts data — those still need a real account",
+    guestHint: "Browse the site instantly, no account needed — except the Daily Briefing, Follower Dashboard and Analysts data",
+    haveAccount: 'Have an account? Sign in',
+    hideForm: 'Hide sign-in form',
   },
 };
 
@@ -59,6 +63,9 @@ function SigninForm() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  // القسم المحمي محتاج حساب حقيقي فعلاً، فمفيش داعي نخبّي نموذج الدخول وقتها —
+  // غير كده نخليه مطوي والدخول كزائر هو أول حاجة يشوفها الزائر (أسرع مسار للتصفح)
+  const [showLoginForm, setShowLoginForm] = useState(locked);
 
   async function handleLogin() {
     if (!form.email || !form.password) {
@@ -112,57 +119,81 @@ function SigninForm() {
       )}
 
       <div className="space-y-4">
-        <div>
-          <label className="text-gray-400 text-xs mb-1 block">{t.email}</label>
-          <input
-            type="email"
-            value={form.email}
-            onChange={e => setForm({ ...form, email: e.target.value })}
-            className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
-            placeholder={t.emailPh}
-          />
-        </div>
+        {!locked && (
+          <>
+            <button
+              onClick={handleGuestEntry}
+              className="w-full bg-orange-500 text-black py-3.5 rounded-lg font-bold text-base hover:bg-orange-600 transition"
+            >
+              {t.guestButton}
+            </button>
+            <p className="text-center text-gray-500 text-xs leading-relaxed">{t.guestHint}</p>
 
-        <div>
-          <label className="text-gray-400 text-xs mb-1 block">{t.password}</label>
-          <input
-            type="password"
-            value={form.password}
-            onChange={e => setForm({ ...form, password: e.target.value })}
-            onKeyDown={e => e.key === 'Enter' && handleLogin()}
-            className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
-            placeholder={t.passwordPh}
-          />
-        </div>
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px bg-gray-800" />
+              <span className="text-gray-600 text-xs">{t.orDivider}</span>
+              <div className="flex-1 h-px bg-gray-800" />
+            </div>
+          </>
+        )}
 
-        <button
-          onClick={handleLogin}
-          disabled={loading}
-          className="w-full bg-orange-500 text-black py-3 rounded-lg font-bold text-sm hover:bg-orange-600 transition disabled:opacity-50"
-        >
-          {loading ? t.submitting : t.submit}
-        </button>
+        {!showLoginForm ? (
+          <button
+            onClick={() => setShowLoginForm(true)}
+            className="w-full bg-gray-800 text-gray-200 py-3 rounded-lg font-bold text-sm hover:bg-gray-700 transition border border-gray-700"
+          >
+            {t.haveAccount}
+          </button>
+        ) : (
+          <>
+            <div>
+              <label className="text-gray-400 text-xs mb-1 block">{t.email}</label>
+              <input
+                type="email"
+                value={form.email}
+                onChange={e => setForm({ ...form, email: e.target.value })}
+                className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+                placeholder={t.emailPh}
+              />
+            </div>
 
-        <p className="text-center text-gray-500 text-sm">
-          {t.noAccount}{' '}
-          <a href="/signup" className="text-orange-500 hover:text-orange-400">
-            {t.signUp}
-          </a>
-        </p>
+            <div>
+              <label className="text-gray-400 text-xs mb-1 block">{t.password}</label>
+              <input
+                type="password"
+                value={form.password}
+                onChange={e => setForm({ ...form, password: e.target.value })}
+                onKeyDown={e => e.key === 'Enter' && handleLogin()}
+                className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+                placeholder={t.passwordPh}
+              />
+            </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-gray-800" />
-          <span className="text-gray-600 text-xs">{t.orDivider}</span>
-          <div className="flex-1 h-px bg-gray-800" />
-        </div>
+            <button
+              onClick={handleLogin}
+              disabled={loading}
+              className="w-full bg-orange-500 text-black py-3 rounded-lg font-bold text-sm hover:bg-orange-600 transition disabled:opacity-50"
+            >
+              {loading ? t.submitting : t.submit}
+            </button>
 
-        <button
-          onClick={handleGuestEntry}
-          className="w-full bg-gray-800 text-gray-200 py-3 rounded-lg font-bold text-sm hover:bg-gray-700 transition border border-gray-700"
-        >
-          {t.guestButton}
-        </button>
-        <p className="text-center text-gray-600 text-xs leading-relaxed">{t.guestHint}</p>
+            <p className="text-center text-gray-500 text-sm">
+              {t.noAccount}{' '}
+              <a href="/signup" className="text-orange-500 hover:text-orange-400">
+                {t.signUp}
+              </a>
+            </p>
+
+            {!locked && (
+              <button
+                onClick={() => setShowLoginForm(false)}
+                className="w-full text-gray-600 text-xs hover:text-gray-400 transition"
+              >
+                {t.hideForm}
+              </button>
+            )}
+          </>
+        )}
       </div>
 
     </div>
