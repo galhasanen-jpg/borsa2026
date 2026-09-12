@@ -34,17 +34,23 @@ export default function TickerBar() {
     // عرض نسخة واحدة فقط من قائمة الأسهم الحقيقية (بغض النظر عن عدد التكرارات الحالي)
     const currentRepeat = Math.max(1, Math.round(unitRef.current.children.length / tickers.length));
     const naturalWidth = unitRef.current.scrollWidth / currentRepeat;
+    // eslint-disable-next-line no-console
+    console.log('[TickerBar] recompute', { tickersCount: tickers.length, containerWidth, currentRepeat, childrenBefore: unitRef.current.children.length, naturalWidth });
     if (naturalWidth <= 0) return;
 
     // كم مرة نكرر القائمة الحقيقية عشان "الوحدة" تملأ عرض الشاشة بمحتوى فعلي كامل،
     // بدل ما تعتمد على مساحة فاضية ممتدة (وهو اللي كان بيظهر كفراغ طويل عند التمرير)
     const neededRepeat = Math.max(1, Math.ceil(containerWidth / naturalWidth));
     setRepeatCount(neededRepeat);
+    // eslint-disable-next-line no-console
+    console.log('[TickerBar] setRepeatCount', neededRepeat);
 
     // ننتظر فريم واحد عشان الـ DOM يطبّق عدد التكرار الجديد قبل قياس عرض الوحدة الفعلي لحساب السرعة
     requestAnimationFrame(() => {
       if (!unitRef.current) return;
       const w = unitRef.current.scrollWidth;
+      // eslint-disable-next-line no-console
+      console.log('[TickerBar] measured unitWidth', { w, childrenAfter: unitRef.current.children.length, duration: w > 0 ? w / PIXELS_PER_SECOND : null });
       if (w > 0) setUnitWidth(w);
     });
   }, [tickers]);
@@ -116,11 +122,17 @@ export default function TickerBar() {
       const brent = marketsData?.indices?.find((idx: any) => idx.name === 'خام برنت');
       if (brent) result.push({ symbol: 'BRENT', price: brent.price, change: brent.change, up: brent.up });
 
-      if (result.length > 0) setTickers(result);
+      if (result.length > 0) {
+        // eslint-disable-next-line no-console
+        console.log('[TickerBar] fetchTickers success', { count: result.length, symbols: result.map(r => r.symbol), at: new Date().toISOString() });
+        setTickers(result);
+      }
     } catch (e) {}
   }
 
   const duration = unitWidth > 0 ? unitWidth / PIXELS_PER_SECOND : 100;
+  // eslint-disable-next-line no-console
+  console.log('[TickerBar] render', { tickersCount: tickers.length, repeatCount, unitWidth, duration, paused, at: new Date().toISOString() });
 
   function renderTicker(ticker: Ticker, key: string) {
     return (
