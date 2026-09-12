@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import StockChart from '../components/StockChart';
 import StockAnalysis from '../components/StockAnalysis';
 import { useLanguage } from '../components/LanguageProvider';
+import DataError from '../components/DataError';
 
 export default function StocksPage() {
   const { lang } = useLanguage();
@@ -12,6 +13,7 @@ export default function StocksPage() {
   const [stocks, setStocks] = useState<any[]>([]);
   const [prices, setPrices] = useState<any>({});
   const [loading, setLoading] = useState(true);
+  const [stocksError, setStocksError] = useState(false);
   const [selectedStock, setSelectedStock] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
   const [watchlists, setWatchlists] = useState<any[]>([]);
@@ -34,16 +36,25 @@ export default function StocksPage() {
   }, []);
 
   async function fetchSectors() {
-    const res = await fetch('/api/sectors');
-    const data = await res.json();
-    setSectors(data);
+    try {
+      const res = await fetch('/api/sectors');
+      const data = await res.json();
+      setSectors(Array.isArray(data) ? data : []);
+    } catch (e) {}
   }
 
   async function fetchStocks() {
-    const res = await fetch('/api/stocks');
-    const data = await res.json();
-    setStocks(data);
-    fetchPrices(data);
+    try {
+      const res = await fetch('/api/stocks');
+      const data = await res.json();
+      if (!Array.isArray(data)) throw new Error('invalid response');
+      setStocks(data);
+      setStocksError(false);
+      fetchPrices(data);
+    } catch (e) {
+      setLoading(false);
+      setStocksError(true);
+    }
   }
 
   async function fetchPrices(stocksList: any[]) {
@@ -250,6 +261,9 @@ export default function StocksPage() {
                   </tr>
                 </thead>
                 <tbody>
+                  {stocksError && displayedStocks.length === 0 && (
+                    <tr><td colSpan={user ? 6 : 5}><DataError onRetry={fetchStocks} compact /></td></tr>
+                  )}
                   {displayedStocks.map((stock, i) => {
                     const data = prices[stock.symbol];
                     const changePercent = data ? parseFloat(data.changePercent) : 0;

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../components/LanguageProvider';
+import DataError from '../components/DataError';
 
 const categories = [
   { id: 'egypt', label: '🇪🇬 مصر', labelEn: '🇪🇬 Egypt', query: 'اقتصاد مصر البنك المركزي الجنيه المصري' },
@@ -78,6 +79,7 @@ export default function GlobalNewsPage() {
   const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [allNews, setAllNews] = useState<any>({});
+  const [newsErrors, setNewsErrors] = useState<any>({});
   const [activeMetalChart, setActiveMetalChart] = useState(metalCharts[0]);
 
   useEffect(() => {
@@ -96,17 +98,23 @@ export default function GlobalNewsPage() {
       const res = await fetch(`/api/global-news?query=${query}`);
       const data = await res.json();
       setAllNews((prev: any) => ({ ...prev, [cat.id]: data }));
-    } catch (e) {}
+      setNewsErrors((prev: any) => ({ ...prev, [cat.id]: false }));
+    } catch (e) {
+      setNewsErrors((prev: any) => ({ ...prev, [cat.id]: true }));
+    }
   }
 
   useEffect(() => {
     if (activeCategory.id === 'metals' || activeCategory.id === 'live') return;
-    setLoading(true);
     if (allNews[activeCategory.id]) {
       setNews(allNews[activeCategory.id]);
       setLoading(false);
+    } else if (newsErrors[activeCategory.id]) {
+      setLoading(false);
+    } else {
+      setLoading(true);
     }
-  }, [activeCategory, allNews]);
+  }, [activeCategory, allNews, newsErrors]);
 
   return (
     <main className="min-h-screen bg-gray-950 p-4">
@@ -244,7 +252,11 @@ export default function GlobalNewsPage() {
         {/* الأخبار العادية */}
         {activeCategory.id !== 'metals' && activeCategory.id !== 'live' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {loading || !allNews[activeCategory.id] ? (
+            {newsErrors[activeCategory.id] && !allNews[activeCategory.id] ? (
+              <div className="col-span-3">
+                <DataError onRetry={() => fetchCategoryNews(activeCategory)} />
+              </div>
+            ) : loading || !allNews[activeCategory.id] ? (
               Array(6).fill(0).map((_, i) => (
                 <div key={i} className="bg-gray-900 border border-gray-800 rounded-lg p-4 animate-pulse">
                   <div className="h-4 bg-gray-800 rounded mb-2"></div>

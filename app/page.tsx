@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useLanguage } from './components/LanguageProvider';
+import DataError from './components/DataError';
 
 const stocksData = [
   { symbol: 'COMI.CA', name: 'البنك التجاري الدولي', nameEn: 'CIB' },
@@ -33,6 +34,9 @@ export default function Home() {
   const [stocks, setStocks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [news, setNews] = useState<any[]>([]);
+  const [indicesError, setIndicesError] = useState(false);
+  const [newsError, setNewsError] = useState(false);
+  const [stocksError, setStocksError] = useState(false);
 
   useEffect(() => {
     fetchMarkets();
@@ -50,8 +54,11 @@ export default function Home() {
     try {
       const res = await fetch('/api/markets');
       const data = await res.json();
-      if (data.indices) setIndices(data.indices);
-    } catch (e) {}
+      if (data.indices) { setIndices(data.indices); setIndicesError(false); }
+      else setIndicesError(true);
+    } catch (e) {
+      setIndicesError(true);
+    }
   }
 
   async function fetchNews() {
@@ -59,7 +66,10 @@ export default function Home() {
       const res = await fetch(`/api/global-news?query=${encodeURIComponent(NEWS_QUERY)}`);
       const data = await res.json();
       setNews(Array.isArray(data) ? data.slice(0, 5) : []);
-    } catch (e) {}
+      setNewsError(false);
+    } catch (e) {
+      setNewsError(true);
+    }
   }
 
   async function fetchStocks() {
@@ -79,8 +89,10 @@ export default function Home() {
       );
       setStocks(results);
       setLoading(false);
+      setStocksError(false);
     } catch (e) {
       setLoading(false);
+      setStocksError(true);
     }
   }
 
@@ -110,7 +122,11 @@ export default function Home() {
                 {index.up ? '▲ ارتفاع' : '▼ انخفاض'}
               </p>
             </div>
-          )) : (
+          )) : indicesError ? (
+            <div className="col-span-full">
+              <DataError onRetry={fetchMarkets} compact />
+            </div>
+          ) : (
             Array(6).fill(0).map((_, i) => (
               <div key={i} className="bg-gray-900 border border-gray-800 rounded-lg p-3 animate-pulse">
                 <div className="h-4 bg-gray-800 rounded mb-2"></div>
@@ -150,7 +166,13 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
+                {stocksError && stocks.length === 0 ? (
+                  <tr>
+                    <td colSpan={4}>
+                      <DataError onRetry={fetchStocks} compact />
+                    </td>
+                  </tr>
+                ) : loading ? (
                   Array(8).fill(0).map((_, i) => (
                     <tr key={i} className="border-b border-gray-800">
                       <td className="px-4 py-3"><div className="h-4 bg-gray-800 rounded animate-pulse w-16"></div></td>
@@ -188,7 +210,9 @@ export default function Home() {
               </h2>
             </div>
             <div className="divide-y divide-gray-800">
-              {news.length === 0 ? (
+              {news.length === 0 && newsError ? (
+                <DataError onRetry={fetchNews} compact />
+              ) : news.length === 0 ? (
                 Array(5).fill(0).map((_, i) => (
                   <div key={i} className="px-4 py-3">
                     <div className="h-3 bg-gray-800 rounded animate-pulse mb-2"></div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useLanguage } from '../components/LanguageProvider';
+import DataError from '../components/DataError';
 
 type BriefingStock = {
   id: number;
@@ -60,6 +61,7 @@ export default function DailyBriefingPage() {
   const [stocks, setStocks] = useState<BriefingStock[]>([]);
   const [date, setDate] = useState('');
   const [loading, setLoading] = useState(true);
+  const [briefingError, setBriefingError] = useState(false);
   const [showManage, setShowManage] = useState(false);
   const [manageList, setManageList] = useState<any[]>([]);
   const [form, setForm] = useState({ name: '', name_en: '', symbol: '' });
@@ -85,8 +87,10 @@ export default function DailyBriefingPage() {
       const data = await res.json();
       setStocks(Array.isArray(data.stocks) ? data.stocks : []);
       setDate(data.date || '');
+      setBriefingError(false);
     } catch (e) {
       setStocks([]);
+      setBriefingError(true);
     }
     setLoading(false);
   }
@@ -244,6 +248,8 @@ export default function DailyBriefingPage() {
         {/* النشرة */}
         {loading ? (
           <div className="text-center py-16 text-gray-500 text-sm animate-pulse">{t.loading}</div>
+        ) : briefingError ? (
+          <DataError onRetry={() => fetchBriefing(siteUser?.id)} />
         ) : stocks.length === 0 ? (
           <div className="text-center py-16 text-gray-500 text-sm">{t.emptyList}</div>
         ) : (

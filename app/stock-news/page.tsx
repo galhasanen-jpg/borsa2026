@@ -2,11 +2,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../components/LanguageProvider';
+import DataError from '../components/DataError';
 
 export default function StockNewsPage() {
   const contentRef = useRef<HTMLDivElement>(null);
   const { lang } = useLanguage();
   const [stocks, setStocks] = useState<any[]>([]);
+  const [stocksError, setStocksError] = useState(false);
   const [sectors, setSectors] = useState<any[]>([]);
   const [activeSector, setActiveSector] = useState('الكل');
   const [activeTab, setActiveTab] = useState<'news' | 'fairvalue'>('news');
@@ -27,15 +29,23 @@ export default function StockNewsPage() {
   }, []);
 
   async function fetchStocks() {
-    const res = await fetch('/api/stocks');
-    const data = await res.json();
-    setStocks(data);
+    try {
+      const res = await fetch('/api/stocks');
+      const data = await res.json();
+      if (!Array.isArray(data)) throw new Error('invalid response');
+      setStocks(data);
+      setStocksError(false);
+    } catch (e) {
+      setStocksError(true);
+    }
   }
 
   async function fetchSectors() {
-    const res = await fetch('/api/sectors');
-    const data = await res.json();
-    setSectors(data);
+    try {
+      const res = await fetch('/api/sectors');
+      const data = await res.json();
+      setSectors(Array.isArray(data) ? data : []);
+    } catch (e) {}
   }
 
   useEffect(() => {
@@ -173,6 +183,9 @@ export default function StockNewsPage() {
               />
             </div>
             <div className="overflow-y-auto" style={{ maxHeight: '600px' }}>
+              {stocksError && stocks.length === 0 && (
+                <DataError onRetry={fetchStocks} compact />
+              )}
               {filteredStocks.map((stock, i) => (
                 <div
                   key={i}
