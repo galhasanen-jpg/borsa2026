@@ -8,7 +8,22 @@ const L = {
     title: '⚙️ لوحة الإدارة',
     updatedCount: (updated: number, total: number) => `${updated} سهم محدث من ${total}`,
     analytics: '📊 تحليلات الزوار',
-    tabs: { prices: '💰 الأسعار', history: '📅 البيانات التاريخية', analysts: '👨‍💼 المحللون', followers: '👥 المتابعون', visitors: '🧑‍💻 حسابات الزوار' },
+    tabs: { prices: '💰 الأسعار', history: '📅 البيانات التاريخية', analysts: '👨‍💼 المحللون', followers: '👥 المتابعون', visitors: '🧑‍💻 حسابات الزوار', aiAnalyst: '🤖 محلل AI' },
+
+    // محلل AI
+    aiTitle: '🤖 محلل AI',
+    aiDesc: 'يعمل بـ Claude Opus 5 مع بحث حي على الإنترنت لكل تحليل — كل استدعاء له تكلفة فعلية بالدولار، ومتاح للمشرف فقط حالياً.',
+    aiQuickCommands: 'أوامر جاهزة',
+    aiCommandPh: 'اكتب أمر التحليل، مثال: حلل CIB',
+    aiRun: '▶️ تشغيل التحليل',
+    aiRunning: '⏳ جاري التحليل... قد يستغرق دقيقة أو أكثر',
+    aiErrGeneric: '❌ تعذّر تنفيذ التحليل',
+    aiHistory: 'التقارير السابقة',
+    aiNoHistory: 'لا توجد تقارير سابقة',
+    aiExpand: 'عرض كامل',
+    aiCollapse: 'إخفاء',
+    aiDelete: 'حذف',
+    aiConfirmDelete: 'هل تريد حذف هذا التقرير؟',
 
     // الأسعار
     editing: (symbol: string, name: string) => `تعديل: ${symbol} - ${name}`,
@@ -154,7 +169,22 @@ const L = {
     title: '⚙️ Admin Dashboard',
     updatedCount: (updated: number, total: number) => `${updated} of ${total} stocks updated`,
     analytics: '📊 Visitor Analytics',
-    tabs: { prices: '💰 Prices', history: '📅 Historical Data', analysts: '👨‍💼 Analysts', followers: '👥 Followers', visitors: '🧑‍💻 Visitor Accounts' },
+    tabs: { prices: '💰 Prices', history: '📅 Historical Data', analysts: '👨‍💼 Analysts', followers: '👥 Followers', visitors: '🧑‍💻 Visitor Accounts', aiAnalyst: '🤖 AI Analyst' },
+
+    // AI Analyst
+    aiTitle: '🤖 AI Analyst',
+    aiDesc: 'Runs on Claude Opus 5 with live web search per analysis — every call has a real dollar cost, and it is admin-only for now.',
+    aiQuickCommands: 'Quick commands',
+    aiCommandPh: 'Type an analysis command, e.g. حلل CIB',
+    aiRun: '▶️ Run Analysis',
+    aiRunning: '⏳ Analyzing... may take a minute or more',
+    aiErrGeneric: '❌ Analysis failed',
+    aiHistory: 'Previous reports',
+    aiNoHistory: 'No previous reports',
+    aiExpand: 'View full',
+    aiCollapse: 'Collapse',
+    aiDelete: 'Delete',
+    aiConfirmDelete: 'Delete this report?',
 
     editing: (symbol: string, name: string) => `Editing: ${symbol} - ${name}`,
     price: 'Price (EGP)',
@@ -293,7 +323,7 @@ const L = {
 export default function AdminPage() {
   const { lang } = useLanguage();
   const t = L[lang];
-  const [activeTab, setActiveTab] = useState<'prices' | 'history' | 'analysts' | 'followers' | 'visitors'>('prices');
+  const [activeTab, setActiveTab] = useState<'prices' | 'history' | 'analysts' | 'followers' | 'visitors' | 'aiAnalyst'>('prices');
 
   // بيانات الأسعار
   const [stocks, setStocks] = useState<any[]>([]);
@@ -341,6 +371,19 @@ export default function AdminPage() {
   const [activeSiteUsers, setActiveSiteUsers] = useState<any[]>([]);
   const [pendingSiteUsers, setPendingSiteUsers] = useState<any[]>([]);
 
+  // محلل AI
+  const [aiCommand, setAiCommand] = useState('');
+  const [aiRunning, setAiRunning] = useState(false);
+  const [aiError, setAiError] = useState('');
+  const [aiCurrentReport, setAiCurrentReport] = useState<any>(null);
+  const [aiReports, setAiReports] = useState<any[]>([]);
+  const [aiExpanded, setAiExpanded] = useState<Record<number, boolean>>({});
+  const aiQuickCommandsList = [
+    'حلل CIB', 'حلل ADIB', 'قارن CIB وADIB', 'أفضل 10 أسهم في EGX',
+    'أرخص 10 أسهم من حيث P/E', 'أفضل أسهم توزيعات', 'ابحث عن أسهم Growth',
+    'ابحث عن Value Traps', 'ابنِ لي Portfolio بـ5 مليون جنيه',
+  ];
+
   useEffect(() => {
     fetchStocks();
     fetchPrices();
@@ -348,6 +391,7 @@ export default function AdminPage() {
     fetchAnalysts();
     fetchFollowers();
     fetchSiteUsers();
+    fetchAiReports();
   }, []);
 
   async function fetchStocks() {
@@ -388,6 +432,46 @@ export default function AdminPage() {
     const all = Array.isArray(data) ? data : [];
     setFollowers(all.filter((f: any) => f.status === 'active'));
     setPendingFollowers(all.filter((f: any) => f.status === 'pending' || f.status === 'approved'));
+  }
+
+  async function fetchAiReports() {
+    try {
+      const res = await fetch('/api/ai-analyst/reports');
+      const data = await res.json();
+      setAiReports(Array.isArray(data) ? data : []);
+    } catch (e) {}
+  }
+
+  async function handleRunAiAnalysis(command?: string) {
+    const cmd = (command ?? aiCommand).trim();
+    if (!cmd) return;
+    setAiRunning(true);
+    setAiError('');
+    setAiCurrentReport(null);
+    try {
+      const res = await fetch('/api/ai-analyst/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command: cmd }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAiCurrentReport(data);
+        setAiCommand('');
+        fetchAiReports();
+      } else {
+        setAiError(data.error || t.aiErrGeneric);
+      }
+    } catch (e) {
+      setAiError(t.aiErrGeneric);
+    }
+    setAiRunning(false);
+  }
+
+  async function handleDeleteAiReport(id: number) {
+    if (!confirm(t.aiConfirmDelete)) return;
+    await fetch(`/api/ai-analyst/reports?id=${id}`, { method: 'DELETE' });
+    fetchAiReports();
   }
 
   async function fetchSiteUsers() {
@@ -799,6 +883,9 @@ export default function AdminPage() {
           <button onClick={() => setActiveTab('visitors')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'visitors' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
             {t.tabs.visitors}
             {pendingSiteUsers.length > 0 && <span className="mr-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">{pendingSiteUsers.length}</span>}
+          </button>
+          <button onClick={() => setActiveTab('aiAnalyst')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'aiAnalyst' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
+            {t.tabs.aiAnalyst}
           </button>
         </div>
 
@@ -1215,6 +1302,97 @@ export default function AdminPage() {
                           {user.status === 'active' ? t.activeStatus : t.rejectedStatus}
                         </span>
                         <button onClick={() => handleDeleteSiteUser(user.id)} className="bg-red-900 text-red-400 px-2 py-1 rounded text-xs hover:bg-red-800">{t.delete}</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+          </div>
+        )}
+
+        {/* تبويب محلل AI */}
+        {activeTab === 'aiAnalyst' && (
+          <div className="space-y-6">
+
+            <div className="bg-gradient-to-l from-orange-950 to-gray-900 border border-orange-700 rounded-lg p-4">
+              <h2 className="text-orange-500 font-bold mb-1">{t.aiTitle}</h2>
+              <p className="text-gray-400 text-xs">{t.aiDesc}</p>
+            </div>
+
+            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+              <p className="text-gray-500 text-xs font-bold mb-2">{t.aiQuickCommands}</p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {aiQuickCommandsList.map(cmd => (
+                  <button
+                    key={cmd}
+                    onClick={() => setAiCommand(cmd)}
+                    disabled={aiRunning}
+                    className="bg-gray-800 text-gray-300 px-3 py-1.5 rounded text-xs hover:bg-gray-700 hover:text-orange-500 transition disabled:opacity-50"
+                  >
+                    {cmd}
+                  </button>
+                ))}
+              </div>
+
+              {aiError && (
+                <div className="bg-red-900 text-red-400 p-3 rounded-lg mb-3 text-sm">{aiError}</div>
+              )}
+
+              <div className="flex gap-2">
+                <input
+                  value={aiCommand}
+                  onChange={e => setAiCommand(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && !aiRunning && handleRunAiAnalysis()}
+                  placeholder={t.aiCommandPh}
+                  disabled={aiRunning}
+                  className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 flex-1 text-sm disabled:opacity-50"
+                />
+                <button
+                  onClick={() => handleRunAiAnalysis()}
+                  disabled={aiRunning || !aiCommand.trim()}
+                  className="bg-orange-500 text-black px-4 py-2 rounded text-sm font-bold hover:bg-orange-600 transition disabled:opacity-50 whitespace-nowrap"
+                >
+                  {aiRunning ? t.aiRunning : t.aiRun}
+                </button>
+              </div>
+            </div>
+
+            {aiCurrentReport && (
+              <div className="bg-gray-900 border border-orange-700 rounded-lg p-4">
+                <div className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">{aiCurrentReport.report}</div>
+              </div>
+            )}
+
+            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+              <h3 className="text-orange-500 font-bold text-sm mb-3">{t.aiHistory} ({aiReports.length})</h3>
+              {aiReports.length === 0 ? (
+                <p className="text-gray-500 text-sm text-center py-4">{t.aiNoHistory}</p>
+              ) : (
+                <div className="space-y-3">
+                  {aiReports.map(r => (
+                    <div key={r.id} className="bg-gray-800 rounded-lg p-3">
+                      <div className="flex justify-between items-start gap-3 flex-wrap mb-2">
+                        <p className="text-white font-bold text-sm">{r.command}</p>
+                        <span className="text-gray-500 text-xs whitespace-nowrap">{new Date(r.created_at).toLocaleString(t.dateLocale)}</span>
+                      </div>
+                      <div className={`text-gray-300 text-xs leading-relaxed whitespace-pre-wrap ${aiExpanded[r.id] ? '' : 'line-clamp-3'}`}>
+                        {r.report}
+                      </div>
+                      <div className="flex gap-3 mt-2">
+                        <button
+                          onClick={() => setAiExpanded(prev => ({ ...prev, [r.id]: !prev[r.id] }))}
+                          className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                        >
+                          {aiExpanded[r.id] ? t.aiCollapse : t.aiExpand}
+                        </button>
+                        <button
+                          onClick={() => handleDeleteAiReport(r.id)}
+                          className="text-red-500 text-xs font-bold hover:text-red-400 transition"
+                        >
+                          {t.aiDelete}
+                        </button>
                       </div>
                     </div>
                   ))}
