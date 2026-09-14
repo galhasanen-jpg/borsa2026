@@ -25,7 +25,7 @@ const L = {
     aiDelete: 'حذف',
     aiConfirmDelete: 'هل تريد حذف هذا التقرير؟',
     aiForceLabel: 'تحديث إجباري (تجاهل النسخة المحفوظة وأعد التحليل من جديد — له تكلفة)',
-    aiCachedNote: (date: string) => `♻️ تقرير محفوظ من ${date} — لم يتم استدعاء Claude (بدون تكلفة جديدة). نفس الأمر يبقى محفوظاً 7 أيام تلقائياً.`,
+    aiCachedNote: (date: string) => `♻️ تقرير محفوظ من ${date} — لم يتم استدعاء Claude (بدون تكلفة جديدة). نفس الأمر يبقى محفوظاً 30 يوم تلقائياً.`,
     aiFreshNote: (date: string) => `✅ تحليل جديد — تاريخ الإصدار: ${date}`,
 
     // الأسعار
@@ -189,7 +189,7 @@ const L = {
     aiDelete: 'Delete',
     aiConfirmDelete: 'Delete this report?',
     aiForceLabel: 'Force refresh (ignore the cached version and re-run the analysis — has a cost)',
-    aiCachedNote: (date: string) => `♻️ Cached report from ${date} — Claude was not called (no new cost). The same command stays cached for 7 days automatically.`,
+    aiCachedNote: (date: string) => `♻️ Cached report from ${date} — Claude was not called (no new cost). The same command stays cached for 30 days automatically.`,
     aiFreshNote: (date: string) => `✅ Fresh analysis — issued: ${date}`,
 
     editing: (symbol: string, name: string) => `Editing: ${symbol} - ${name}`,
