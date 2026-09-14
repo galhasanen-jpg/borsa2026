@@ -36,7 +36,7 @@ export async function GET(request) {
             LEFT JOIN recommendations r ON a.id = r.analyst_id AND r.approved = true
             WHERE a.status = 'active'
             GROUP BY a.id
-            ORDER BY a.created_at DESC`
+            ORDER BY a.is_ai_analyst DESC NULLS LAST, a.created_at DESC`
         );
         return Response.json(result.rows);
 

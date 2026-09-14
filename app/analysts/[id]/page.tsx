@@ -131,6 +131,10 @@ export default function AnalystPage() {
     try {
       const res = await fetch(`/api/analysts?id=${id}`);
       const data = await res.json();
+      if (data?.is_ai_analyst) {
+        window.location.href = '/analysts/ai';
+        return;
+      }
       setAnalyst(data);
     } catch (e) {}
     setLoading(false);

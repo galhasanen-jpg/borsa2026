@@ -29,6 +29,8 @@ const L = {
     successful: 'ناجحة',
     successRate: 'نجاح',
     view: 'عرض ←',
+    aiBadge: '🤖 AI',
+    aiBio: 'محلل استثماري يعمل بالذكاء الاصطناعي — تحليل أساسي وفني وتقييم شامل لأسهم البورصة المصرية. قيد المعاينة الداخلية حالياً.',
   },
   en: {
     title: '👨‍💼 Analysts',
@@ -55,6 +57,8 @@ const L = {
     successful: 'successful',
     successRate: 'success',
     view: 'View →',
+    aiBadge: '🤖 AI',
+    aiBio: 'An AI-powered investment analyst — full fundamental, technical and valuation analysis for EGX stocks. Currently in internal preview.',
   },
 };
 
@@ -190,10 +194,19 @@ export default function AnalystsPage() {
         ) : (
           <div className="space-y-4">
             {analysts.map((analyst, i) => (
-              <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-4 hover:border-orange-500 transition flex items-center gap-4">
+              <div
+                key={i}
+                className={`rounded-xl p-4 hover:border-orange-500 transition flex items-center gap-4 ${
+                  analyst.is_ai_analyst
+                    ? 'bg-gradient-to-l from-orange-950 to-gray-900 border border-orange-700'
+                    : 'bg-gray-900 border border-gray-800'
+                }`}
+              >
 
                 {/* الرقم المتسلسل */}
-                <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-gray-400 font-bold text-sm flex-shrink-0">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 ${
+                  analyst.is_ai_analyst ? 'bg-orange-500 text-black' : 'bg-gray-700 text-gray-400'
+                }`}>
                   {i + 1}
                 </div>
 
@@ -201,30 +214,38 @@ export default function AnalystsPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="text-white font-bold text-sm">{lang === 'ar' ? analyst.name : (analyst.name_en || analyst.name)}</h3>
-                    <span className="text-orange-500 text-xs">{analyst.specialization}</span>
+                    {analyst.is_ai_analyst ? (
+                      <span className="bg-orange-500 text-black text-xs font-bold px-1.5 py-0.5 rounded">{t.aiBadge}</span>
+                    ) : (
+                      <span className="text-orange-500 text-xs">{analyst.specialization}</span>
+                    )}
                   </div>
-                  <p className="text-gray-400 text-xs leading-relaxed line-clamp-1">{lang === 'ar' ? analyst.bio : (analyst.bio_en || analyst.bio)}</p>
+                  <p className="text-gray-400 text-xs leading-relaxed line-clamp-1">
+                    {analyst.is_ai_analyst ? t.aiBio : (lang === 'ar' ? analyst.bio : (analyst.bio_en || analyst.bio))}
+                  </p>
                 </div>
 
                 {/* الإحصائيات */}
-                <div className="hidden md:flex gap-3">
-                  <div className="text-center">
-                    <p className="text-white font-bold text-sm">{analyst.total_recommendations || 0}</p>
-                    <p className="text-gray-500 text-xs">{t.recCount}</p>
+                {!analyst.is_ai_analyst && (
+                  <div className="hidden md:flex gap-3">
+                    <div className="text-center">
+                      <p className="text-white font-bold text-sm">{analyst.total_recommendations || 0}</p>
+                      <p className="text-gray-500 text-xs">{t.recCount}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-green-400 font-bold text-sm">{analyst.successful || 0}</p>
+                      <p className="text-gray-500 text-xs">{t.successful}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-orange-500 font-bold text-sm">{getSuccessRate(analyst)}%</p>
+                      <p className="text-gray-500 text-xs">{t.successRate}</p>
+                    </div>
                   </div>
-                  <div className="text-center">
-                    <p className="text-green-400 font-bold text-sm">{analyst.successful || 0}</p>
-                    <p className="text-gray-500 text-xs">{t.successful}</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-orange-500 font-bold text-sm">{getSuccessRate(analyst)}%</p>
-                    <p className="text-gray-500 text-xs">{t.successRate}</p>
-                  </div>
-                </div>
+                )}
 
                 {/* زر عرض الصفحة */}
                 <a
-                  href={`/analysts/${analyst.id}`}
+                  href={analyst.is_ai_analyst ? '/analysts/ai' : `/analysts/${analyst.id}`}
                   className="text-orange-500 text-xs hover:text-orange-400 transition whitespace-nowrap flex-shrink-0"
                 >
                   {t.view}
