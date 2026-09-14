@@ -24,6 +24,9 @@ const L = {
     aiCollapse: 'إخفاء',
     aiDelete: 'حذف',
     aiConfirmDelete: 'هل تريد حذف هذا التقرير؟',
+    aiForceLabel: 'تحديث إجباري (تجاهل النسخة المحفوظة وأعد التحليل من جديد — له تكلفة)',
+    aiCachedNote: (date: string) => `♻️ تقرير محفوظ من ${date} — لم يتم استدعاء Claude (بدون تكلفة جديدة). نفس الأمر يبقى محفوظاً 7 أيام تلقائياً.`,
+    aiFreshNote: (date: string) => `✅ تحليل جديد — تاريخ الإصدار: ${date}`,
 
     // الأسعار
     editing: (symbol: string, name: string) => `تعديل: ${symbol} - ${name}`,
@@ -185,6 +188,9 @@ const L = {
     aiCollapse: 'Collapse',
     aiDelete: 'Delete',
     aiConfirmDelete: 'Delete this report?',
+    aiForceLabel: 'Force refresh (ignore the cached version and re-run the analysis — has a cost)',
+    aiCachedNote: (date: string) => `♻️ Cached report from ${date} — Claude was not called (no new cost). The same command stays cached for 7 days automatically.`,
+    aiFreshNote: (date: string) => `✅ Fresh analysis — issued: ${date}`,
 
     editing: (symbol: string, name: string) => `Editing: ${symbol} - ${name}`,
     price: 'Price (EGP)',
@@ -376,6 +382,7 @@ export default function AdminPage() {
   const [aiRunning, setAiRunning] = useState(false);
   const [aiError, setAiError] = useState('');
   const [aiCurrentReport, setAiCurrentReport] = useState<any>(null);
+  const [aiForce, setAiForce] = useState(false);
   const [aiReports, setAiReports] = useState<any[]>([]);
   const [aiExpanded, setAiExpanded] = useState<Record<number, boolean>>({});
   const aiQuickCommandsList = [
@@ -452,7 +459,7 @@ export default function AdminPage() {
       const res = await fetch('/api/ai-analyst/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ command: cmd }),
+        body: JSON.stringify({ command: cmd, force: aiForce }),
       });
       const data = await res.json();
       if (data.success) {
@@ -1340,7 +1347,7 @@ export default function AdminPage() {
                 <div className="bg-red-900 text-red-400 p-3 rounded-lg mb-3 text-sm">{aiError}</div>
               )}
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 mb-3">
                 <input
                   value={aiCommand}
                   onChange={e => setAiCommand(e.target.value)}
@@ -1357,10 +1364,20 @@ export default function AdminPage() {
                   {aiRunning ? t.aiRunning : t.aiRun}
                 </button>
               </div>
+
+              <label className="flex items-center gap-2 text-gray-500 text-xs cursor-pointer">
+                <input type="checkbox" checked={aiForce} onChange={e => setAiForce(e.target.checked)} disabled={aiRunning} />
+                {t.aiForceLabel}
+              </label>
             </div>
 
             {aiCurrentReport && (
               <div className="bg-gray-900 border border-orange-700 rounded-lg p-4">
+                <p className={`text-xs font-bold mb-3 ${aiCurrentReport.cached ? 'text-blue-400' : 'text-green-400'}`}>
+                  {aiCurrentReport.cached
+                    ? t.aiCachedNote(new Date(aiCurrentReport.created_at).toLocaleString(t.dateLocale))
+                    : t.aiFreshNote(new Date(aiCurrentReport.created_at).toLocaleString(t.dateLocale))}
+                </p>
                 <div className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">{aiCurrentReport.report}</div>
               </div>
             )}

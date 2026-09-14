@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { getConnection } from '../../../lib/db';
 import { isAdminRequest } from '../../../lib/admin-auth';
 import { AI_ANALYST_SYSTEM_PROMPT } from '../../../lib/ai-analyst-prompt';
+import { AI_REPORT_CACHE_DAYS, normalizeCommand } from '../../../lib/ai-analyst-cache';
 
 const MODEL = 'claude-opus-5';
 const MAX_PAUSE_RESUMES = 4;
@@ -11,15 +12,39 @@ export async function POST(request) {
         return Response.json({ error: 'هذه الميزة متاحة للمشرف فقط حالياً' }, { status: 401 });
     }
 
-    let command;
+    let command, force;
     try {
-        ({ command } = await request.json());
+        ({ command, force } = await request.json());
     } catch (err) {
         return Response.json({ error: 'طلب غير صالح' }, { status: 400 });
     }
 
     if (!command || !command.trim()) {
         return Response.json({ error: 'يرجى كتابة أمر التحليل، مثال: حلل CIB' }, { status: 400 });
+    }
+
+    const normalizedCommand = normalizeCommand(command);
+
+    // نفس الأمر خلال آخر AI_REPORT_CACHE_DAYS أيام؟ رجّع التقرير المحفوظ بدل ما نستدعي Claude تاني بتكلفة إضافية —
+    // إلا لو الأدمن طلب تحديث إجباري (force)
+    let cacheClient;
+    if (!force) {
+        try {
+            cacheClient = await getConnection();
+            const cached = await cacheClient.query(
+                `SELECT id, command, report, model, created_at FROM ai_analyst_reports
+                WHERE normalized_command = $1 AND created_at > now() - ($2 || ' days')::interval
+                ORDER BY created_at DESC LIMIT 1`,
+                [normalizedCommand, AI_REPORT_CACHE_DAYS]
+            );
+            if (cached.rows.length > 0) {
+                return Response.json({ success: true, cached: true, ...cached.rows[0] });
+            }
+        } catch (err) {
+            return Response.json({ error: err.message }, { status: 500 });
+        } finally {
+            if (cacheClient) cacheClient.release();
+        }
     }
 
     if (!process.env.ANTHROPIC_API_KEY) {
@@ -86,11 +111,12 @@ export async function POST(request) {
     try {
         client = await getConnection();
         const result = await client.query(
-            `INSERT INTO ai_analyst_reports (command, report, model, input_tokens, output_tokens)
-            VALUES ($1, $2, $3, $4, $5)
+            `INSERT INTO ai_analyst_reports (command, normalized_command, report, model, input_tokens, output_tokens)
+            VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING id, created_at`,
             [
                 command.trim(),
+                normalizedCommand,
                 reportText,
                 MODEL,
                 finalMessage.usage?.input_tokens ?? null,
@@ -100,8 +126,10 @@ export async function POST(request) {
 
         return Response.json({
             success: true,
+            cached: false,
             id: result.rows[0].id,
             created_at: result.rows[0].created_at,
+            command: command.trim(),
             report: reportText,
             usage: finalMessage.usage,
         });
