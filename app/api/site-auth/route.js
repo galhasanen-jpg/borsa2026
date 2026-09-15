@@ -88,6 +88,30 @@ export async function POST(request) {
             return Response.json({ success: true });
         }
 
+        if (action === 'change_password') {
+            const { id, currentPassword, newPassword } = body;
+            if (!id || !currentPassword || !newPassword) {
+                return Response.json({ error: 'يرجى تعبئة جميع الحقول' }, { status: 400 });
+            }
+            if (newPassword.length < 6) {
+                return Response.json({ error: 'كلمة السر الجديدة يجب أن تكون 6 أحرف على الأقل' }, { status: 400 });
+            }
+
+            const result = await client.query(`SELECT password_hash FROM site_users WHERE id = $1`, [id]);
+            if (result.rows.length === 0) {
+                return Response.json({ error: 'الحساب غير موجود' }, { status: 404 });
+            }
+
+            const isValid = await bcrypt.compare(currentPassword, result.rows[0].password_hash);
+            if (!isValid) {
+                return Response.json({ error: 'كلمة السر الحالية غير صحيحة' }, { status: 401 });
+            }
+
+            const newHash = await bcrypt.hash(newPassword, 10);
+            await client.query(`UPDATE site_users SET password_hash = $1 WHERE id = $2`, [newHash, id]);
+            return Response.json({ success: true });
+        }
+
         if (action === 'login') {
             const { email, password } = body;
             if (!email || !password) {

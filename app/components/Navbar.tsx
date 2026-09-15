@@ -62,6 +62,9 @@ export default function Navbar() {
           {siteUser ? (
             <div className="hidden sm:flex items-center gap-2 text-xs">
               <span className="text-gray-400">{lang === 'ar' ? 'مرحباً' : 'Hi'}, {siteUser.name}</span>
+              <a href="/account" className="text-gray-500 hover:text-orange-500 transition">
+                {lang === 'ar' ? 'حسابي' : 'My Account'}
+              </a>
               <button
                 onClick={handleLogout}
                 className="text-gray-500 hover:text-orange-500 transition"
@@ -134,12 +137,21 @@ export default function Navbar() {
           ))}
 
           {siteUser ? (
-            <button
-              onClick={handleLogout}
-              className="px-6 py-5 text-lg font-medium text-right text-gray-400 hover:text-white hover:bg-gray-900 transition"
-            >
-              {lang === 'ar' ? `خروج (${siteUser.name})` : `Logout (${siteUser.name})`}
-            </button>
+            <>
+              <a
+                href="/account"
+                onClick={() => setMenuOpen(false)}
+                className="px-6 py-5 text-lg font-medium text-right text-gray-400 hover:text-white hover:bg-gray-900 transition border-b border-gray-800"
+              >
+                {lang === 'ar' ? `حسابي (${siteUser.name})` : `My Account (${siteUser.name})`}
+              </a>
+              <button
+                onClick={handleLogout}
+                className="px-6 py-5 text-lg font-medium text-right text-gray-400 hover:text-white hover:bg-gray-900 transition"
+              >
+                {lang === 'ar' ? 'خروج' : 'Logout'}
+              </button>
+            </>
           ) : (
             <a
               href="/signin"
