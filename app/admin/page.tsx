@@ -143,6 +143,14 @@ const L = {
     confirmDeleteAccount: 'هل أنت متأكد من حذف هذا الحساب نهائياً؟',
     activeStatus: 'مفعّل',
     rejectedStatus: 'مرفوض',
+    addAccountTitle: '➕ إضافة حساب مباشرة (بدون إيميل تفعيل)',
+    addAccountDesc: 'حل مؤقت ريثما يتوفر دومين موثّق لإرسال الإيميلات — الحساب يُنشأ نشطاً فوراً ويقدر المستخدم يغيّر كلمة السر بنفسه لاحقاً من "حسابي".',
+    addAccountNamePh: 'اسم المستخدم',
+    addAccountEmailPh: 'example@email.com',
+    addAccountPasswordPh: 'كلمة سر مبدئية (6 أحرف على الأقل)',
+    addAccountSubmit: 'إنشاء الحساب',
+    addAccountFillRequired: '❌ يرجى تعبئة كل الحقول',
+    addAccountSaved: (email: string) => `✅ تم إنشاء الحساب لـ ${email} — ابعتله الإيميل وكلمة السر يدوياً`,
 
     // إيميلات (تبقى بالعربي دائماً بغض النظر عن لغة واجهة الإدارة، لأن المستلم قد لا يستخدم نفس اللغة)
     accountApprovedEmail: (name: string) => ({
@@ -302,6 +310,14 @@ const L = {
     confirmDeleteAccount: 'Are you sure you want to permanently delete this account?',
     activeStatus: 'Active',
     rejectedStatus: 'Rejected',
+    addAccountTitle: '➕ Add account directly (no activation email)',
+    addAccountDesc: 'Temporary workaround until a verified domain is set up for sending emails — the account is created active immediately, and the user can change their own password later from "My Account".',
+    addAccountNamePh: 'User name',
+    addAccountEmailPh: 'example@email.com',
+    addAccountPasswordPh: 'Initial password (at least 6 characters)',
+    addAccountSubmit: 'Create Account',
+    addAccountFillRequired: '❌ Please fill in all fields',
+    addAccountSaved: (email: string) => `✅ Account created for ${email} — send them the email and password manually`,
 
     accountApprovedEmail: (name: string) => ({
       subject: 'تم تفعيل حسابك في بورصة 2026',
@@ -380,6 +396,9 @@ export default function AdminPage() {
   // بيانات حسابات الزوار العامة
   const [activeSiteUsers, setActiveSiteUsers] = useState<any[]>([]);
   const [pendingSiteUsers, setPendingSiteUsers] = useState<any[]>([]);
+  const [addAccountForm, setAddAccountForm] = useState({ name: '', email: '', password: '' });
+  const [addAccountMessage, setAddAccountMessage] = useState('');
+  const [addAccountLoading, setAddAccountLoading] = useState(false);
 
   // محلل AI
   const [aiCommand, setAiCommand] = useState('');
@@ -483,6 +502,29 @@ export default function AdminPage() {
     if (!confirm(t.aiConfirmDelete)) return;
     await fetch(`/api/ai-analyst/reports?id=${id}`, { method: 'DELETE' });
     fetchAiReports();
+  }
+
+  async function handleAddAccountDirectly() {
+    if (!addAccountForm.name.trim() || !addAccountForm.email.trim() || !addAccountForm.password) {
+      setAddAccountMessage(t.addAccountFillRequired);
+      return;
+    }
+    setAddAccountLoading(true);
+    const res = await fetch('/api/site-users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(addAccountForm),
+    });
+    const data = await res.json();
+    setAddAccountLoading(false);
+    if (data.success) {
+      setAddAccountMessage(t.addAccountSaved(data.user.email));
+      setAddAccountForm({ name: '', email: '', password: '' });
+      fetchSiteUsers();
+      setTimeout(() => setAddAccountMessage(''), 6000);
+    } else {
+      setAddAccountMessage(`❌ ${data.error}`);
+    }
   }
 
   async function fetchSiteUsers() {
@@ -1262,6 +1304,47 @@ export default function AdminPage() {
         {/* تبويب حسابات الزوار */}
         {activeTab === 'visitors' && (
           <div className="space-y-6">
+
+            {/* إضافة حساب مباشرة - حل مؤقت لحين توفر دومين موثّق للإيميلات */}
+            <div className="bg-gray-900 border border-orange-800 rounded-lg p-4">
+              <h2 className="text-orange-500 font-bold mb-1">{t.addAccountTitle}</h2>
+              <p className="text-gray-500 text-xs mb-4">{t.addAccountDesc}</p>
+
+              {addAccountMessage && (
+                <div className={`p-2 rounded mb-3 text-xs ${addAccountMessage.startsWith('✅') ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'}`}>
+                  {addAccountMessage}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
+                <input
+                  value={addAccountForm.name}
+                  onChange={e => setAddAccountForm({ ...addAccountForm, name: e.target.value })}
+                  placeholder={t.addAccountNamePh}
+                  className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 text-xs"
+                />
+                <input
+                  value={addAccountForm.email}
+                  onChange={e => setAddAccountForm({ ...addAccountForm, email: e.target.value })}
+                  placeholder={t.addAccountEmailPh}
+                  className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 text-xs"
+                />
+                <input
+                  type="text"
+                  value={addAccountForm.password}
+                  onChange={e => setAddAccountForm({ ...addAccountForm, password: e.target.value })}
+                  placeholder={t.addAccountPasswordPh}
+                  className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 text-xs"
+                />
+              </div>
+              <button
+                onClick={handleAddAccountDirectly}
+                disabled={addAccountLoading}
+                className="bg-orange-500 text-black px-4 py-2 rounded text-xs font-bold hover:bg-orange-600 transition disabled:opacity-50"
+              >
+                {t.addAccountSubmit}
+              </button>
+            </div>
 
             {/* طلبات معلقة (أكدوا إيميلهم وينتظرون الموافقة) */}
             {pendingSiteUsers.length > 0 && (

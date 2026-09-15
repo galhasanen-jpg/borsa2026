@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifySession, SESSION_COOKIE_NAME, GUEST_COOKIE_NAME } from './app/lib/session';
 
 // الأقسام دي تتطلب حساب حقيقي مسجّل دخول (الدخول كزائر لا يكفي للوصول لها)
-const PROTECTED_PATHS = ['/daily-briefing', '/dashboard', '/analysts'];
+const PROTECTED_PATHS = ['/daily-briefing', '/dashboard', '/analysts', '/account'];
 // صفحات إنشاء/تفعيل/دخول الحساب تبقى مفتوحة دائماً، وإلا يستحيل الوصول لها أصلاً
 const PUBLIC_PATHS = ['/signin', '/signup', '/verify-email'];
 
