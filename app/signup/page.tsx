@@ -22,6 +22,7 @@ const L = {
     signIn: 'تسجيل الدخول',
     errFill: '❌ يرجى تعبئة كل الحقول',
     errMatch: '❌ كلمة السر غير متطابقة',
+    errEmailSend: '⚠️ تم إنشاء الحساب لكن تعذّر إرسال إيميل التفعيل — تواصل مع الإدارة',
     emailSubject: 'كود تأكيد إيميلك في بورصة 2026',
     emailBody: (name: string, code: string) => `
       <div dir="rtl" style="font-family: Arial; padding: 20px; background: #0a0a0a; color: #fff;">
@@ -49,6 +50,7 @@ const L = {
     signIn: 'Sign in',
     errFill: '❌ Please fill in all fields',
     errMatch: '❌ Passwords do not match',
+    errEmailSend: '⚠️ Account created but the verification email could not be sent — contact the admin',
     emailSubject: 'Your email verification code for Borsa 2026',
     emailBody: (name: string, code: string) => `
       <div dir="ltr" style="font-family: Arial; padding: 20px; background: #0a0a0a; color: #fff;">
@@ -87,7 +89,7 @@ export default function SignupPage() {
     const data = await res.json();
 
     if (data.success) {
-      await fetch('/api/send-email', {
+      const emailRes = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -96,7 +98,12 @@ export default function SignupPage() {
           html: t.emailBody(data.name, data.code),
         })
       });
+      const emailData = await emailRes.json();
       setLoading(false);
+      if (!emailRes.ok || emailData.error) {
+        setMessage(t.errEmailSend);
+        return;
+      }
       window.location.href = `/verify-email?id=${data.id}`;
     } else {
       setLoading(false);

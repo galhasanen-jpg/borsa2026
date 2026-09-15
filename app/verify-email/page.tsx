@@ -17,6 +17,7 @@ const L = {
     resending: 'جاري الإرسال...',
     errCode: '❌ يرجى إدخال الكود',
     resendSuccess: '✅ تم إرسال كود جديد على إيميلك',
+    resendEmailFailed: '⚠️ تعذّر إرسال الإيميل — تواصل مع الإدارة',
     successTitle: 'تم تأكيد إيميلك!',
     successBody: 'طلبك الآن قيد المراجعة من إدارة الموقع. بمجرد الموافقة تقدر تسجل الدخول ببريدك وكلمة السر.',
     goSignin: 'الذهاب لتسجيل الدخول ←',
@@ -41,6 +42,7 @@ const L = {
     resending: 'Sending...',
     errCode: '❌ Please enter the code',
     resendSuccess: '✅ A new code has been sent to your email',
+    resendEmailFailed: '⚠️ Could not send the email — contact the admin',
     successTitle: 'Email Verified!',
     successBody: "Your request is now under review by the site admin. Once approved, you'll be able to sign in with your email and password.",
     goSignin: 'Go to Sign In ←',
@@ -99,7 +101,7 @@ function VerifyEmailContent() {
     const data = await res.json();
 
     if (data.success) {
-      await fetch('/api/send-email', {
+      const emailRes = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -108,7 +110,8 @@ function VerifyEmailContent() {
           html: t.emailBody(data.name, data.code),
         })
       });
-      setMessage(t.resendSuccess);
+      const emailData = await emailRes.json();
+      setMessage(!emailRes.ok || emailData.error ? t.resendEmailFailed : t.resendSuccess);
     } else {
       setMessage(`❌ ${data.error}`);
     }

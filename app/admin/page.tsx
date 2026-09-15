@@ -126,6 +126,7 @@ const L = {
     activeFollowers: (n: number) => `👥 المتابعون النشطون (${n})`,
     noActiveFollowers: 'لا يوجد متابعون نشطون حتى الآن',
     followerApproved: '✅ تم قبول المتابع وإرسال كود التفعيل على إيميله',
+    followerApprovedEmailFailed: '⚠️ تم قبول المتابع لكن تعذّر إرسال كود التفعيل بالإيميل',
     confirmRejectFollower: 'هل أنت متأكد من رفض هذا المتابع؟',
     followerRejected: '✅ تم رفض المتابع',
     planLabels: { premium: 'متميز', basic: 'أساسي', free: 'مجاني' } as Record<string, string>,
@@ -136,6 +137,7 @@ const L = {
     allAccounts: (n: number) => `🧑‍💻 كل الحسابات (${n})`,
     noAccountsYet: 'لا توجد حسابات مفعّلة أو مرفوضة بعد',
     accountApproved: '✅ تم قبول الحساب وإشعار صاحبه بالإيميل',
+    accountApprovedEmailFailed: '⚠️ تم قبول الحساب لكن تعذّر إشعار صاحبه بالإيميل',
     confirmRejectAccount: 'هل أنت متأكد من رفض هذا الحساب؟',
     accountRejected: '✅ تم رفض الحساب',
     confirmDeleteAccount: 'هل أنت متأكد من حذف هذا الحساب نهائياً؟',
@@ -284,6 +286,7 @@ const L = {
     activeFollowers: (n: number) => `👥 Active Followers (${n})`,
     noActiveFollowers: 'No active followers yet',
     followerApproved: "✅ Follower approved and activation code emailed",
+    followerApprovedEmailFailed: '⚠️ Follower approved but the activation email could not be sent',
     confirmRejectFollower: 'Are you sure you want to reject this follower?',
     followerRejected: '✅ Follower rejected',
     planLabels: { premium: 'Premium', basic: 'Basic', free: 'Free' } as Record<string, string>,
@@ -293,6 +296,7 @@ const L = {
     allAccounts: (n: number) => `🧑‍💻 All Accounts (${n})`,
     noAccountsYet: 'No activated or rejected accounts yet',
     accountApproved: '✅ Account approved and owner notified by email',
+    accountApprovedEmailFailed: '⚠️ Account approved but the owner could not be notified by email',
     confirmRejectAccount: 'Are you sure you want to reject this account?',
     accountRejected: '✅ Account rejected',
     confirmDeleteAccount: 'Are you sure you want to permanently delete this account?',
@@ -499,12 +503,13 @@ export default function AdminPage() {
     const data = await res.json();
     if (data.success) {
       const mail = t.accountApprovedEmail(name);
-      await fetch('/api/send-email', {
+      const emailRes = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ to: email, subject: mail.subject, html: mail.html })
       });
-      setMessage(t.accountApproved);
+      const emailData = await emailRes.json();
+      setMessage(!emailRes.ok || emailData.error ? t.accountApprovedEmailFailed : t.accountApproved);
       fetchSiteUsers();
       setTimeout(() => setMessage(''), 3000);
     }
@@ -749,12 +754,13 @@ export default function AdminPage() {
     const data = await res.json();
     if (data.success) {
       const mail = t.followerActivationEmail(name, data.code);
-      await fetch('/api/send-email', {
+      const emailRes = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ to: email, subject: mail.subject, html: mail.html })
       });
-      setMessage(t.followerApproved);
+      const emailData = await emailRes.json();
+      setMessage(!emailRes.ok || emailData.error ? t.followerApprovedEmailFailed : t.followerApproved);
       fetchFollowers();
       setTimeout(() => setMessage(''), 3000);
     }
