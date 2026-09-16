@@ -18,6 +18,7 @@ const L = {
     aiRun: '▶️ تشغيل التحليل',
     aiRunning: '⏳ جاري التحليل... قد يستغرق دقيقة أو أكثر',
     aiErrGeneric: '❌ تعذّر تنفيذ التحليل',
+    aiErrTimeoutHint: 'على الأغلب انتهت مهلة السيرفر لأن التحليل بياخد وقت طويل — جرّب تاني، ولو تكرر يبقى محتاج مراجعة إعدادات الاستضافة',
     aiHistory: 'التقارير السابقة',
     aiNoHistory: 'لا توجد تقارير سابقة',
     aiExpand: 'عرض كامل',
@@ -192,6 +193,7 @@ const L = {
     aiRun: '▶️ Run Analysis',
     aiRunning: '⏳ Analyzing... may take a minute or more',
     aiErrGeneric: '❌ Analysis failed',
+    aiErrTimeoutHint: 'Most likely the server timed out because the analysis takes a while — try again, and if it keeps happening the hosting settings need a look',
     aiHistory: 'Previous reports',
     aiNoHistory: 'No previous reports',
     aiExpand: 'View full',
@@ -484,7 +486,15 @@ export default function AdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ command: cmd, force: aiForce }),
       });
-      const data = await res.json();
+      let data: any;
+      try {
+        data = await res.json();
+      } catch (parseErr) {
+        // رد مش JSON (زي صفحة خطأ 504 من Vercel) — الأغلب انتهاء مهلة التحليل الطويل
+        setAiError(`${t.aiErrGeneric} (HTTP ${res.status}) — ${t.aiErrTimeoutHint}`);
+        setAiRunning(false);
+        return;
+      }
       if (data.success) {
         setAiCurrentReport(data);
         setAiCommand('');
@@ -492,8 +502,8 @@ export default function AdminPage() {
       } else {
         setAiError(data.error || t.aiErrGeneric);
       }
-    } catch (e) {
-      setAiError(t.aiErrGeneric);
+    } catch (e: any) {
+      setAiError(`${t.aiErrGeneric}${e?.message ? ` — ${e.message}` : ''}`);
     }
     setAiRunning(false);
   }
