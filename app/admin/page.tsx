@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useLanguage } from '../components/LanguageProvider';
+import AiReportView from '../components/AiReportView';
 
 const L = {
   ar: {
@@ -1477,7 +1478,7 @@ export default function AdminPage() {
                     ? t.aiCachedNote(new Date(aiCurrentReport.created_at).toLocaleString(t.dateLocale))
                     : t.aiFreshNote(new Date(aiCurrentReport.created_at).toLocaleString(t.dateLocale))}
                 </p>
-                <div className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">{aiCurrentReport.report}</div>
+                <AiReportView report={aiCurrentReport.report} />
               </div>
             )}
 
@@ -1493,9 +1494,13 @@ export default function AdminPage() {
                         <p className="text-white font-bold text-sm">{r.command}</p>
                         <span className="text-gray-500 text-xs whitespace-nowrap">{new Date(r.created_at).toLocaleString(t.dateLocale)}</span>
                       </div>
-                      <div className={`text-gray-300 text-xs leading-relaxed whitespace-pre-wrap ${aiExpanded[r.id] ? '' : 'line-clamp-3'}`}>
-                        {r.report}
-                      </div>
+                      {aiExpanded[r.id] ? (
+                        <AiReportView report={r.report} />
+                      ) : (
+                        <div className="text-gray-300 text-xs leading-relaxed whitespace-pre-wrap line-clamp-3" style={{ userSelect: 'none' }}>
+                          {r.report}
+                        </div>
+                      )}
                       <div className="flex gap-3 mt-2">
                         <button
                           onClick={() => setAiExpanded(prev => ({ ...prev, [r.id]: !prev[r.id] }))}

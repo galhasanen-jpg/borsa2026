@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '../../components/LanguageProvider';
 import DataError from '../../components/DataError';
+import AiReportView from '../../components/AiReportView';
 
 type Report = {
   id: number;
@@ -96,9 +97,13 @@ export default function AiAnalystPage() {
                     {new Date(r.created_at).toLocaleString(t.dateLocale)}
                   </span>
                 </div>
-                <div className={`text-gray-300 text-sm leading-relaxed whitespace-pre-wrap ${expanded[r.id] ? '' : 'line-clamp-4'}`}>
-                  {r.report}
-                </div>
+                {expanded[r.id] ? (
+                  <AiReportView report={r.report} />
+                ) : (
+                  <div className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap line-clamp-4" style={{ userSelect: 'none' }}>
+                    {r.report}
+                  </div>
+                )}
                 <button
                   onClick={() => setExpanded(prev => ({ ...prev, [r.id]: !prev[r.id] }))}
                   className="text-orange-500 text-xs font-bold mt-3 hover:text-orange-400 transition"
