@@ -5,7 +5,7 @@ import { AI_ANALYST_SYSTEM_PROMPT } from '../../../lib/ai-analyst-prompt';
 import { AI_REPORT_CACHE_DAYS, normalizeCommand } from '../../../lib/ai-analyst-cache';
 
 const MODEL = 'claude-opus-5';
-const MAX_PAUSE_RESUMES = 4;
+const MAX_PAUSE_RESUMES = 2;
 
 // رفعها لـ 800 فشل الـ deploy نفسه (خطة الحساب الحالية مش بتسمح بالقيمة دي —
 // Vercel بيرفض النشر بدل ما يحدّها تلقائياً زي ما كنا متوقعين). رجّعناها لآخر
@@ -64,18 +64,22 @@ export async function POST(request) {
 
     try {
         for (let i = 0; i < MAX_PAUSE_RESUMES; i++) {
-            // effort:'high' + 32K مخرجات + 20 بحث كان بياخد أكتر من 5 دقايق فعلياً (أطول من
-            // maxDuration نفسه) — قلّلنا الإعدادات عشان يخلص التحليل فعلياً بدل ما يتقطع
+            // خطة Vercel Hobby سقفها الصارم 300 ثانية (مفيش طريقة نتخطاها بالكود —
+            // رفع maxDuration فوقها بيفشّل الـ deploy نفسه). حتى effort:'medium' +20K
+            // مخرجات +10 بحث كان لسه بياخد أكتر من 300 ثانية، فده أقصى تقليص ممكن
+            // مع الحفاظ على تغطية كل أقسام المنهجية (بإيجاز شديد، شوف التوجيه في
+            // ai-analyst-prompt.js تحت "قيد تشغيلي صارم") — قرار المستخدم صراحةً
+            // اختيار التقليص المجاني بدل ترقية الخطة
             const stream = anthropic.messages.stream({
                 model: MODEL,
-                max_tokens: 20000,
+                max_tokens: 10000,
                 thinking: { type: 'adaptive', display: 'summarized' },
-                output_config: { effort: 'medium' },
+                output_config: { effort: 'low' },
                 system: [
                     { type: 'text', text: AI_ANALYST_SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } },
                 ],
                 tools: [
-                    { type: 'web_search_20260209', name: 'web_search', max_uses: 10 },
+                    { type: 'web_search_20260209', name: 'web_search', max_uses: 5 },
                 ],
                 messages,
             });
