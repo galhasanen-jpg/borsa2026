@@ -31,6 +31,8 @@ const L = {
     view: 'عرض ←',
     aiBadge: '🤖 AI',
     aiBio: 'محلل استثماري يعمل بالذكاء الاصطناعي — تحليل أساسي وفني وتقييم شامل لأسهم البورصة المصرية. قيد المعاينة الداخلية حالياً.',
+    guideTitle: '📖 الدليل العملي للمستثمر الجديد',
+    guideDesc: 'مذكرة تدريبية كاملة: كيف تحلل سهمًا في البورصة المصرية خطوة بخطوة — للقراءة داخل الموقع فقط',
   },
   en: {
     title: '👨‍💼 Analysts',
@@ -59,6 +61,8 @@ const L = {
     view: 'View →',
     aiBadge: '🤖 AI',
     aiBio: 'An AI-powered investment analyst — full fundamental, technical and valuation analysis for EGX stocks. Currently in internal preview.',
+    guideTitle: "📖 The New Investor's Practical Guide",
+    guideDesc: 'A full training memo: how to analyze an EGX stock step by step — in-site reading only',
   },
 };
 
@@ -138,6 +142,18 @@ export default function AnalystsPage() {
         {message && (
           <div className="bg-green-900 text-green-400 p-4 rounded-lg mb-6 text-sm">{message}</div>
         )}
+
+        {/* الدليل العملي للمستثمر الجديد */}
+        <a
+          href="/analysts/guide"
+          className="block bg-gradient-to-l from-orange-950 to-gray-900 border border-orange-700 rounded-xl p-4 mb-6 hover:border-orange-500 transition flex items-center justify-between gap-3 flex-wrap"
+        >
+          <div>
+            <h3 className="text-orange-500 font-bold text-sm">{t.guideTitle}</h3>
+            <p className="text-gray-400 text-xs mt-1">{t.guideDesc}</p>
+          </div>
+          <span className="text-orange-500 text-xs whitespace-nowrap">{t.view}</span>
+        </a>
 
         {/* نموذج التسجيل */}
         {showRegister && (
