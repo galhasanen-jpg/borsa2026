@@ -66,16 +66,18 @@ export async function POST(request) {
 
     try {
         for (let i = 0; i < MAX_PAUSE_RESUMES; i++) {
+            // effort:'high' + 32K مخرجات + 20 بحث كان بياخد أكتر من 5 دقايق فعلياً (أطول من
+            // maxDuration نفسه) — قلّلنا الإعدادات عشان يخلص التحليل فعلياً بدل ما يتقطع
             const stream = anthropic.messages.stream({
                 model: MODEL,
-                max_tokens: 32000,
+                max_tokens: 20000,
                 thinking: { type: 'adaptive', display: 'summarized' },
-                output_config: { effort: 'high' },
+                output_config: { effort: 'medium' },
                 system: [
                     { type: 'text', text: AI_ANALYST_SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } },
                 ],
                 tools: [
-                    { type: 'web_search_20260209', name: 'web_search', max_uses: 20 },
+                    { type: 'web_search_20260209', name: 'web_search', max_uses: 10 },
                 ],
                 messages,
             });
