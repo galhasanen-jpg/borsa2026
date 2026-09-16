@@ -7,12 +7,11 @@ import { AI_REPORT_CACHE_DAYS, normalizeCommand } from '../../../lib/ai-analyst-
 const MODEL = 'claude-opus-5';
 const MAX_PAUSE_RESUMES = 4;
 
-// جرّبنا maxDuration=300 فعلياً على الموقع المنشور، والفانكشن قُطعت (504) بعد
-// 300 ثانية بالظبط — لأن 300 ثانية هي القيمة الافتراضية لـ Fluid Compute على كل
-// الخطط، فطلب "300" صراحة ما غيّرش حاجة. الخطط المدفوعة (Pro/Enterprise) بتسمح
-// برفعها لحد 800 ثانية صراحة — لو الخطة Hobby، Vercel هيحدّها تلقائياً لسقف
-// الخطة الفعلي مهما كانت القيمة هنا
-export const maxDuration = 800;
+// رفعها لـ 800 فشل الـ deploy نفسه (خطة الحساب الحالية مش بتسمح بالقيمة دي —
+// Vercel بيرفض النشر بدل ما يحدّها تلقائياً زي ما كنا متوقعين). رجّعناها لآخر
+// قيمة نشرت بنجاح (300، وهي أصلاً القيمة الافتراضية) لحد ما نتأكد من سقف
+// الخطة الحقيقي من رسالة الخطأ في لوحة Vercel
+export const maxDuration = 300;
 
 export async function POST(request) {
     if (!isAdminRequest(request)) {
