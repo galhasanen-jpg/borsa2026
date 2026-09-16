@@ -3,9 +3,10 @@ import { getConnection } from '../../../lib/db';
 import { isAdminRequest } from '../../../lib/admin-auth';
 import { AI_ANALYST_SYSTEM_PROMPT } from '../../../lib/ai-analyst-prompt';
 import { AI_REPORT_CACHE_DAYS, normalizeCommand } from '../../../lib/ai-analyst-cache';
+import { resolveStockMentions, buildStockReferenceNote } from '../../../lib/ai-analyst-stock-lookup';
 
 const MODEL = 'claude-opus-5';
-const MAX_PAUSE_RESUMES = 2;
+const MAX_PAUSE_RESUMES = 3;
 
 // رفعها لـ 800 فشل الـ deploy نفسه (خطة الحساب الحالية مش بتسمح بالقيمة دي —
 // Vercel بيرفض النشر بدل ما يحدّها تلقائياً زي ما كنا متوقعين). رجّعناها لآخر
@@ -57,29 +58,43 @@ export async function POST(request) {
         return Response.json({ error: 'مفتاح ANTHROPIC_API_KEY غير مُعرّف على السيرفر' }, { status: 500 });
     }
 
+    // نربط أي رمز/اسم شائع مذكور في الأمر بالرمز الرسمي المؤكد من جدول أسهمنا
+    // (نفس الجدول اللي بيغذي مزامنة Yahoo الحقيقية) — عشان أداة البحث تدوّر بالرمز
+    // الصحيح (مثال: COMI) مش بالاسم الشائع (CIB) اللي ممكن يودّيها لبيانات قديمة/غلط
+    let stockRefNote = '';
+    let stocksLookupClient;
+    try {
+        stocksLookupClient = await getConnection();
+        const stocksResult = await stocksLookupClient.query(`SELECT symbol, name, name_en, isin FROM stocks`);
+        const matchedStocks = resolveStockMentions(command, stocksResult.rows);
+        stockRefNote = buildStockReferenceNote(matchedStocks);
+    } catch (err) {
+        // فشل جلب قائمة الأسهم المرجعية ما يوقفش التحليل — يكمل بدون هذه الإضافة
+    } finally {
+        if (stocksLookupClient) stocksLookupClient.release();
+    }
+
     const anthropic = new Anthropic();
 
-    const messages = [{ role: 'user', content: command.trim() }];
+    const messages = [{ role: 'user', content: `${stockRefNote}${command.trim()}` }];
     let finalMessage;
 
     try {
         for (let i = 0; i < MAX_PAUSE_RESUMES; i++) {
-            // خطة Vercel Hobby سقفها الصارم 300 ثانية (مفيش طريقة نتخطاها بالكود —
-            // رفع maxDuration فوقها بيفشّل الـ deploy نفسه). حتى effort:'medium' +20K
-            // مخرجات +10 بحث كان لسه بياخد أكتر من 300 ثانية، فده أقصى تقليص ممكن
-            // مع الحفاظ على تغطية كل أقسام المنهجية (بإيجاز شديد، شوف التوجيه في
-            // ai-analyst-prompt.js تحت "قيد تشغيلي صارم") — قرار المستخدم صراحةً
-            // اختيار التقليص المجاني بدل ترقية الخطة
+            // أول تجربة فعلية (سهم مغطّى إعلامياً زي CIB) خلصت في ~80 ثانية بس من
+            // أصل 300 المتاحة — رفعنا الإعدادات تاني لأقصى جودة ممكنة في حدود
+            // الميزانية دي، مع الإبقاء على توجيه الإيجاز في ai-analyst-prompt.js
+            // (هو اللي فعلياً وفّر الوقت، مش الأرقام لوحدها)
             const stream = anthropic.messages.stream({
                 model: MODEL,
-                max_tokens: 10000,
+                max_tokens: 18000,
                 thinking: { type: 'adaptive', display: 'summarized' },
-                output_config: { effort: 'low' },
+                output_config: { effort: 'medium' },
                 system: [
                     { type: 'text', text: AI_ANALYST_SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } },
                 ],
                 tools: [
-                    { type: 'web_search_20260209', name: 'web_search', max_uses: 5 },
+                    { type: 'web_search_20260209', name: 'web_search', max_uses: 8 },
                 ],
                 messages,
             });
