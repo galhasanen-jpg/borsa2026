@@ -7,6 +7,14 @@ import { AI_REPORT_CACHE_DAYS, normalizeCommand } from '../../../lib/ai-analyst-
 const MODEL = 'claude-opus-5';
 const MAX_PAUSE_RESUMES = 4;
 
+// تحليل عميق (بحث حي + thinking بجودة عالية) بياخد دقيقة لحد كام دقيقة —
+// أطول بكتير من مهلة الـ serverless function الافتراضية (10 ثانية على خطة Hobby،
+// 60 ثانية افتراضياً حتى على Pro من غير الإعداد ده). نطلب أقصى مهلة ممكنة؛
+// Vercel بيحددها تلقائياً على سقف الخطة الفعلي (Hobby: 60 ثانية كحد أقصى مهما
+// كانت القيمة هنا — لو التحليل لسه بيفشل بعد النشر، الحل يبقى ترقية الخطة أو
+// تقليل جودة/طول التحليل)
+export const maxDuration = 300;
+
 export async function POST(request) {
     if (!isAdminRequest(request)) {
         return Response.json({ error: 'هذه الميزة متاحة للمشرف فقط حالياً' }, { status: 401 });
