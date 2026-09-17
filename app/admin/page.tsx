@@ -25,6 +25,7 @@ const L = {
     aiExpand: 'عرض كامل',
     aiCollapse: 'إخفاء',
     aiDelete: 'حذف',
+    aiViewPdf: '📄 عرض PDF',
     aiConfirmDelete: 'هل تريد حذف هذا التقرير؟',
     aiForceLabel: 'تحديث إجباري (تجاهل النسخة المحفوظة وأعد التحليل من جديد — له تكلفة)',
     aiCachedNote: (date: string) => `♻️ تقرير محفوظ من ${date} — لم يتم استدعاء Claude (بدون تكلفة جديدة). نفس الأمر يبقى محفوظاً 30 يوم تلقائياً.`,
@@ -200,6 +201,7 @@ const L = {
     aiExpand: 'View full',
     aiCollapse: 'Collapse',
     aiDelete: 'Delete',
+    aiViewPdf: '📄 View PDF',
     aiConfirmDelete: 'Delete this report?',
     aiForceLabel: 'Force refresh (ignore the cached version and re-run the analysis — has a cost)',
     aiCachedNote: (date: string) => `♻️ Cached report from ${date} — Claude was not called (no new cost). The same command stays cached for 30 days automatically.`,
@@ -1473,11 +1475,21 @@ export default function AdminPage() {
 
             {aiCurrentReport && (
               <div className="bg-gray-900 border border-orange-700 rounded-lg p-4">
-                <p className={`text-xs font-bold mb-3 ${aiCurrentReport.cached ? 'text-blue-400' : 'text-green-400'}`}>
-                  {aiCurrentReport.cached
-                    ? t.aiCachedNote(new Date(aiCurrentReport.created_at).toLocaleString(t.dateLocale))
-                    : t.aiFreshNote(new Date(aiCurrentReport.created_at).toLocaleString(t.dateLocale))}
-                </p>
+                <div className="flex justify-between items-center gap-3 flex-wrap mb-3">
+                  <p className={`text-xs font-bold ${aiCurrentReport.cached ? 'text-blue-400' : 'text-green-400'}`}>
+                    {aiCurrentReport.cached
+                      ? t.aiCachedNote(new Date(aiCurrentReport.created_at).toLocaleString(t.dateLocale))
+                      : t.aiFreshNote(new Date(aiCurrentReport.created_at).toLocaleString(t.dateLocale))}
+                  </p>
+                  <a
+                    href={`/api/ai-analyst/pdf?id=${aiCurrentReport.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-orange-500 text-xs font-bold hover:text-orange-400 transition border border-orange-700 rounded px-2 py-1"
+                  >
+                    {t.aiViewPdf}
+                  </a>
+                </div>
                 <AiReportView report={aiCurrentReport.report} />
               </div>
             )}
@@ -1508,6 +1520,14 @@ export default function AdminPage() {
                         >
                           {aiExpanded[r.id] ? t.aiCollapse : t.aiExpand}
                         </button>
+                        <a
+                          href={`/api/ai-analyst/pdf?id=${r.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                        >
+                          {t.aiViewPdf}
+                        </a>
                         <button
                           onClick={() => handleDeleteAiReport(r.id)}
                           className="text-red-500 text-xs font-bold hover:text-red-400 transition"
