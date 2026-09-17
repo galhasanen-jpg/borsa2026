@@ -10,9 +10,15 @@ import puppeteer from 'puppeteer-core';
 
 const LOCAL_CHROME_PATH = process.env.LOCAL_CHROME_PATH || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 
+// مهم: VERCEL_URL بيشاور على رابط الـ deployment الفريد (وليس دومين الإنتاج
+// المعروض للزوار)، وده غالباً محمي بمصادقة Vercel الخاصة بالـ deployments
+// (Vercel Authentication) — أي طلب سيرفر-لسيرفر ليه بيرجّع صفحة تسجيل دخول
+// Vercel نفسها بدل الملف، فيبوظ استخراج الـ tar. لازم نستخدم دومين الإنتاج
+// العلني (اللي بيفتحه الزوار فعلاً) بدل ما نعتمد على VERCEL_URL.
 function siteBaseUrl() {
-    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
     if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+    if (process.env.VERCEL_PROJECT_PRODUCTION_URL) return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
     return null;
 }
 
