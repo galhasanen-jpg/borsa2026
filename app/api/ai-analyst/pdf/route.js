@@ -56,12 +56,17 @@ export async function GET(request) {
 
         const pdfBuffer = await htmlToPdfBuffer(html);
 
+        // تنزيل فعلي (attachment) متاح للأدمن فقط — عرض المستخدمين العاديين يفضل inline
+        // زي ما هو (محمي بحساب حقيقي + علامة مائية، بدون تنزيل صريح مباشر)
+        const download = searchParams.get('download') === '1' && isAdmin;
+        const disposition = download ? 'attachment' : 'inline';
+
         return new Response(pdfBuffer, {
             status: 200,
             headers: {
                 'Content-Type': 'application/pdf',
                 'Cache-Control': 'private, no-store',
-                'Content-Disposition': `inline; filename="ai-report-${id}.pdf"`,
+                'Content-Disposition': `${disposition}; filename="ai-report-${id}.pdf"`,
             },
         });
     } catch (err) {

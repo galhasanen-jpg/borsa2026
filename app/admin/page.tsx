@@ -26,6 +26,8 @@ const L = {
     aiCollapse: 'إخفاء',
     aiDelete: 'حذف',
     aiViewPdf: '📄 عرض PDF',
+    aiDownloadPdf: '⬇️ تنزيل PDF',
+    aiDownloadTxt: '⬇️ تنزيل TXT',
     aiConfirmDelete: 'هل تريد حذف هذا التقرير؟',
     aiForceLabel: 'تحديث إجباري (تجاهل النسخة المحفوظة وأعد التحليل من جديد — له تكلفة)',
     aiCachedNote: (date: string) => `♻️ تقرير محفوظ من ${date} — لم يتم استدعاء Claude (بدون تكلفة جديدة). نفس الأمر يبقى محفوظاً 30 يوم تلقائياً.`,
@@ -202,6 +204,8 @@ const L = {
     aiCollapse: 'Collapse',
     aiDelete: 'Delete',
     aiViewPdf: '📄 View PDF',
+    aiDownloadPdf: '⬇️ Download PDF',
+    aiDownloadTxt: '⬇️ Download TXT',
     aiConfirmDelete: 'Delete this report?',
     aiForceLabel: 'Force refresh (ignore the cached version and re-run the analysis — has a cost)',
     aiCachedNote: (date: string) => `♻️ Cached report from ${date} — Claude was not called (no new cost). The same command stays cached for 30 days automatically.`,
@@ -408,6 +412,7 @@ export default function AdminPage() {
   // محلل AI
   const [aiCommand, setAiCommand] = useState('');
   const [aiRunning, setAiRunning] = useState(false);
+  const [aiStatusMessage, setAiStatusMessage] = useState('');
   const [aiError, setAiError] = useState('');
   const [aiCurrentReport, setAiCurrentReport] = useState<any>(null);
   const [aiForce, setAiForce] = useState(false);
@@ -482,6 +487,7 @@ export default function AdminPage() {
     if (!cmd) return;
     setAiRunning(true);
     setAiError('');
+    setAiStatusMessage('');
     setAiCurrentReport(null);
     try {
       const res = await fetch('/api/ai-analyst/analyze', {
@@ -489,25 +495,48 @@ export default function AdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ command: cmd, force: aiForce }),
       });
-      let data: any;
-      try {
-        data = await res.json();
-      } catch (parseErr) {
-        // رد مش JSON (زي صفحة خطأ 504 من Vercel) — الأغلب انتهاء مهلة التحليل الطويل
-        setAiError(`${t.aiErrGeneric} (HTTP ${res.status}) — ${t.aiErrTimeoutHint}`);
+
+      if (!res.ok || !res.body) {
+        // رد بدون stream (خطأ مبكر زي 401/400)، أو رد مش JSON (زي صفحة خطأ 504 من Vercel)
+        try {
+          const data = await res.json();
+          setAiError(data.error || t.aiErrGeneric);
+        } catch {
+          setAiError(`${t.aiErrGeneric} (HTTP ${res.status}) — ${t.aiErrTimeoutHint}`);
+        }
         setAiRunning(false);
         return;
       }
-      if (data.success) {
-        setAiCurrentReport(data);
-        setAiCommand('');
-        fetchAiReports();
-      } else {
-        setAiError(data.error || t.aiErrGeneric);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          let evt: any;
+          try { evt = JSON.parse(line); } catch { continue; }
+          if (evt.type === 'status') {
+            setAiStatusMessage(evt.message);
+          } else if (evt.type === 'result') {
+            setAiCurrentReport(evt);
+            setAiCommand('');
+            fetchAiReports();
+          } else if (evt.type === 'error') {
+            setAiError(evt.error || t.aiErrGeneric);
+          }
+        }
       }
     } catch (e: any) {
       setAiError(`${t.aiErrGeneric}${e?.message ? ` — ${e.message}` : ''}`);
     }
+    setAiStatusMessage('');
     setAiRunning(false);
   }
 
@@ -1471,6 +1500,13 @@ export default function AdminPage() {
                 <input type="checkbox" checked={aiForce} onChange={e => setAiForce(e.target.checked)} disabled={aiRunning} />
                 {t.aiForceLabel}
               </label>
+
+              {aiRunning && aiStatusMessage && (
+                <div className="bg-gray-900 border border-orange-800 rounded-lg px-3 py-2 text-orange-400 text-xs flex items-center gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                  {aiStatusMessage}
+                </div>
+              )}
             </div>
 
             {aiCurrentReport && (
@@ -1481,14 +1517,28 @@ export default function AdminPage() {
                       ? t.aiCachedNote(new Date(aiCurrentReport.created_at).toLocaleString(t.dateLocale))
                       : t.aiFreshNote(new Date(aiCurrentReport.created_at).toLocaleString(t.dateLocale))}
                   </p>
-                  <a
-                    href={`/api/ai-analyst/pdf?id=${aiCurrentReport.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-orange-500 text-xs font-bold hover:text-orange-400 transition border border-orange-700 rounded px-2 py-1"
-                  >
-                    {t.aiViewPdf}
-                  </a>
+                  <div className="flex gap-2 flex-wrap">
+                    <a
+                      href={`/api/ai-analyst/pdf?id=${aiCurrentReport.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-orange-500 text-xs font-bold hover:text-orange-400 transition border border-orange-700 rounded px-2 py-1"
+                    >
+                      {t.aiViewPdf}
+                    </a>
+                    <a
+                      href={`/api/ai-analyst/pdf?id=${aiCurrentReport.id}&download=1`}
+                      className="text-orange-500 text-xs font-bold hover:text-orange-400 transition border border-orange-700 rounded px-2 py-1"
+                    >
+                      {t.aiDownloadPdf}
+                    </a>
+                    <a
+                      href={`/api/ai-analyst/reports?id=${aiCurrentReport.id}&download=1`}
+                      className="text-orange-500 text-xs font-bold hover:text-orange-400 transition border border-orange-700 rounded px-2 py-1"
+                    >
+                      {t.aiDownloadTxt}
+                    </a>
+                  </div>
                 </div>
                 <AiReportView report={aiCurrentReport.report} />
               </div>
@@ -1527,6 +1577,18 @@ export default function AdminPage() {
                           className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
                         >
                           {t.aiViewPdf}
+                        </a>
+                        <a
+                          href={`/api/ai-analyst/pdf?id=${r.id}&download=1`}
+                          className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                        >
+                          {t.aiDownloadPdf}
+                        </a>
+                        <a
+                          href={`/api/ai-analyst/reports?id=${r.id}&download=1`}
+                          className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                        >
+                          {t.aiDownloadTxt}
                         </a>
                         <button
                           onClick={() => handleDeleteAiReport(r.id)}

@@ -5,6 +5,9 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     const limit = Math.min(parseInt(searchParams.get('limit')) || 30, 100);
+    // تنزيل النص الخام (.txt) متاح للأدمن فقط — باقي المستخدمين بيشوفوا التقرير منسّقاً
+    // (AiReportView) أو PDF داخل الموقع، من غير تنزيل مباشر لنص خام
+    const wantsDownload = searchParams.get('download') === '1' && isAdminRequest(request);
 
     let client;
     try {
@@ -17,6 +20,17 @@ export async function GET(request) {
             );
             if (result.rows.length === 0) {
                 return Response.json({ error: 'not found' }, { status: 404 });
+            }
+            if (wantsDownload) {
+                const row = result.rows[0];
+                return new Response(row.report, {
+                    status: 200,
+                    headers: {
+                        'Content-Type': 'text/plain; charset=utf-8',
+                        'Cache-Control': 'private, no-store',
+                        'Content-Disposition': `attachment; filename="ai-report-${row.id}.txt"`,
+                    },
+                });
             }
             return Response.json(result.rows[0]);
         }
