@@ -2,6 +2,8 @@
 // كامل جاهز للطباعة كـ PDF — نسخة سيرفر-سايد بديلة عن المكوّن لأن مسار توليد
 // الـ PDF Node route عادي، مش React component.
 
+import { CAIRO_ARABIC_WOFF2_BASE64, CAIRO_LATIN_WOFF2_BASE64 } from './pdf-fonts.js';
+
 function escapeHtml(text) {
     return String(text)
         .replace(/&/g, '&amp;')
@@ -99,10 +101,24 @@ export function reportToPdfHtml({ command, report, createdAt, model, watermarkLi
 <head>
 <meta charset="utf-8">
 <style>
+  @font-face {
+    font-family: 'Cairo';
+    font-weight: 400 700;
+    font-style: normal;
+    src: url(data:font/woff2;base64,${CAIRO_ARABIC_WOFF2_BASE64}) format('woff2');
+    unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFC, U+200C-200E;
+  }
+  @font-face {
+    font-family: 'Cairo';
+    font-weight: 400 700;
+    font-style: normal;
+    src: url(data:font/woff2;base64,${CAIRO_LATIN_WOFF2_BASE64}) format('woff2');
+    unicode-range: U+0000-00FF, U+2000-206F;
+  }
   @page { size: A4; margin: 22mm 16mm 18mm 16mm; }
   * { box-sizing: border-box; }
   body {
-    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
     direction: rtl;
     text-align: right;
     color: #1a1a1a;

@@ -49,6 +49,10 @@ export async function htmlToPdfBuffer(html) {
     try {
         const page = await browser.newPage();
         await page.setContent(html, { waitUntil: 'networkidle0' });
+        // الخط العربي المضمّن (data URI) بيتحمّل async — لازم ننتظره فعلياً
+        // قبل الطباعة، وإلا الـ PDF بيتولّد بخط النظام الافتراضي (مفيش عربي
+        // في بيئة Chromium على Vercel، فالنص كان بيطلع مكسور).
+        await page.evaluate(() => document.fonts.ready);
         const pdf = await page.pdf({ format: 'A4', printBackground: true });
         return pdf;
     } finally {
