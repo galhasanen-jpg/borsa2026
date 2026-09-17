@@ -58,18 +58,33 @@ export async function POST(request) {
         return Response.json({ error: 'مفتاح ANTHROPIC_API_KEY غير مُعرّف على السيرفر' }, { status: 500 });
     }
 
-    // نربط أي رمز/اسم شائع مذكور في الأمر بالرمز الرسمي المؤكد من جدول أسهمنا
-    // (نفس الجدول اللي بيغذي مزامنة Yahoo الحقيقية) — عشان أداة البحث تدوّر بالرمز
-    // الصحيح (مثال: COMI) مش بالاسم الشائع (CIB) اللي ممكن يودّيها لبيانات قديمة/غلط
+    // نربط أي رمز/اسم شائع مذكور في الأمر بالرمز الرسمي المؤكد من جدول أسهمنا،
+    // ونجيب سعره الحالي الفعلي من نفس نظام المزامنة الحقيقي — بحث Claude العام كان
+    // بيرجّع سعراً قديماً (نسخة مؤرشفة من صفحة Yahoo) بدل السعر اللحظي، فبنغنيه عن
+    // البحث عن السعر خالص ونمده بالرقم الموثوق مباشرة
     let stockRefNote = '';
     let stocksLookupClient;
     try {
         stocksLookupClient = await getConnection();
         const stocksResult = await stocksLookupClient.query(`SELECT symbol, name, name_en, isin FROM stocks`);
         const matchedStocks = resolveStockMentions(command, stocksResult.rows);
+
+        if (matchedStocks.length > 0) {
+            const symbols = matchedStocks.map(s => s.symbol);
+            const pricesResult = await stocksLookupClient.query(
+                `SELECT symbol, price, change_percent, quote_time FROM stock_prices WHERE symbol = ANY($1)`,
+                [symbols]
+            );
+            const priceBySymbol = new Map(pricesResult.rows.map(r => [r.symbol, r]));
+            for (const s of matchedStocks) {
+                const p = priceBySymbol.get(s.symbol);
+                if (p) Object.assign(s, { price: p.price, change_percent: p.change_percent, quote_time: p.quote_time });
+            }
+        }
+
         stockRefNote = buildStockReferenceNote(matchedStocks);
     } catch (err) {
-        // فشل جلب قائمة الأسهم المرجعية ما يوقفش التحليل — يكمل بدون هذه الإضافة
+        // فشل جلب قائمة الأسهم/الأسعار المرجعية ما يوقفش التحليل — يكمل بدون هذه الإضافة
     } finally {
         if (stocksLookupClient) stocksLookupClient.release();
     }
