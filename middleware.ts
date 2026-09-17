@@ -61,5 +61,8 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|api/).*)'],
+  // bin/ مستثنى كمان: أصل ثابت (ملف Chromium لتوليد الـ PDF) بيتجاب بطلب سيرفر-لسيرفر
+  // بدون أي كوكيز، فلو الـ middleware اعترضه هيحوّله لصفحة /signin (HTML) بدل الملف
+  // نفسه، وده اللي كان بيكسّر استخراج الـ tar فعلياً
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|bin/|api/).*)'],
 };
