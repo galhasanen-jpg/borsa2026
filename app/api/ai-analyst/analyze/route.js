@@ -12,6 +12,10 @@ const PEERS_PER_STOCK = 6;
 // التجربة الفعلية أثبتت إن سهم مغطّى إعلامياً بيخلص في 100-150 ثانية من أصل الـ 300
 // المتاحة على خطة Hobby — رفعنا الإعدادات هنا لأقصى جودة ممكنة في حدود الميزانية دي
 export const maxDuration = 300;
+// من غير الاثنين دول، Next/Vercel ممكن يحتفظوا برد الـ stream بالكامل (buffering) بدل
+// ما يبعتوه أول بأول — فلو الطلب أخد وقت أطول من المهلة، العميل مايشوفش ولا رسالة
+// تقدّم واحدة، وبعدين الرد كله بيتلغى بصمت
+export const dynamic = 'force-dynamic';
 
 // بيرسل تحديثات حالة التحليل أولاً بأول (NDJSON) بدل ما يسيب الأدمن مستني بلا أي
 // إشارة لمدة تصل لدقيقتين ونص — كل سطر JSON مستقل على سطره الخاص
@@ -143,16 +147,20 @@ export async function POST(request) {
 
             try {
                 for (let i = 0; i < MAX_PAUSE_RESUMES; i++) {
+                    // effort: 'high' كان بيزوّد وقت التنفيذ أكتر بكتير من نسبة الزيادة في
+                    // max_tokens/عدد عمليات البحث (تفكير تكيّفي أطول بكتير) — تجربة فعلية
+                    // خلّت الرد يتجاوز الـ 300 ثانية بالكامل. رجّعناه 'medium' مع رفع بسيط
+                    // فوق النسخة المضغوطة الأصلية بدل القفزة الكبيرة اللي فشلت
                     const aiStream = anthropic.messages.stream({
                         model: MODEL,
-                        max_tokens: 26000,
+                        max_tokens: 20000,
                         thinking: { type: 'adaptive', display: 'summarized' },
-                        output_config: { effort: 'high' },
+                        output_config: { effort: 'medium' },
                         system: [
                             { type: 'text', text: AI_ANALYST_SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } },
                         ],
                         tools: [
-                            { type: 'web_search_20260209', name: 'web_search', max_uses: 14 },
+                            { type: 'web_search_20260209', name: 'web_search', max_uses: 10 },
                         ],
                         messages,
                     });
@@ -257,7 +265,11 @@ export async function POST(request) {
         status: 200,
         headers: {
             'Content-Type': 'application/x-ndjson; charset=utf-8',
-            'Cache-Control': 'no-store',
+            // no-transform بيمنع أي طبقة وسيطة (CDN/بروكسي) من ضغط أو تجميع الرد لحد
+            // ما يتجمّع حجم كافي قبل ما تبعته — وده اللي كان بيمنع رسائل التقدّم من
+            // الوصول أول بأول. X-Accel-Buffering قديم (nginx) بس إضافته مفيهاش ضرر
+            'Cache-Control': 'no-cache, no-transform',
+            'X-Accel-Buffering': 'no',
             'X-Content-Type-Options': 'nosniff',
         },
     });
