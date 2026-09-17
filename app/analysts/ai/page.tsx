@@ -23,6 +23,7 @@ const L = {
     emptySub: 'سيتم نشر أول تحليل هنا قريباً',
     expand: 'عرض التقرير كاملاً',
     collapse: 'إخفاء',
+    viewPdf: '📄 عرض PDF',
     dateLocale: 'ar-EG',
   },
   en: {
@@ -34,6 +35,7 @@ const L = {
     emptySub: 'The first analysis will appear here soon',
     expand: 'View full report',
     collapse: 'Collapse',
+    viewPdf: '📄 View PDF',
     dateLocale: 'en-US',
   },
 };
@@ -104,12 +106,22 @@ export default function AiAnalystPage() {
                     {r.report}
                   </div>
                 )}
-                <button
-                  onClick={() => setExpanded(prev => ({ ...prev, [r.id]: !prev[r.id] }))}
-                  className="text-orange-500 text-xs font-bold mt-3 hover:text-orange-400 transition"
-                >
-                  {expanded[r.id] ? t.collapse : t.expand}
-                </button>
+                <div className="flex gap-4 mt-3">
+                  <button
+                    onClick={() => setExpanded(prev => ({ ...prev, [r.id]: !prev[r.id] }))}
+                    className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                  >
+                    {expanded[r.id] ? t.collapse : t.expand}
+                  </button>
+                  <a
+                    href={`/api/ai-analyst/pdf?id=${r.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                  >
+                    {t.viewPdf}
+                  </a>
+                </div>
               </div>
             ))}
           </div>
