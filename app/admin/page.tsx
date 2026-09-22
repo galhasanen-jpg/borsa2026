@@ -19,7 +19,7 @@ const L = {
     fundType: 'طبيعة الصندوق *',
     fundTypePh: 'مثال: صندوق نقدي، صندوق أسهم، صندوق متوازن...',
     fundManager: 'الشركة المديرة',
-    fundInception: 'تاريخ الإنشاء *',
+    fundInception: 'تاريخ الإنشاء',
     fundCurrency: 'العملة',
     fundSubFee: 'رسوم الاشتراك / الإيداع',
     fundSubFeePh: 'مثال: 0.5% من قيمة الاشتراك',
@@ -36,11 +36,16 @@ const L = {
     fundSaveBtn: '💾 حفظ الصندوق',
     fundUpdateBtn: '💾 حفظ التعديلات',
     fundCancelEdit: 'إلغاء',
-    fundErrRequired: 'اسم الصندوق وطبيعته وتاريخ الإنشاء حقول مطلوبة',
+    fundErrRequired: 'اسم الصندوق وطبيعته حقول مطلوبة',
     fundErrGeneric: '❌ تعذّر حفظ الصندوق',
     fundListTitle: 'الصناديق المضافة',
     fundNoFunds: 'لا توجد صناديق مضافة حتى الآن',
     fundSelectPh: '— اختر الصندوق —',
+    startaTitle: '📥 استيراد دفعة من Starta Markets',
+    startaHint: 'ملف تصدير startamarkets.com/Funds/prices-today (CSV) — بيُنشئ أو يحدّث كل الصناديق الموجودة فيه دفعة واحدة مع آخر قيمة وثيقة معلنة، ويُسنِد المصدر تلقائياً لكل صندوق. تاريخ الإنشاء مش موجود في هذا التصدير فبيفضل فارغاً حتى تضيفه يدوياً.',
+    startaBtn: '📥 استيراد الملف',
+    startaResult: (created: number, updated: number, nav: number, skipped: number) =>
+      `تم: ${created} صندوق جديد، ${updated} صندوق محدَّث، ${nav} نقطة قيمة وثيقة${skipped ? ` (وتجاهل ${skipped} صف غير صالح)` : ''}`,
     fundEdit: 'تعديل',
     fundDelete: 'حذف',
     fundConfirmDelete: 'هل تريد حذف هذا الصندوق؟ سيتم حذف كل سجل قيمة الوثيقة المرتبط به أيضاً.',
@@ -246,7 +251,7 @@ const L = {
     fundType: 'Fund Type *',
     fundTypePh: 'e.g. Money Market, Equity, Balanced...',
     fundManager: 'Manager Company',
-    fundInception: 'Inception Date *',
+    fundInception: 'Inception Date',
     fundCurrency: 'Currency',
     fundSubFee: 'Subscription Fee',
     fundSubFeePh: 'e.g. 0.5% of subscription value',
@@ -263,11 +268,16 @@ const L = {
     fundSaveBtn: '💾 Save Fund',
     fundUpdateBtn: '💾 Save Changes',
     fundCancelEdit: 'Cancel',
-    fundErrRequired: 'Name, type and inception date are required',
+    fundErrRequired: 'Name and type are required',
     fundErrGeneric: '❌ Could not save the fund',
     fundListTitle: 'Added Funds',
     fundNoFunds: 'No funds added yet',
     fundSelectPh: '— Select fund —',
+    startaTitle: '📥 Bulk import from Starta Markets',
+    startaHint: 'A CSV export from startamarkets.com/Funds/prices-today — creates or updates every fund in it in one go, with its latest disclosed unit value, and auto-attributes the source per fund. This export has no inception date, so it stays empty until added manually.',
+    startaBtn: '📥 Import File',
+    startaResult: (created: number, updated: number, nav: number, skipped: number) =>
+      `Done: ${created} new fund(s), ${updated} updated, ${nav} value point(s)${skipped ? ` (skipped ${skipped} invalid row(s))` : ''}`,
     fundEdit: 'Edit',
     fundDelete: 'Delete',
     fundConfirmDelete: 'Delete this fund? All its unit-value history will be deleted too.',
@@ -546,6 +556,9 @@ export default function AdminPage() {
   const [quickImportFile, setQuickImportFile] = useState<File | null>(null);
   const [quickImportMsg, setQuickImportMsg] = useState('');
   const [quickImporting, setQuickImporting] = useState(false);
+  const [startaFile, setStartaFile] = useState<File | null>(null);
+  const [startaImporting, setStartaImporting] = useState(false);
+  const [startaMsg, setStartaMsg] = useState('');
 
   useEffect(() => {
     fetchStocks();
@@ -696,7 +709,7 @@ export default function AdminPage() {
   }
 
   async function handleSaveFund() {
-    if (!fundForm.name.trim() || !fundForm.fund_type.trim() || !fundForm.inception_date) {
+    if (!fundForm.name.trim() || !fundForm.fund_type.trim()) {
       setFundError(t.fundErrRequired);
       return;
     }
@@ -817,6 +830,28 @@ export default function AdminPage() {
       setQuickImportMsg(`${t.navImportErr}${e?.message ? ` — ${e.message}` : ''}`);
     }
     setQuickImporting(false);
+  }
+
+  async function handleStartaImport() {
+    if (!startaFile) return;
+    setStartaImporting(true);
+    setStartaMsg('');
+    try {
+      const fd = new FormData();
+      fd.append('file', startaFile);
+      const res = await fetch('/api/funds/import-starta', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.success) {
+        setStartaMsg(t.startaResult(data.created, data.updated, data.navPoints, data.skipped));
+        setStartaFile(null);
+        fetchFundsList();
+      } else {
+        setStartaMsg(data.error || t.navImportErr);
+      }
+    } catch (e: any) {
+      setStartaMsg(`${t.navImportErr}${e?.message ? ` — ${e.message}` : ''}`);
+    }
+    setStartaImporting(false);
   }
 
   async function handleDeleteNavPoint(id: number) {
@@ -1891,6 +1926,22 @@ export default function AdminPage() {
         {/* تبويب صناديق الاستثمار */}
         {activeTab === 'funds' && (
           <div className="space-y-6">
+
+            <div className="bg-gray-900 border border-orange-800 rounded-lg p-4">
+              <h3 className="text-orange-500 font-bold text-sm mb-1">{t.startaTitle}</h3>
+              <p className="text-gray-500 text-xs mb-3">{t.startaHint}</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <input type="file" accept=".csv,text/csv" onChange={e => setStartaFile(e.target.files?.[0] || null)} className="text-gray-300 text-xs" />
+                <button
+                  onClick={handleStartaImport}
+                  disabled={startaImporting || !startaFile}
+                  className="bg-orange-500 text-black px-4 py-2 rounded text-sm font-bold hover:bg-orange-600 transition disabled:opacity-50"
+                >
+                  {t.startaBtn}
+                </button>
+              </div>
+              {startaMsg && <p className="text-orange-400 text-xs mt-2">{startaMsg}</p>}
+            </div>
 
             <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
               <h3 className="text-orange-500 font-bold text-sm mb-3">{fundForm.id ? t.fundEditTitle : t.fundAddTitle}</h3>

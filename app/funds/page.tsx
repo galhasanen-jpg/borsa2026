@@ -10,7 +10,7 @@ type Fund = {
   name_en: string | null;
   fund_type: string;
   manager_company: string | null;
-  inception_date: string;
+  inception_date: string | null;
   currency: string;
 };
 
@@ -123,7 +123,7 @@ export default function FundsPage() {
                 <div className="text-xs text-gray-400 space-y-1 mb-3">
                   <p><span className="text-gray-500">{t.type}:</span> {f.fund_type}</p>
                   {f.manager_company && <p><span className="text-gray-500">{t.manager}:</span> {f.manager_company}</p>}
-                  <p><span className="text-gray-500">{t.since}:</span> {new Date(f.inception_date).toLocaleDateString(t.dateLocale)}</p>
+                  {f.inception_date && <p><span className="text-gray-500">{t.since}:</span> {new Date(f.inception_date).toLocaleDateString(t.dateLocale)}</p>}
                 </div>
                 <a href={`/funds/${f.id}`} className="text-orange-500 text-xs font-bold hover:text-orange-400 transition">
                   {t.view} ←

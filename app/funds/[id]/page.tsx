@@ -12,7 +12,7 @@ type Fund = {
   name_en: string | null;
   fund_type: string;
   manager_company: string | null;
-  inception_date: string;
+  inception_date: string | null;
   currency: string;
   subscription_fee: string | null;
   redemption_fee: string | null;
@@ -120,7 +120,7 @@ export default function FundDetailPage() {
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 grid sm:grid-cols-2 gap-4 text-sm">
               <div><p className="text-gray-500 text-xs mb-1">{t.type}</p><p className="text-white">{fund.fund_type}</p></div>
               <div><p className="text-gray-500 text-xs mb-1">{t.manager}</p><p className="text-white">{fund.manager_company || t.noData}</p></div>
-              <div><p className="text-gray-500 text-xs mb-1">{t.inception}</p><p className="text-white">{new Date(fund.inception_date).toLocaleDateString(t.dateLocale)}</p></div>
+              <div><p className="text-gray-500 text-xs mb-1">{t.inception}</p><p className="text-white">{fund.inception_date ? new Date(fund.inception_date).toLocaleDateString(t.dateLocale) : t.noData}</p></div>
               <div><p className="text-gray-500 text-xs mb-1">{t.subscriptionFee}</p><p className="text-white">{fund.subscription_fee || t.noData}</p></div>
               <div><p className="text-gray-500 text-xs mb-1">{t.redemptionFee}</p><p className="text-white">{fund.redemption_fee || t.noData}</p></div>
               <div><p className="text-gray-500 text-xs mb-1">{t.entryDays}</p><p className="text-white">{fund.entry_days || t.noData}</p></div>
