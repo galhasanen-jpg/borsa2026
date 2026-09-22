@@ -53,6 +53,11 @@ const L = {
     navNoPoints: 'لا توجد نقاط قيمة مسجّلة بعد',
     navDelete: 'حذف',
     navClose: 'إغلاق',
+    navImportTitle: 'استيراد من ملف CSV',
+    navImportHint: 'الأعمدة بالترتيب: التاريخ (YYYY-MM-DD)، القيمة، المصدر (اختياري) — أول سطر عناوين هيتجاهل تلقائياً',
+    navImportBtn: '📤 استيراد',
+    navImportResult: (n: number, skipped: number) => `تم استيراد ${n} نقطة${skipped ? ` (وتجاهل ${skipped} صف غير صالح)` : ''}`,
+    navImportErr: '❌ فشل الاستيراد',
 
     // محلل AI
     aiTitle: '🤖 محلل AI',
@@ -274,6 +279,11 @@ const L = {
     navNoPoints: 'No value points recorded yet',
     navDelete: 'Delete',
     navClose: 'Close',
+    navImportTitle: 'Import from CSV file',
+    navImportHint: 'Columns in order: date (YYYY-MM-DD), value, source (optional) — a header row is detected and skipped automatically',
+    navImportBtn: '📤 Import',
+    navImportResult: (n: number, skipped: number) => `Imported ${n} point(s)${skipped ? ` (skipped ${skipped} invalid row(s))` : ''}`,
+    navImportErr: '❌ Import failed',
 
     // AI Analyst
     aiTitle: '🤖 AI Analyst',
@@ -525,6 +535,9 @@ export default function AdminPage() {
   const [fundNavList, setFundNavList] = useState<any[]>([]);
   const [navForm, setNavForm] = useState({ nav_date: '', value: '', source_note: '' });
   const [navSaving, setNavSaving] = useState(false);
+  const [navCsvFile, setNavCsvFile] = useState<File | null>(null);
+  const [navImportMsg, setNavImportMsg] = useState('');
+  const [navImporting, setNavImporting] = useState(false);
 
   useEffect(() => {
     fetchStocks();
@@ -750,6 +763,29 @@ export default function AdminPage() {
       handleManageNav(fundManagingId);
     } catch (e) {}
     setNavSaving(false);
+  }
+
+  async function handleImportNavCsv() {
+    if (!fundManagingId || !navCsvFile) return;
+    setNavImporting(true);
+    setNavImportMsg('');
+    try {
+      const fd = new FormData();
+      fd.append('fund_id', String(fundManagingId));
+      fd.append('file', navCsvFile);
+      const res = await fetch('/api/funds/nav/import', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.success) {
+        setNavImportMsg(t.navImportResult(data.imported, data.skipped));
+        setNavCsvFile(null);
+        handleManageNav(fundManagingId);
+      } else {
+        setNavImportMsg(data.error || t.navImportErr);
+      }
+    } catch (e: any) {
+      setNavImportMsg(`${t.navImportErr}${e?.message ? ` — ${e.message}` : ''}`);
+    }
+    setNavImporting(false);
   }
 
   async function handleDeleteNavPoint(id: number) {
@@ -1918,7 +1954,7 @@ export default function AdminPage() {
                         </div>
                         <div className="flex gap-3">
                           <button onClick={() => handleEditFund(f)} className="text-orange-500 text-xs font-bold hover:text-orange-400 transition">{t.fundEdit}</button>
-                          <button onClick={() => handleManageNav(f.id)} className="text-orange-500 text-xs font-bold hover:text-orange-400 transition">{t.fundManageNav}</button>
+                          <button onClick={() => { setNavCsvFile(null); setNavImportMsg(''); handleManageNav(f.id); }} className="text-orange-500 text-xs font-bold hover:text-orange-400 transition">{t.fundManageNav}</button>
                           <button onClick={() => handleDeleteFund(f.id)} className="text-red-500 text-xs font-bold hover:text-red-400 transition">{t.fundDelete}</button>
                         </div>
                       </div>
@@ -1951,6 +1987,22 @@ export default function AdminPage() {
                           >
                             {t.navAddBtn}
                           </button>
+
+                          <div className="border-t border-gray-800 pt-3 mb-3">
+                            <p className="text-gray-400 text-xs font-bold mb-1">{t.navImportTitle}</p>
+                            <p className="text-gray-600 text-xs mb-2">{t.navImportHint}</p>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <input type="file" accept=".csv,text/csv" onChange={e => setNavCsvFile(e.target.files?.[0] || null)} className="text-gray-300 text-xs" />
+                              <button
+                                onClick={handleImportNavCsv}
+                                disabled={navImporting || !navCsvFile}
+                                className="bg-gray-700 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-600 transition disabled:opacity-50"
+                              >
+                                {t.navImportBtn}
+                              </button>
+                            </div>
+                            {navImportMsg && <p className="text-orange-400 text-xs mt-1">{navImportMsg}</p>}
+                          </div>
 
                           <p className="text-gray-500 text-xs mb-1">{t.navExisting} ({fundNavList.length})</p>
                           {fundNavList.length === 0 ? (
