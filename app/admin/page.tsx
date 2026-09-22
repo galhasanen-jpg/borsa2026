@@ -9,7 +9,55 @@ const L = {
     title: '⚙️ لوحة الإدارة',
     updatedCount: (updated: number, total: number) => `${updated} سهم محدث من ${total}`,
     analytics: '📊 تحليلات الزوار',
-    tabs: { prices: '💰 الأسعار', history: '📅 البيانات التاريخية', analysts: '👨‍💼 المحللون', followers: '👥 المتابعون', visitors: '🧑‍💻 حسابات الزوار', aiAnalyst: '🤖 محلل AI' },
+    tabs: { prices: '💰 الأسعار', history: '📅 البيانات التاريخية', analysts: '👨‍💼 المحللون', followers: '👥 المتابعون', visitors: '🧑‍💻 حسابات الزوار', aiAnalyst: '🤖 محلل AI', funds: '💼 الصناديق' },
+
+    // صناديق الاستثمار
+    fundAddTitle: '➕ إضافة صندوق جديد',
+    fundEditTitle: '✏️ تعديل الصندوق',
+    fundName: 'اسم الصندوق *',
+    fundNameEn: 'الاسم بالإنجليزية',
+    fundType: 'طبيعة الصندوق *',
+    fundTypePh: 'مثال: صندوق نقدي، صندوق أسهم، صندوق متوازن...',
+    fundManager: 'الشركة المديرة',
+    fundInception: 'تاريخ الإنشاء *',
+    fundCurrency: 'العملة',
+    fundSubFee: 'رسوم الاشتراك / الإيداع',
+    fundSubFeePh: 'مثال: 0.5% من قيمة الاشتراك',
+    fundRedFee: 'رسوم الاسترداد / السحب',
+    fundRedFeePh: 'مثال: بدون رسوم بعد 90 يوم',
+    fundEntryDays: 'أيام الدخول',
+    fundEntryDaysPh: 'مثال: يومياً، أو الأحد والثلاثاء فقط',
+    fundExitDays: 'أيام الخروج',
+    fundExitDaysPh: 'مثال: يومياً، أو يوم عمل واحد إشعار مسبق',
+    fundSource: 'مصدر المعلومات *',
+    fundSourcePh: 'رابط نشرة الإصدار الرسمية أو موقع الشركة المديرة — لا تترك هذا فارغاً',
+    fundProspectus: 'نشرة إصدار الصندوق (PDF)',
+    fundProspectusHint: 'ملف PDF فقط — اتركه فارغاً عند التعديل للإبقاء على الملف الحالي',
+    fundSaveBtn: '💾 حفظ الصندوق',
+    fundUpdateBtn: '💾 حفظ التعديلات',
+    fundCancelEdit: 'إلغاء',
+    fundErrRequired: 'اسم الصندوق وطبيعته وتاريخ الإنشاء حقول مطلوبة',
+    fundErrGeneric: '❌ تعذّر حفظ الصندوق',
+    fundListTitle: 'الصناديق المضافة',
+    fundNoFunds: 'لا توجد صناديق مضافة حتى الآن',
+    fundEdit: 'تعديل',
+    fundDelete: 'حذف',
+    fundConfirmDelete: 'هل تريد حذف هذا الصندوق؟ سيتم حذف كل سجل قيمة الوثيقة المرتبط به أيضاً.',
+    fundManageNav: '📈 إدارة قيمة الوثيقة',
+    navTitle: (name: string) => `قيمة الوثيقة — ${name}`,
+    navDate: 'التاريخ',
+    navValue: 'القيمة',
+    navSource: 'مصدر هذه النقطة (اختياري)',
+    navAddBtn: '➕ إضافة نقطة',
+    navExisting: 'النقاط المسجّلة',
+    navNoPoints: 'لا توجد نقاط قيمة مسجّلة بعد',
+    navDelete: 'حذف',
+    navClose: 'إغلاق',
+    navImportTitle: 'استيراد من ملف CSV',
+    navImportHint: 'الأعمدة بالترتيب: التاريخ (YYYY-MM-DD)، القيمة، المصدر (اختياري) — أول سطر عناوين هيتجاهل تلقائياً',
+    navImportBtn: '📤 استيراد',
+    navImportResult: (n: number, skipped: number) => `تم استيراد ${n} نقطة${skipped ? ` (وتجاهل ${skipped} صف غير صالح)` : ''}`,
+    navImportErr: '❌ فشل الاستيراد',
 
     // محلل AI
     aiTitle: '🤖 محلل AI',
@@ -187,7 +235,55 @@ const L = {
     title: '⚙️ Admin Dashboard',
     updatedCount: (updated: number, total: number) => `${updated} of ${total} stocks updated`,
     analytics: '📊 Visitor Analytics',
-    tabs: { prices: '💰 Prices', history: '📅 Historical Data', analysts: '👨‍💼 Analysts', followers: '👥 Followers', visitors: '🧑‍💻 Visitor Accounts', aiAnalyst: '🤖 AI Analyst' },
+    tabs: { prices: '💰 Prices', history: '📅 Historical Data', analysts: '👨‍💼 Analysts', followers: '👥 Followers', visitors: '🧑‍💻 Visitor Accounts', aiAnalyst: '🤖 AI Analyst', funds: '💼 Funds' },
+
+    // Investment Funds
+    fundAddTitle: '➕ Add New Fund',
+    fundEditTitle: '✏️ Edit Fund',
+    fundName: 'Fund Name *',
+    fundNameEn: 'Name (English)',
+    fundType: 'Fund Type *',
+    fundTypePh: 'e.g. Money Market, Equity, Balanced...',
+    fundManager: 'Manager Company',
+    fundInception: 'Inception Date *',
+    fundCurrency: 'Currency',
+    fundSubFee: 'Subscription Fee',
+    fundSubFeePh: 'e.g. 0.5% of subscription value',
+    fundRedFee: 'Redemption Fee',
+    fundRedFeePh: 'e.g. Free after 90 days',
+    fundEntryDays: 'Entry Days',
+    fundEntryDaysPh: 'e.g. Daily, or Sun & Tue only',
+    fundExitDays: 'Exit Days',
+    fundExitDaysPh: 'e.g. Daily, or 1 business day notice',
+    fundSource: 'Information Source *',
+    fundSourcePh: 'Official prospectus link or manager company site — do not leave empty',
+    fundProspectus: 'Fund Prospectus (PDF)',
+    fundProspectusHint: 'PDF only — leave empty when editing to keep the current file',
+    fundSaveBtn: '💾 Save Fund',
+    fundUpdateBtn: '💾 Save Changes',
+    fundCancelEdit: 'Cancel',
+    fundErrRequired: 'Name, type and inception date are required',
+    fundErrGeneric: '❌ Could not save the fund',
+    fundListTitle: 'Added Funds',
+    fundNoFunds: 'No funds added yet',
+    fundEdit: 'Edit',
+    fundDelete: 'Delete',
+    fundConfirmDelete: 'Delete this fund? All its unit-value history will be deleted too.',
+    fundManageNav: '📈 Manage Unit Value',
+    navTitle: (name: string) => `Unit Value — ${name}`,
+    navDate: 'Date',
+    navValue: 'Value',
+    navSource: 'Source for this point (optional)',
+    navAddBtn: '➕ Add Point',
+    navExisting: 'Recorded Points',
+    navNoPoints: 'No value points recorded yet',
+    navDelete: 'Delete',
+    navClose: 'Close',
+    navImportTitle: 'Import from CSV file',
+    navImportHint: 'Columns in order: date (YYYY-MM-DD), value, source (optional) — a header row is detected and skipped automatically',
+    navImportBtn: '📤 Import',
+    navImportResult: (n: number, skipped: number) => `Imported ${n} point(s)${skipped ? ` (skipped ${skipped} invalid row(s))` : ''}`,
+    navImportErr: '❌ Import failed',
 
     // AI Analyst
     aiTitle: '🤖 AI Analyst',
@@ -358,7 +454,7 @@ const L = {
 export default function AdminPage() {
   const { lang } = useLanguage();
   const t = L[lang];
-  const [activeTab, setActiveTab] = useState<'prices' | 'history' | 'analysts' | 'followers' | 'visitors' | 'aiAnalyst'>('prices');
+  const [activeTab, setActiveTab] = useState<'prices' | 'history' | 'analysts' | 'followers' | 'visitors' | 'aiAnalyst' | 'funds'>('prices');
 
   // بيانات الأسعار
   const [stocks, setStocks] = useState<any[]>([]);
@@ -424,6 +520,25 @@ export default function AdminPage() {
     'ابحث عن Value Traps', 'ابنِ لي Portfolio بـ5 مليون جنيه',
   ];
 
+  // صناديق الاستثمار
+  const emptyFundForm = {
+    id: null as number | null, name: '', name_en: '', fund_type: '', manager_company: '',
+    inception_date: '', currency: 'EGP', subscription_fee: '', redemption_fee: '',
+    entry_days: '', exit_days: '', source_note: '',
+  };
+  const [fundsList, setFundsList] = useState<any[]>([]);
+  const [fundForm, setFundForm] = useState(emptyFundForm);
+  const [fundProspectusFile, setFundProspectusFile] = useState<File | null>(null);
+  const [fundSaving, setFundSaving] = useState(false);
+  const [fundError, setFundError] = useState('');
+  const [fundManagingId, setFundManagingId] = useState<number | null>(null);
+  const [fundNavList, setFundNavList] = useState<any[]>([]);
+  const [navForm, setNavForm] = useState({ nav_date: '', value: '', source_note: '' });
+  const [navSaving, setNavSaving] = useState(false);
+  const [navCsvFile, setNavCsvFile] = useState<File | null>(null);
+  const [navImportMsg, setNavImportMsg] = useState('');
+  const [navImporting, setNavImporting] = useState(false);
+
   useEffect(() => {
     fetchStocks();
     fetchPrices();
@@ -432,6 +547,7 @@ export default function AdminPage() {
     fetchFollowers();
     fetchSiteUsers();
     fetchAiReports();
+    fetchFundsList();
   }, []);
 
   async function fetchStocks() {
@@ -544,6 +660,138 @@ export default function AdminPage() {
     if (!confirm(t.aiConfirmDelete)) return;
     await fetch(`/api/ai-analyst/reports?id=${id}`, { method: 'DELETE' });
     fetchAiReports();
+  }
+
+  async function fetchFundsList() {
+    try {
+      const res = await fetch('/api/funds');
+      const data = await res.json();
+      setFundsList(Array.isArray(data) ? data : []);
+    } catch (e) {}
+  }
+
+  function buildFundFormData() {
+    const fd = new FormData();
+    fd.append('name', fundForm.name);
+    fd.append('name_en', fundForm.name_en);
+    fd.append('fund_type', fundForm.fund_type);
+    fd.append('manager_company', fundForm.manager_company);
+    fd.append('inception_date', fundForm.inception_date);
+    fd.append('currency', fundForm.currency);
+    fd.append('subscription_fee', fundForm.subscription_fee);
+    fd.append('redemption_fee', fundForm.redemption_fee);
+    fd.append('entry_days', fundForm.entry_days);
+    fd.append('exit_days', fundForm.exit_days);
+    fd.append('source_note', fundForm.source_note);
+    if (fundProspectusFile) fd.append('prospectus', fundProspectusFile);
+    return fd;
+  }
+
+  async function handleSaveFund() {
+    if (!fundForm.name.trim() || !fundForm.fund_type.trim() || !fundForm.inception_date) {
+      setFundError(t.fundErrRequired);
+      return;
+    }
+    setFundSaving(true);
+    setFundError('');
+    try {
+      const url = fundForm.id ? `/api/funds?id=${fundForm.id}` : '/api/funds';
+      const method = fundForm.id ? 'PUT' : 'POST';
+      const res = await fetch(url, { method, body: buildFundFormData() });
+      const data = await res.json();
+      if (data.success) {
+        setFundForm(emptyFundForm);
+        setFundProspectusFile(null);
+        fetchFundsList();
+      } else {
+        setFundError(data.error || t.fundErrGeneric);
+      }
+    } catch (e: any) {
+      setFundError(`${t.fundErrGeneric}${e?.message ? ` — ${e.message}` : ''}`);
+    }
+    setFundSaving(false);
+  }
+
+  function handleEditFund(fund: any) {
+    setFundForm({
+      id: fund.id,
+      name: fund.name || '',
+      name_en: fund.name_en || '',
+      fund_type: fund.fund_type || '',
+      manager_company: fund.manager_company || '',
+      inception_date: fund.inception_date ? fund.inception_date.slice(0, 10) : '',
+      currency: fund.currency || 'EGP',
+      subscription_fee: fund.subscription_fee || '',
+      redemption_fee: fund.redemption_fee || '',
+      entry_days: fund.entry_days || '',
+      exit_days: fund.exit_days || '',
+      source_note: fund.source_note || '',
+    });
+    setFundProspectusFile(null);
+    setFundError('');
+  }
+
+  async function handleDeleteFund(id: number) {
+    if (!confirm(t.fundConfirmDelete)) return;
+    await fetch(`/api/funds?id=${id}`, { method: 'DELETE' });
+    if (fundManagingId === id) setFundManagingId(null);
+    fetchFundsList();
+  }
+
+  async function handleManageNav(fundId: number) {
+    setFundManagingId(fundId);
+    setNavForm({ nav_date: '', value: '', source_note: '' });
+    try {
+      const res = await fetch(`/api/funds/nav?fund_id=${fundId}`);
+      const data = await res.json();
+      setFundNavList(Array.isArray(data) ? data : []);
+    } catch (e) {
+      setFundNavList([]);
+    }
+  }
+
+  async function handleAddNavPoint() {
+    if (!fundManagingId || !navForm.nav_date || !navForm.value) return;
+    setNavSaving(true);
+    try {
+      await fetch('/api/funds/nav', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fund_id: fundManagingId, ...navForm }),
+      });
+      setNavForm({ nav_date: '', value: '', source_note: '' });
+      handleManageNav(fundManagingId);
+    } catch (e) {}
+    setNavSaving(false);
+  }
+
+  async function handleImportNavCsv() {
+    if (!fundManagingId || !navCsvFile) return;
+    setNavImporting(true);
+    setNavImportMsg('');
+    try {
+      const fd = new FormData();
+      fd.append('fund_id', String(fundManagingId));
+      fd.append('file', navCsvFile);
+      const res = await fetch('/api/funds/nav/import', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.success) {
+        setNavImportMsg(t.navImportResult(data.imported, data.skipped));
+        setNavCsvFile(null);
+        handleManageNav(fundManagingId);
+      } else {
+        setNavImportMsg(data.error || t.navImportErr);
+      }
+    } catch (e: any) {
+      setNavImportMsg(`${t.navImportErr}${e?.message ? ` — ${e.message}` : ''}`);
+    }
+    setNavImporting(false);
+  }
+
+  async function handleDeleteNavPoint(id: number) {
+    if (!fundManagingId) return;
+    await fetch(`/api/funds/nav?id=${id}`, { method: 'DELETE' });
+    handleManageNav(fundManagingId);
   }
 
   async function handleAddAccountDirectly() {
@@ -983,6 +1231,9 @@ export default function AdminPage() {
           </button>
           <button onClick={() => setActiveTab('aiAnalyst')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'aiAnalyst' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
             {t.tabs.aiAnalyst}
+          </button>
+          <button onClick={() => setActiveTab('funds')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'funds' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
+            {t.tabs.funds}
           </button>
         </div>
 
@@ -1597,6 +1848,177 @@ export default function AdminPage() {
                           {t.aiDelete}
                         </button>
                       </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+          </div>
+        )}
+
+        {/* تبويب صناديق الاستثمار */}
+        {activeTab === 'funds' && (
+          <div className="space-y-6">
+
+            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+              <h3 className="text-orange-500 font-bold text-sm mb-3">{fundForm.id ? t.fundEditTitle : t.fundAddTitle}</h3>
+
+              {fundError && <p className="text-red-400 text-xs mb-3">{fundError}</p>}
+
+              <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.fundName}</label>
+                  <input value={fundForm.name} onChange={e => setFundForm({ ...fundForm, name: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                </div>
+                <div>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.fundNameEn}</label>
+                  <input value={fundForm.name_en} onChange={e => setFundForm({ ...fundForm, name_en: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" dir="ltr" />
+                </div>
+                <div>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.fundType}</label>
+                  <input value={fundForm.fund_type} onChange={e => setFundForm({ ...fundForm, fund_type: e.target.value })} placeholder={t.fundTypePh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                </div>
+                <div>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.fundManager}</label>
+                  <input value={fundForm.manager_company} onChange={e => setFundForm({ ...fundForm, manager_company: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                </div>
+                <div>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.fundInception}</label>
+                  <input type="date" value={fundForm.inception_date} onChange={e => setFundForm({ ...fundForm, inception_date: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                </div>
+                <div>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.fundCurrency}</label>
+                  <input value={fundForm.currency} onChange={e => setFundForm({ ...fundForm, currency: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" dir="ltr" />
+                </div>
+                <div>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.fundSubFee}</label>
+                  <input value={fundForm.subscription_fee} onChange={e => setFundForm({ ...fundForm, subscription_fee: e.target.value })} placeholder={t.fundSubFeePh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                </div>
+                <div>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.fundRedFee}</label>
+                  <input value={fundForm.redemption_fee} onChange={e => setFundForm({ ...fundForm, redemption_fee: e.target.value })} placeholder={t.fundRedFeePh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                </div>
+                <div>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.fundEntryDays}</label>
+                  <input value={fundForm.entry_days} onChange={e => setFundForm({ ...fundForm, entry_days: e.target.value })} placeholder={t.fundEntryDaysPh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                </div>
+                <div>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.fundExitDays}</label>
+                  <input value={fundForm.exit_days} onChange={e => setFundForm({ ...fundForm, exit_days: e.target.value })} placeholder={t.fundExitDaysPh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                </div>
+              </div>
+
+              <div className="mb-3">
+                <label className="text-gray-400 text-xs mb-1 block">{t.fundSource}</label>
+                <input value={fundForm.source_note} onChange={e => setFundForm({ ...fundForm, source_note: e.target.value })} placeholder={t.fundSourcePh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+              </div>
+
+              <div className="mb-4">
+                <label className="text-gray-400 text-xs mb-1 block">{t.fundProspectus}</label>
+                <input type="file" accept="application/pdf" onChange={e => setFundProspectusFile(e.target.files?.[0] || null)} className="text-gray-300 text-xs w-full" />
+                <p className="text-gray-600 text-xs mt-1">{t.fundProspectusHint}</p>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={handleSaveFund}
+                  disabled={fundSaving}
+                  className="bg-orange-500 text-black px-4 py-2 rounded text-sm font-bold hover:bg-orange-600 transition disabled:opacity-50"
+                >
+                  {fundForm.id ? t.fundUpdateBtn : t.fundSaveBtn}
+                </button>
+                {fundForm.id && (
+                  <button
+                    onClick={() => { setFundForm(emptyFundForm); setFundProspectusFile(null); setFundError(''); }}
+                    className="bg-gray-800 text-gray-300 px-4 py-2 rounded text-sm hover:bg-gray-700 transition"
+                  >
+                    {t.fundCancelEdit}
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+              <h3 className="text-orange-500 font-bold text-sm mb-3">{t.fundListTitle} ({fundsList.length})</h3>
+              {fundsList.length === 0 ? (
+                <p className="text-gray-500 text-sm text-center py-4">{t.fundNoFunds}</p>
+              ) : (
+                <div className="space-y-3">
+                  {fundsList.map(f => (
+                    <div key={f.id} className="bg-gray-800 rounded-lg p-3">
+                      <div className="flex justify-between items-start gap-3 flex-wrap mb-2">
+                        <div>
+                          <p className="text-white font-bold text-sm">{f.name}</p>
+                          <p className="text-gray-500 text-xs">{f.fund_type}</p>
+                        </div>
+                        <div className="flex gap-3">
+                          <button onClick={() => handleEditFund(f)} className="text-orange-500 text-xs font-bold hover:text-orange-400 transition">{t.fundEdit}</button>
+                          <button onClick={() => { setNavCsvFile(null); setNavImportMsg(''); handleManageNav(f.id); }} className="text-orange-500 text-xs font-bold hover:text-orange-400 transition">{t.fundManageNav}</button>
+                          <button onClick={() => handleDeleteFund(f.id)} className="text-red-500 text-xs font-bold hover:text-red-400 transition">{t.fundDelete}</button>
+                        </div>
+                      </div>
+
+                      {fundManagingId === f.id && (
+                        <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 mt-2">
+                          <div className="flex justify-between items-center mb-2">
+                            <h4 className="text-orange-400 font-bold text-xs">{t.navTitle(f.name)}</h4>
+                            <button onClick={() => setFundManagingId(null)} className="text-gray-500 text-xs hover:text-white transition">{t.navClose}</button>
+                          </div>
+
+                          <div className="grid sm:grid-cols-3 gap-2 mb-2">
+                            <div>
+                              <label className="text-gray-500 text-xs mb-1 block">{t.navDate}</label>
+                              <input type="date" value={navForm.nav_date} onChange={e => setNavForm({ ...navForm, nav_date: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1.5 w-full text-xs" />
+                            </div>
+                            <div>
+                              <label className="text-gray-500 text-xs mb-1 block">{t.navValue}</label>
+                              <input type="number" step="0.0001" value={navForm.value} onChange={e => setNavForm({ ...navForm, value: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1.5 w-full text-xs" dir="ltr" />
+                            </div>
+                            <div>
+                              <label className="text-gray-500 text-xs mb-1 block">{t.navSource}</label>
+                              <input value={navForm.source_note} onChange={e => setNavForm({ ...navForm, source_note: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1.5 w-full text-xs" />
+                            </div>
+                          </div>
+                          <button
+                            onClick={handleAddNavPoint}
+                            disabled={navSaving || !navForm.nav_date || !navForm.value}
+                            className="bg-orange-500 text-black px-3 py-1.5 rounded text-xs font-bold hover:bg-orange-600 transition disabled:opacity-50 mb-3"
+                          >
+                            {t.navAddBtn}
+                          </button>
+
+                          <div className="border-t border-gray-800 pt-3 mb-3">
+                            <p className="text-gray-400 text-xs font-bold mb-1">{t.navImportTitle}</p>
+                            <p className="text-gray-600 text-xs mb-2">{t.navImportHint}</p>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <input type="file" accept=".csv,text/csv" onChange={e => setNavCsvFile(e.target.files?.[0] || null)} className="text-gray-300 text-xs" />
+                              <button
+                                onClick={handleImportNavCsv}
+                                disabled={navImporting || !navCsvFile}
+                                className="bg-gray-700 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-600 transition disabled:opacity-50"
+                              >
+                                {t.navImportBtn}
+                              </button>
+                            </div>
+                            {navImportMsg && <p className="text-orange-400 text-xs mt-1">{navImportMsg}</p>}
+                          </div>
+
+                          <p className="text-gray-500 text-xs mb-1">{t.navExisting} ({fundNavList.length})</p>
+                          {fundNavList.length === 0 ? (
+                            <p className="text-gray-600 text-xs">{t.navNoPoints}</p>
+                          ) : (
+                            <div className="max-h-40 overflow-y-auto space-y-1">
+                              {fundNavList.map(p => (
+                                <div key={p.id} className="flex justify-between items-center bg-gray-800 rounded px-2 py-1 text-xs">
+                                  <span className="text-gray-300">{p.nav_date} — {Number(p.value).toFixed(4)} {f.currency}</span>
+                                  <button onClick={() => handleDeleteNavPoint(p.id)} className="text-red-500 hover:text-red-400 transition">{t.navDelete}</button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
