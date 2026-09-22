@@ -8,6 +8,7 @@ import { useLanguage } from './LanguageProvider';
 const navItems = [
   { id: 'home', label: 'الرئيسية', labelEn: 'Home', href: '/' },
   { id: 'stocks', label: 'سوق الأسهم', labelEn: 'Stock Market', href: '/stocks' },  { id: 'stock-news', label: 'أخبار الأسهم', labelEn: 'Stock News', href: '/stock-news' },
+  { id: 'funds', label: 'صناديق الاستثمار', labelEn: 'Investment Funds', href: '/funds' },
   { id: 'daily-briefing', label: 'النشرة اليومية', labelEn: 'Daily Briefing', href: '/daily-briefing', restricted: true },
   { id: 'global-news', label: 'أخبار عالمية', labelEn: 'Global News', href: '/global-news' },
   { id: 'analysts', label: 'المحللون', labelEn: 'Analysts', href: '/analysts', restricted: true },
