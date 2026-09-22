@@ -40,6 +40,7 @@ const L = {
     fundErrGeneric: '❌ تعذّر حفظ الصندوق',
     fundListTitle: 'الصناديق المضافة',
     fundNoFunds: 'لا توجد صناديق مضافة حتى الآن',
+    fundSelectPh: '— اختر الصندوق —',
     fundEdit: 'تعديل',
     fundDelete: 'حذف',
     fundConfirmDelete: 'هل تريد حذف هذا الصندوق؟ سيتم حذف كل سجل قيمة الوثيقة المرتبط به أيضاً.',
@@ -266,6 +267,7 @@ const L = {
     fundErrGeneric: '❌ Could not save the fund',
     fundListTitle: 'Added Funds',
     fundNoFunds: 'No funds added yet',
+    fundSelectPh: '— Select fund —',
     fundEdit: 'Edit',
     fundDelete: 'Delete',
     fundConfirmDelete: 'Delete this fund? All its unit-value history will be deleted too.',
@@ -538,6 +540,12 @@ export default function AdminPage() {
   const [navCsvFile, setNavCsvFile] = useState<File | null>(null);
   const [navImportMsg, setNavImportMsg] = useState('');
   const [navImporting, setNavImporting] = useState(false);
+  // استيراد CSV سريع بجوار نموذج إضافة الصندوق — بديل أقصر من فتح لوحة
+  // "إدارة قيمة الوثيقة" لكل صندوق على حدة، لنفس المسار بالظبط
+  const [quickImportFundId, setQuickImportFundId] = useState('');
+  const [quickImportFile, setQuickImportFile] = useState<File | null>(null);
+  const [quickImportMsg, setQuickImportMsg] = useState('');
+  const [quickImporting, setQuickImporting] = useState(false);
 
   useEffect(() => {
     fetchStocks();
@@ -786,6 +794,29 @@ export default function AdminPage() {
       setNavImportMsg(`${t.navImportErr}${e?.message ? ` — ${e.message}` : ''}`);
     }
     setNavImporting(false);
+  }
+
+  async function handleQuickImportNavCsv() {
+    if (!quickImportFundId || !quickImportFile) return;
+    setQuickImporting(true);
+    setQuickImportMsg('');
+    try {
+      const fd = new FormData();
+      fd.append('fund_id', quickImportFundId);
+      fd.append('file', quickImportFile);
+      const res = await fetch('/api/funds/nav/import', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.success) {
+        setQuickImportMsg(t.navImportResult(data.imported, data.skipped));
+        setQuickImportFile(null);
+        if (fundManagingId === Number(quickImportFundId)) handleManageNav(fundManagingId);
+      } else {
+        setQuickImportMsg(data.error || t.navImportErr);
+      }
+    } catch (e: any) {
+      setQuickImportMsg(`${t.navImportErr}${e?.message ? ` — ${e.message}` : ''}`);
+    }
+    setQuickImporting(false);
   }
 
   async function handleDeleteNavPoint(id: number) {
@@ -1938,6 +1969,32 @@ export default function AdminPage() {
                 )}
               </div>
             </div>
+
+            {fundsList.length > 0 && (
+              <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+                <h3 className="text-orange-500 font-bold text-sm mb-1">{t.navImportTitle}</h3>
+                <p className="text-gray-600 text-xs mb-3">{t.navImportHint}</p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <select
+                    value={quickImportFundId}
+                    onChange={e => setQuickImportFundId(e.target.value)}
+                    className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 text-sm"
+                  >
+                    <option value="">{t.fundSelectPh}</option>
+                    {fundsList.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
+                  </select>
+                  <input type="file" accept=".csv,text/csv" onChange={e => setQuickImportFile(e.target.files?.[0] || null)} className="text-gray-300 text-xs" />
+                  <button
+                    onClick={handleQuickImportNavCsv}
+                    disabled={quickImporting || !quickImportFundId || !quickImportFile}
+                    className="bg-gray-700 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-600 transition disabled:opacity-50"
+                  >
+                    {t.navImportBtn}
+                  </button>
+                </div>
+                {quickImportMsg && <p className="text-orange-400 text-xs mt-2">{quickImportMsg}</p>}
+              </div>
+            )}
 
             <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
               <h3 className="text-orange-500 font-bold text-sm mb-3">{t.fundListTitle} ({fundsList.length})</h3>
