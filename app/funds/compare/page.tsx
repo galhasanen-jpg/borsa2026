@@ -12,7 +12,7 @@ type Fund = {
   name_en: string | null;
   fund_type: string;
   manager_company: string | null;
-  inception_date: string;
+  inception_date: string | null;
   currency: string;
   subscription_fee: string | null;
   redemption_fee: string | null;
@@ -107,7 +107,7 @@ function CompareFundsInner() {
   const rows: { key: keyof Fund; label: string; format?: (f: Fund) => string }[] = [
     { key: 'fund_type', label: t.type },
     { key: 'manager_company', label: t.manager },
-    { key: 'inception_date', label: t.inception, format: f => new Date(f.inception_date).toLocaleDateString(t.dateLocale) },
+    { key: 'inception_date', label: t.inception, format: f => f.inception_date ? new Date(f.inception_date).toLocaleDateString(t.dateLocale) : t.noData },
     { key: 'subscription_fee', label: t.subscriptionFee },
     { key: 'redemption_fee', label: t.redemptionFee },
     { key: 'entry_days', label: t.entryDays },

@@ -71,8 +71,8 @@ export async function POST(request) {
     try {
         const form = await request.formData();
         const f = readFundForm(form);
-        if (!f.name || !f.fund_type || !f.inception_date) {
-            return Response.json({ error: 'اسم الصندوق وطبيعته وتاريخ الإنشاء حقول مطلوبة' }, { status: 400 });
+        if (!f.name || !f.fund_type) {
+            return Response.json({ error: 'اسم الصندوق وطبيعته حقول مطلوبة' }, { status: 400 });
         }
 
         let prospectus;
@@ -91,7 +91,7 @@ export async function POST(request) {
                 prospectus_pdf, prospectus_filename)
             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
             RETURNING id`,
-            [f.name, f.name_en || null, f.fund_type, f.manager_company || null, f.inception_date, f.currency,
+            [f.name, f.name_en || null, f.fund_type, f.manager_company || null, f.inception_date || null, f.currency,
                 f.subscription_fee || null, f.redemption_fee || null, f.entry_days || null, f.exit_days || null,
                 f.source_note || null, prospectus?.buffer || null, prospectus?.filename || null]
         );
@@ -119,8 +119,8 @@ export async function PUT(request) {
     try {
         const form = await request.formData();
         const f = readFundForm(form);
-        if (!f.name || !f.fund_type || !f.inception_date) {
-            return Response.json({ error: 'اسم الصندوق وطبيعته وتاريخ الإنشاء حقول مطلوبة' }, { status: 400 });
+        if (!f.name || !f.fund_type) {
+            return Response.json({ error: 'اسم الصندوق وطبيعته حقول مطلوبة' }, { status: 400 });
         }
 
         let prospectus;
@@ -140,7 +140,7 @@ export async function PUT(request) {
                     subscription_fee=$7, redemption_fee=$8, entry_days=$9, exit_days=$10, source_note=$11,
                     prospectus_pdf=$12, prospectus_filename=$13, updated_at=now()
                 WHERE id=$14`,
-                [f.name, f.name_en || null, f.fund_type, f.manager_company || null, f.inception_date, f.currency,
+                [f.name, f.name_en || null, f.fund_type, f.manager_company || null, f.inception_date || null, f.currency,
                     f.subscription_fee || null, f.redemption_fee || null, f.entry_days || null, f.exit_days || null,
                     f.source_note || null, prospectus.buffer, prospectus.filename, id]
             );
@@ -151,7 +151,7 @@ export async function PUT(request) {
                     subscription_fee=$7, redemption_fee=$8, entry_days=$9, exit_days=$10, source_note=$11,
                     updated_at=now()
                 WHERE id=$12`,
-                [f.name, f.name_en || null, f.fund_type, f.manager_company || null, f.inception_date, f.currency,
+                [f.name, f.name_en || null, f.fund_type, f.manager_company || null, f.inception_date || null, f.currency,
                     f.subscription_fee || null, f.redemption_fee || null, f.entry_days || null, f.exit_days || null,
                     f.source_note || null, id]
             );

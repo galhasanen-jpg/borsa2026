@@ -9,7 +9,7 @@ export async function ensureFundsSchema(client) {
             name_en TEXT,
             fund_type TEXT NOT NULL,
             manager_company TEXT,
-            inception_date DATE NOT NULL,
+            inception_date DATE,
             currency TEXT NOT NULL DEFAULT 'EGP',
             subscription_fee TEXT,
             redemption_fee TEXT,
@@ -18,6 +18,7 @@ export async function ensureFundsSchema(client) {
             source_note TEXT,
             prospectus_pdf BYTEA,
             prospectus_filename TEXT,
+            external_ref TEXT,
             created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
@@ -33,4 +34,9 @@ export async function ensureFundsSchema(client) {
             UNIQUE(fund_id, nav_date)
         )
     `);
+    // تعديلات على جدول موجود بالفعل على الإنتاج (اتعمل قبل ما نسيب inception_date اختيارية
+    // ونضيف external_ref لدعم الاستيراد الدفعي — كل التعديلات آمنة التكرار
+    await client.query(`ALTER TABLE investment_funds ALTER COLUMN inception_date DROP NOT NULL`);
+    await client.query(`ALTER TABLE investment_funds ADD COLUMN IF NOT EXISTS external_ref TEXT`);
+    await client.query(`CREATE UNIQUE INDEX IF NOT EXISTS investment_funds_external_ref_idx ON investment_funds(external_ref) WHERE external_ref IS NOT NULL`);
 }
