@@ -16,6 +16,8 @@ type Fund = {
   risk_level: string | null;
   latest_nav_value: string | null;
   latest_nav_date: string | null;
+  has_prospectus: boolean;
+  prospectus_url: string | null;
 };
 
 const L = {
@@ -42,6 +44,9 @@ const L = {
     navValue: 'قيمة الوثيقة',
     navNoData: 'لا توجد بيانات متوفرة',
     navAsOf: (date: string) => `بتاريخ ${date}`,
+    prospectus: '📄 نشرة الإصدار',
+    prospectusExternal: '📄 نشرة الإصدار (رابط الهيئة)',
+    noProspectus: 'لا توجد نشرة إصدار متاحة',
   },
   en: {
     title: '💼 Investment Funds',
@@ -66,6 +71,9 @@ const L = {
     navValue: 'Unit Value',
     navNoData: 'No data available',
     navAsOf: (date: string) => `as of ${date}`,
+    prospectus: '📄 Prospectus',
+    prospectusExternal: '📄 Prospectus (official link)',
+    noProspectus: 'No prospectus available',
   },
 };
 
@@ -235,6 +243,29 @@ export default function FundsPage() {
                     {t.riskLabel}: {f.risk_level}
                   </span>
                 )}
+                <div className="mb-3">
+                  {f.has_prospectus ? (
+                    <a
+                      href={`/api/funds/prospectus?id=${f.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                    >
+                      {t.prospectus}
+                    </a>
+                  ) : f.prospectus_url ? (
+                    <a
+                      href={f.prospectus_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                    >
+                      {t.prospectusExternal}
+                    </a>
+                  ) : (
+                    <p className="text-gray-600 text-xs">{t.noProspectus}</p>
+                  )}
+                </div>
                 <div>
                   <a href={`/funds/${f.id}`} className="text-orange-500 text-xs font-bold hover:text-orange-400 transition">
                     {t.view} ←
