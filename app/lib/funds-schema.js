@@ -1,6 +1,11 @@
 // المشروع ده مفيهوش أداة migrations منفصلة — الجداول الموجودة كلها (stocks، sectors...)
 // اتعملت مباشرة على قاعدة البيانات قبل كده. جداول صناديق الاستثمار بنضمن وجودها هنا
 // بدل ما نحتاج خطوة SQL يدوية منفصلة — CREATE TABLE IF NOT EXISTS آمن يتنفّذ كل مرة.
+
+// مستويات المخاطر الثابتة المعروضة في كل مكان (نموذج الإضافة، الفلاتر، صفحة التفاصيل) —
+// تصنيف يدوي من الأدمن لكل صندوق (أو مبدئي من الاستيراد الدفعي حسب طبيعة الصندوق)، مش
+// تقييم مخاطر احترافي محسوب فعلياً
+export const RISK_LEVELS = ['منخفضة', 'متوسطة', 'مرتفعة'];
 export async function ensureFundsSchema(client) {
     await client.query(`
         CREATE TABLE IF NOT EXISTS investment_funds (
@@ -19,6 +24,7 @@ export async function ensureFundsSchema(client) {
             prospectus_pdf BYTEA,
             prospectus_filename TEXT,
             external_ref TEXT,
+            risk_level TEXT,
             created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
@@ -38,5 +44,6 @@ export async function ensureFundsSchema(client) {
     // ونضيف external_ref لدعم الاستيراد الدفعي — كل التعديلات آمنة التكرار
     await client.query(`ALTER TABLE investment_funds ALTER COLUMN inception_date DROP NOT NULL`);
     await client.query(`ALTER TABLE investment_funds ADD COLUMN IF NOT EXISTS external_ref TEXT`);
+    await client.query(`ALTER TABLE investment_funds ADD COLUMN IF NOT EXISTS risk_level TEXT`);
     await client.query(`CREATE UNIQUE INDEX IF NOT EXISTS investment_funds_external_ref_idx ON investment_funds(external_ref) WHERE external_ref IS NOT NULL`);
 }

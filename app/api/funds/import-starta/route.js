@@ -20,6 +20,20 @@ const CATEGORY_LABELS = {
     shariah: 'صندوق متوافق مع الشريعة الإسلامية',
 };
 
+// تصنيف مخاطر مبدئي حسب طبيعة الصندوق (عرف عام شائع في تصنيف الصناديق، مش تقييم مخاطر
+// احترافي فعلي لصندوق بعينه) — بيتحط أول ما الصندوق يتضاف لأول مرة بس، وبيفضل زي ما هو
+// عند أي استيراد لاحق حتى لو الأدمن غيّره يدوياً بعد كده
+const CATEGORY_RISK = {
+    'money-market': 'منخفضة',
+    'fixed-income': 'منخفضة',
+    balanced: 'متوسطة',
+    index: 'متوسطة',
+    gold: 'متوسطة',
+    equity: 'مرتفعة',
+    sector: 'مرتفعة',
+    shariah: 'مرتفعة',
+};
+
 function parseCsvLine(line) {
     const cells = [];
     let cur = '';
@@ -94,6 +108,7 @@ export async function POST(request) {
                 name: nameAr,
                 nameEn: idx.name_en >= 0 ? cells[idx.name_en] || null : null,
                 fundType: CATEGORY_LABELS[category] || (category ? category : 'غير مصنّف'),
+                riskLevel: CATEGORY_RISK[category] || null,
                 manager: idx.manager >= 0 ? cells[idx.manager] || null : null,
                 currency: idx.currency >= 0 ? cells[idx.currency] || 'EGP' : 'EGP',
                 navDate,
@@ -119,17 +134,20 @@ export async function POST(request) {
                 let fundId;
                 if (existing.rows.length > 0) {
                     fundId = existing.rows[0].id;
+                    // risk_level بس بيتحط لو لسه فاضي (COALESCE) — عشان نملأ الصناديق اللي
+                    // ما اتحددش لها مستوى مخاطر لحد دلوقتي، من غير ما نلغي أي تعديل يدوي
+                    // عمله الأدمن بعد الاستيراد الأول
                     await client.query(
                         `UPDATE investment_funds SET name=$1, name_en=$2, fund_type=$3, manager_company=$4,
-                            currency=$5, source_note=$6, updated_at=now() WHERE id=$7`,
-                        [row.name, row.nameEn, row.fundType, row.manager, row.currency, row.sourceNote, fundId]
+                            currency=$5, source_note=$6, risk_level=COALESCE(risk_level, $7), updated_at=now() WHERE id=$8`,
+                        [row.name, row.nameEn, row.fundType, row.manager, row.currency, row.sourceNote, row.riskLevel, fundId]
                     );
                     updated++;
                 } else {
                     const inserted = await client.query(
-                        `INSERT INTO investment_funds (name, name_en, fund_type, manager_company, currency, source_note, external_ref)
-                        VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id`,
-                        [row.name, row.nameEn, row.fundType, row.manager, row.currency, row.sourceNote, row.externalRef]
+                        `INSERT INTO investment_funds (name, name_en, fund_type, manager_company, currency, source_note, external_ref, risk_level)
+                        VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id`,
+                        [row.name, row.nameEn, row.fundType, row.manager, row.currency, row.sourceNote, row.externalRef, row.riskLevel]
                     );
                     fundId = inserted.rows[0].id;
                     created++;

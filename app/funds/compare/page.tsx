@@ -18,6 +18,7 @@ type Fund = {
   redemption_fee: string | null;
   entry_days: string | null;
   exit_days: string | null;
+  risk_level: string | null;
 };
 
 const L = {
@@ -34,6 +35,7 @@ const L = {
     redemptionFee: 'رسوم الاسترداد',
     entryDays: 'أيام الدخول',
     exitDays: 'أيام الخروج',
+    riskLevel: 'مستوى المخاطر',
     noData: '—',
     valueChart: 'مقارنة قيمة الوثيقة',
     dateLocale: 'ar-EG',
@@ -51,6 +53,7 @@ const L = {
     redemptionFee: 'Redemption Fee',
     entryDays: 'Entry Days',
     exitDays: 'Exit Days',
+    riskLevel: 'Risk Level',
     noData: '—',
     valueChart: 'Unit Value Comparison',
     dateLocale: 'en-US',
@@ -106,6 +109,7 @@ function CompareFundsInner() {
 
   const rows: { key: keyof Fund; label: string; format?: (f: Fund) => string }[] = [
     { key: 'fund_type', label: t.type },
+    { key: 'risk_level', label: t.riskLevel },
     { key: 'manager_company', label: t.manager },
     { key: 'inception_date', label: t.inception, format: f => f.inception_date ? new Date(f.inception_date).toLocaleDateString(t.dateLocale) : t.noData },
     { key: 'subscription_fee', label: t.subscriptionFee },

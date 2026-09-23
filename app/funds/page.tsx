@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLanguage } from '../components/LanguageProvider';
 import DataError from '../components/DataError';
+import { RISK_LEVELS } from '../lib/funds-schema';
 
 type Fund = {
   id: number;
@@ -12,6 +13,7 @@ type Fund = {
   manager_company: string | null;
   inception_date: string | null;
   currency: string;
+  risk_level: string | null;
 };
 
 const L = {
@@ -20,6 +22,7 @@ const L = {
     subtitle: 'بيانات موثّقة يدوياً من الأدمن مع ذكر المصدر — لا تخمين ولا أرقام تلقائية',
     loading: 'جاري التحميل...',
     empty: 'لا توجد صناديق مضافة حتى الآن',
+    noMatch: 'لا توجد صناديق تطابق الفلاتر المختارة',
     type: 'الطبيعة',
     manager: 'الشركة المديرة',
     since: 'تأسس',
@@ -29,12 +32,18 @@ const L = {
     compareBtn: 'قارن الآن',
     compareMax: 'الحد الأقصى 4 صناديق للمقارنة',
     dateLocale: 'ar-EG',
+    all: 'الكل',
+    riskLabel: 'المخاطر',
+    riskUnset: 'غير محدد',
+    filterByType: 'تصفية حسب الطبيعة',
+    filterByRisk: 'تصفية حسب مستوى المخاطر',
   },
   en: {
     title: '💼 Investment Funds',
     subtitle: 'Manually verified data with cited sources — no guessing, no auto-generated numbers',
     loading: 'Loading...',
     empty: 'No funds added yet',
+    noMatch: 'No funds match the selected filters',
     type: 'Type',
     manager: 'Manager',
     since: 'Since',
@@ -44,10 +53,21 @@ const L = {
     compareBtn: 'Compare now',
     compareMax: 'Maximum 4 funds for comparison',
     dateLocale: 'en-US',
+    all: 'All',
+    riskLabel: 'Risk',
+    riskUnset: 'Not set',
+    filterByType: 'Filter by type',
+    filterByRisk: 'Filter by risk level',
   },
 };
 
 const MAX_COMPARE = 4;
+
+const RISK_COLORS: Record<string, string> = {
+  'منخفضة': 'text-green-400 border-green-700',
+  'متوسطة': 'text-yellow-400 border-yellow-700',
+  'مرتفعة': 'text-red-400 border-red-700',
+};
 
 export default function FundsPage() {
   const { lang } = useLanguage();
@@ -56,10 +76,18 @@ export default function FundsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [selected, setSelected] = useState<number[]>([]);
+  const [activeType, setActiveType] = useState(t.all);
+  const [activeRisk, setActiveRisk] = useState(t.all);
 
   useEffect(() => {
     fetchFunds();
   }, []);
+
+  // إعادة ضبط الفلاتر لو اللغة اتغيّرت (عشان "الكل"/"All" تفضل متزامنة مع اللغة الحالية)
+  useEffect(() => {
+    setActiveType(t.all);
+    setActiveRisk(t.all);
+  }, [lang]);
 
   async function fetchFunds() {
     setLoading(true);
@@ -83,6 +111,22 @@ export default function FundsPage() {
     });
   }
 
+  const fundTypes = useMemo(() => {
+    const set = new Set(funds.map(f => f.fund_type).filter(Boolean));
+    return [...set].sort();
+  }, [funds]);
+
+  const filteredFunds = useMemo(() => {
+    return funds.filter(f => {
+      if (activeType !== t.all && f.fund_type !== activeType) return false;
+      if (activeRisk !== t.all) {
+        if (activeRisk === t.riskUnset) { if (f.risk_level) return false; }
+        else if (f.risk_level !== activeRisk) return false;
+      }
+      return true;
+    });
+  }, [funds, activeType, activeRisk, t]);
+
   return (
     <main className="min-h-screen bg-gray-950 p-4">
       <div className="max-w-5xl mx-auto">
@@ -91,6 +135,45 @@ export default function FundsPage() {
           <h1 className="text-orange-500 font-bold text-2xl mb-1">{t.title}</h1>
           <p className="text-gray-400 text-sm">{t.subtitle}</p>
         </div>
+
+        {!loading && !error && funds.length > 0 && (
+          <div className="mb-4 space-y-2">
+            <div>
+              <p className="text-gray-500 text-xs mb-1">{t.filterByType}</p>
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={() => setActiveType(t.all)}
+                  className={`px-3 py-1.5 text-xs rounded transition ${activeType === t.all ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+                >
+                  {t.all}
+                </button>
+                {fundTypes.map(type => (
+                  <button
+                    key={type}
+                    onClick={() => setActiveType(type)}
+                    className={`px-3 py-1.5 text-xs rounded transition ${activeType === type ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-gray-500 text-xs mb-1">{t.filterByRisk}</p>
+              <div className="flex gap-2 flex-wrap">
+                {[t.all, ...RISK_LEVELS, t.riskUnset].map(risk => (
+                  <button
+                    key={risk}
+                    onClick={() => setActiveRisk(risk)}
+                    className={`px-3 py-1.5 text-xs rounded transition ${activeRisk === risk ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+                  >
+                    {risk}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {loading ? (
           <div className="text-center py-16 text-gray-500 text-sm animate-pulse">{t.loading}</div>
@@ -101,9 +184,13 @@ export default function FundsPage() {
             <p className="text-6xl mb-4">💼</p>
             <p className="text-xl">{t.empty}</p>
           </div>
+        ) : filteredFunds.length === 0 ? (
+          <div className="text-center py-20 text-gray-500">
+            <p className="text-xl">{t.noMatch}</p>
+          </div>
         ) : (
           <div className="grid sm:grid-cols-2 gap-4 pb-24">
-            {funds.map(f => (
+            {filteredFunds.map(f => (
               <div key={f.id} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
                 <div className="flex justify-between items-start gap-3 mb-2">
                   <div>
@@ -125,9 +212,16 @@ export default function FundsPage() {
                   {f.manager_company && <p><span className="text-gray-500">{t.manager}:</span> {f.manager_company}</p>}
                   {f.inception_date && <p><span className="text-gray-500">{t.since}:</span> {new Date(f.inception_date).toLocaleDateString(t.dateLocale)}</p>}
                 </div>
-                <a href={`/funds/${f.id}`} className="text-orange-500 text-xs font-bold hover:text-orange-400 transition">
-                  {t.view} ←
-                </a>
+                {f.risk_level && (
+                  <span className={`inline-block text-xs font-bold border rounded px-2 py-0.5 mb-3 ${RISK_COLORS[f.risk_level] || 'text-gray-400 border-gray-700'}`}>
+                    {t.riskLabel}: {f.risk_level}
+                  </span>
+                )}
+                <div>
+                  <a href={`/funds/${f.id}`} className="text-orange-500 text-xs font-bold hover:text-orange-400 transition">
+                    {t.view} ←
+                  </a>
+                </div>
               </div>
             ))}
           </div>
