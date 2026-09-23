@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '../components/LanguageProvider';
 import AiReportView from '../components/AiReportView';
+import { RISK_LEVELS } from '../lib/funds-schema';
 
 const L = {
   ar: {
@@ -28,6 +29,8 @@ const L = {
     fundEntryDays: 'أيام الدخول',
     fundEntryDaysPh: 'مثال: يومياً، أو الأحد والثلاثاء فقط',
     fundExitDays: 'أيام الخروج',
+    fundRiskLevel: 'مستوى المخاطر',
+    fundRiskNotSet: '— غير محدد —',
     fundExitDaysPh: 'مثال: يومياً، أو يوم عمل واحد إشعار مسبق',
     fundSource: 'مصدر المعلومات *',
     fundSourcePh: 'رابط نشرة الإصدار الرسمية أو موقع الشركة المديرة — لا تترك هذا فارغاً',
@@ -260,6 +263,8 @@ const L = {
     fundEntryDays: 'Entry Days',
     fundEntryDaysPh: 'e.g. Daily, or Sun & Tue only',
     fundExitDays: 'Exit Days',
+    fundRiskLevel: 'Risk Level',
+    fundRiskNotSet: '— Not set —',
     fundExitDaysPh: 'e.g. Daily, or 1 business day notice',
     fundSource: 'Information Source *',
     fundSourcePh: 'Official prospectus link or manager company site — do not leave empty',
@@ -536,7 +541,7 @@ export default function AdminPage() {
   const emptyFundForm = {
     id: null as number | null, name: '', name_en: '', fund_type: '', manager_company: '',
     inception_date: '', currency: 'EGP', subscription_fee: '', redemption_fee: '',
-    entry_days: '', exit_days: '', source_note: '',
+    entry_days: '', exit_days: '', source_note: '', risk_level: '',
   };
   const [fundsList, setFundsList] = useState<any[]>([]);
   const [fundForm, setFundForm] = useState(emptyFundForm);
@@ -704,6 +709,7 @@ export default function AdminPage() {
     fd.append('entry_days', fundForm.entry_days);
     fd.append('exit_days', fundForm.exit_days);
     fd.append('source_note', fundForm.source_note);
+    fd.append('risk_level', fundForm.risk_level);
     if (fundProspectusFile) fd.append('prospectus', fundProspectusFile);
     return fd;
   }
@@ -747,6 +753,7 @@ export default function AdminPage() {
       entry_days: fund.entry_days || '',
       exit_days: fund.exit_days || '',
       source_note: fund.source_note || '',
+      risk_level: fund.risk_level || '',
     });
     setFundProspectusFile(null);
     setFundError('');
@@ -1988,6 +1995,13 @@ export default function AdminPage() {
                 <div>
                   <label className="text-gray-400 text-xs mb-1 block">{t.fundExitDays}</label>
                   <input value={fundForm.exit_days} onChange={e => setFundForm({ ...fundForm, exit_days: e.target.value })} placeholder={t.fundExitDaysPh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                </div>
+                <div>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.fundRiskLevel}</label>
+                  <select value={fundForm.risk_level} onChange={e => setFundForm({ ...fundForm, risk_level: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm">
+                    <option value="">{t.fundRiskNotSet}</option>
+                    {RISK_LEVELS.map(r => <option key={r} value={r}>{r}</option>)}
+                  </select>
                 </div>
               </div>
 

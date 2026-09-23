@@ -20,6 +20,7 @@ type Fund = {
   exit_days: string | null;
   source_note: string | null;
   has_prospectus: boolean;
+  risk_level: string | null;
 };
 
 type NavPoint = { id: number; nav_date: string; value: string };
@@ -36,6 +37,7 @@ const L = {
     redemptionFee: 'رسوم الاسترداد / السحب',
     entryDays: 'أيام الدخول',
     exitDays: 'أيام الخروج',
+    riskLevel: 'مستوى المخاطر',
     source: 'مصدر المعلومات',
     noData: '— غير متوفر —',
     prospectus: '📄 نشرة إصدار الصندوق (PDF)',
@@ -54,6 +56,7 @@ const L = {
     redemptionFee: 'Redemption Fee',
     entryDays: 'Entry Days',
     exitDays: 'Exit Days',
+    riskLevel: 'Risk Level',
     source: 'Information Source',
     noData: '— Not available —',
     prospectus: '📄 Fund Prospectus (PDF)',
@@ -125,6 +128,7 @@ export default function FundDetailPage() {
               <div><p className="text-gray-500 text-xs mb-1">{t.redemptionFee}</p><p className="text-white">{fund.redemption_fee || t.noData}</p></div>
               <div><p className="text-gray-500 text-xs mb-1">{t.entryDays}</p><p className="text-white">{fund.entry_days || t.noData}</p></div>
               <div><p className="text-gray-500 text-xs mb-1">{t.exitDays}</p><p className="text-white">{fund.exit_days || t.noData}</p></div>
+              <div><p className="text-gray-500 text-xs mb-1">{t.riskLevel}</p><p className="text-white">{fund.risk_level || t.noData}</p></div>
             </div>
 
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">

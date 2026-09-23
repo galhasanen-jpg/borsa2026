@@ -6,7 +6,7 @@ import { ensureFundsSchema } from '../../lib/funds-schema';
 // كلها بتتدخل يدوياً من الأدمن مع مصدر موثّق (source_note)، ومفيش أي رقم أو تاريخ
 // يتولّد تلقائياً أو يُخمَّن — لو المعلومة مش موجودة، الحقل بيفضل فاضي بدل ما يتملى برقم غير مؤكد.
 const LIST_COLUMNS = `id, name, name_en, fund_type, manager_company, inception_date, currency,
-    subscription_fee, redemption_fee, entry_days, exit_days, source_note,
+    subscription_fee, redemption_fee, entry_days, exit_days, source_note, risk_level,
     (prospectus_pdf IS NOT NULL) as has_prospectus, prospectus_filename,
     created_at, updated_at`;
 
@@ -49,6 +49,7 @@ function readFundForm(form) {
         entry_days: (form.get('entry_days') || '').toString().trim(),
         exit_days: (form.get('exit_days') || '').toString().trim(),
         source_note: (form.get('source_note') || '').toString().trim(),
+        risk_level: (form.get('risk_level') || '').toString().trim(),
     };
 }
 
@@ -87,13 +88,13 @@ export async function POST(request) {
         const result = await client.query(
             `INSERT INTO investment_funds
                 (name, name_en, fund_type, manager_company, inception_date, currency,
-                subscription_fee, redemption_fee, entry_days, exit_days, source_note,
+                subscription_fee, redemption_fee, entry_days, exit_days, source_note, risk_level,
                 prospectus_pdf, prospectus_filename)
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
             RETURNING id`,
             [f.name, f.name_en || null, f.fund_type, f.manager_company || null, f.inception_date || null, f.currency,
                 f.subscription_fee || null, f.redemption_fee || null, f.entry_days || null, f.exit_days || null,
-                f.source_note || null, prospectus?.buffer || null, prospectus?.filename || null]
+                f.source_note || null, f.risk_level || null, prospectus?.buffer || null, prospectus?.filename || null]
         );
 
         return Response.json({ success: true, id: result.rows[0].id });
@@ -138,22 +139,22 @@ export async function PUT(request) {
                 `UPDATE investment_funds SET
                     name=$1, name_en=$2, fund_type=$3, manager_company=$4, inception_date=$5, currency=$6,
                     subscription_fee=$7, redemption_fee=$8, entry_days=$9, exit_days=$10, source_note=$11,
-                    prospectus_pdf=$12, prospectus_filename=$13, updated_at=now()
-                WHERE id=$14`,
+                    risk_level=$12, prospectus_pdf=$13, prospectus_filename=$14, updated_at=now()
+                WHERE id=$15`,
                 [f.name, f.name_en || null, f.fund_type, f.manager_company || null, f.inception_date || null, f.currency,
                     f.subscription_fee || null, f.redemption_fee || null, f.entry_days || null, f.exit_days || null,
-                    f.source_note || null, prospectus.buffer, prospectus.filename, id]
+                    f.source_note || null, f.risk_level || null, prospectus.buffer, prospectus.filename, id]
             );
         } else {
             await client.query(
                 `UPDATE investment_funds SET
                     name=$1, name_en=$2, fund_type=$3, manager_company=$4, inception_date=$5, currency=$6,
                     subscription_fee=$7, redemption_fee=$8, entry_days=$9, exit_days=$10, source_note=$11,
-                    updated_at=now()
-                WHERE id=$12`,
+                    risk_level=$12, updated_at=now()
+                WHERE id=$13`,
                 [f.name, f.name_en || null, f.fund_type, f.manager_company || null, f.inception_date || null, f.currency,
                     f.subscription_fee || null, f.redemption_fee || null, f.entry_days || null, f.exit_days || null,
-                    f.source_note || null, id]
+                    f.source_note || null, f.risk_level || null, id]
             );
         }
 
