@@ -14,6 +14,8 @@ type Fund = {
   inception_date: string | null;
   currency: string;
   risk_level: string | null;
+  latest_nav_value: string | null;
+  latest_nav_date: string | null;
 };
 
 const L = {
@@ -37,6 +39,9 @@ const L = {
     riskUnset: 'غير محدد',
     filterByType: 'تصفية حسب الطبيعة',
     filterByRisk: 'تصفية حسب مستوى المخاطر',
+    navValue: 'قيمة الوثيقة',
+    navNoData: 'لا توجد بيانات متوفرة',
+    navAsOf: (date: string) => `بتاريخ ${date}`,
   },
   en: {
     title: '💼 Investment Funds',
@@ -58,6 +63,9 @@ const L = {
     riskUnset: 'Not set',
     filterByType: 'Filter by type',
     filterByRisk: 'Filter by risk level',
+    navValue: 'Unit Value',
+    navNoData: 'No data available',
+    navAsOf: (date: string) => `as of ${date}`,
   },
 };
 
@@ -206,6 +214,16 @@ export default function FundsPage() {
                     />
                     {t.compareLabel}
                   </label>
+                </div>
+                <div className="mb-2">
+                  {f.latest_nav_value ? (
+                    <p className="text-orange-400 font-bold text-sm">
+                      {t.navValue}: {Number(f.latest_nav_value).toFixed(4)} {f.currency}
+                      {f.latest_nav_date && <span className="text-gray-500 font-normal text-xs"> ({t.navAsOf(f.latest_nav_date)})</span>}
+                    </p>
+                  ) : (
+                    <p className="text-gray-600 text-sm">{t.navValue}: {t.navNoData}</p>
+                  )}
                 </div>
                 <div className="text-xs text-gray-400 space-y-1 mb-3">
                   <p><span className="text-gray-500">{t.type}:</span> {f.fund_type}</p>
