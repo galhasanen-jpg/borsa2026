@@ -7,6 +7,7 @@ import { ensureFundsSchema } from '../../lib/funds-schema';
 // يتولّد تلقائياً أو يُخمَّن — لو المعلومة مش موجودة، الحقل بيفضل فاضي بدل ما يتملى برقم غير مؤكد.
 const LIST_COLUMNS = `f.id, f.name, f.name_en, f.fund_type, f.manager_company, f.inception_date, f.currency,
     f.subscription_fee, f.redemption_fee, f.entry_days, f.exit_days, f.source_note, f.risk_level,
+    f.license_info, f.prospectus_url,
     (f.prospectus_pdf IS NOT NULL) as has_prospectus, f.prospectus_filename,
     f.created_at, f.updated_at,
     nav.value as latest_nav_value, nav.nav_date as latest_nav_date`;
@@ -60,6 +61,8 @@ function readFundForm(form) {
         exit_days: (form.get('exit_days') || '').toString().trim(),
         source_note: (form.get('source_note') || '').toString().trim(),
         risk_level: (form.get('risk_level') || '').toString().trim(),
+        license_info: (form.get('license_info') || '').toString().trim(),
+        prospectus_url: (form.get('prospectus_url') || '').toString().trim(),
     };
 }
 
@@ -99,12 +102,13 @@ export async function POST(request) {
             `INSERT INTO investment_funds
                 (name, name_en, fund_type, manager_company, inception_date, currency,
                 subscription_fee, redemption_fee, entry_days, exit_days, source_note, risk_level,
-                prospectus_pdf, prospectus_filename)
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+                license_info, prospectus_url, prospectus_pdf, prospectus_filename)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
             RETURNING id`,
             [f.name, f.name_en || null, f.fund_type, f.manager_company || null, f.inception_date || null, f.currency,
                 f.subscription_fee || null, f.redemption_fee || null, f.entry_days || null, f.exit_days || null,
-                f.source_note || null, f.risk_level || null, prospectus?.buffer || null, prospectus?.filename || null]
+                f.source_note || null, f.risk_level || null, f.license_info || null, f.prospectus_url || null,
+                prospectus?.buffer || null, prospectus?.filename || null]
         );
 
         return Response.json({ success: true, id: result.rows[0].id });
@@ -149,22 +153,24 @@ export async function PUT(request) {
                 `UPDATE investment_funds SET
                     name=$1, name_en=$2, fund_type=$3, manager_company=$4, inception_date=$5, currency=$6,
                     subscription_fee=$7, redemption_fee=$8, entry_days=$9, exit_days=$10, source_note=$11,
-                    risk_level=$12, prospectus_pdf=$13, prospectus_filename=$14, updated_at=now()
-                WHERE id=$15`,
+                    risk_level=$12, license_info=$13, prospectus_url=$14,
+                    prospectus_pdf=$15, prospectus_filename=$16, updated_at=now()
+                WHERE id=$17`,
                 [f.name, f.name_en || null, f.fund_type, f.manager_company || null, f.inception_date || null, f.currency,
                     f.subscription_fee || null, f.redemption_fee || null, f.entry_days || null, f.exit_days || null,
-                    f.source_note || null, f.risk_level || null, prospectus.buffer, prospectus.filename, id]
+                    f.source_note || null, f.risk_level || null, f.license_info || null, f.prospectus_url || null,
+                    prospectus.buffer, prospectus.filename, id]
             );
         } else {
             await client.query(
                 `UPDATE investment_funds SET
                     name=$1, name_en=$2, fund_type=$3, manager_company=$4, inception_date=$5, currency=$6,
                     subscription_fee=$7, redemption_fee=$8, entry_days=$9, exit_days=$10, source_note=$11,
-                    risk_level=$12, updated_at=now()
-                WHERE id=$13`,
+                    risk_level=$12, license_info=$13, prospectus_url=$14, updated_at=now()
+                WHERE id=$15`,
                 [f.name, f.name_en || null, f.fund_type, f.manager_company || null, f.inception_date || null, f.currency,
                     f.subscription_fee || null, f.redemption_fee || null, f.entry_days || null, f.exit_days || null,
-                    f.source_note || null, f.risk_level || null, id]
+                    f.source_note || null, f.risk_level || null, f.license_info || null, f.prospectus_url || null, id]
             );
         }
 

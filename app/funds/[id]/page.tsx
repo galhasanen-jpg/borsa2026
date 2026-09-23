@@ -21,6 +21,8 @@ type Fund = {
   source_note: string | null;
   has_prospectus: boolean;
   risk_level: string | null;
+  license_info: string | null;
+  prospectus_url: string | null;
 };
 
 type NavPoint = { id: number; nav_date: string; value: string };
@@ -38,10 +40,12 @@ const L = {
     entryDays: 'أيام الدخول',
     exitDays: 'أيام الخروج',
     riskLevel: 'مستوى المخاطر',
+    licenseInfo: 'بيانات الترخيص',
     source: 'مصدر المعلومات',
     noData: '— غير متوفر —',
     prospectus: '📄 نشرة إصدار الصندوق (PDF)',
-    noProspectus: 'لم يتم رفع نشرة إصدار لهذا الصندوق بعد',
+    prospectusExternal: '📄 نشرة إصدار الصندوق (رابط رسمي - الهيئة العامة للرقابة المالية)',
+    noProspectus: 'لم يتم إضافة نشرة إصدار لهذا الصندوق بعد',
     valueChart: 'قيمة الوثيقة منذ الإنشاء',
     dateLocale: 'ar-EG',
   },
@@ -57,10 +61,12 @@ const L = {
     entryDays: 'Entry Days',
     exitDays: 'Exit Days',
     riskLevel: 'Risk Level',
+    licenseInfo: 'License Info',
     source: 'Information Source',
     noData: '— Not available —',
     prospectus: '📄 Fund Prospectus (PDF)',
-    noProspectus: 'No prospectus uploaded for this fund yet',
+    prospectusExternal: '📄 Fund Prospectus (official link - Financial Regulatory Authority)',
+    noProspectus: 'No prospectus added for this fund yet',
     valueChart: 'Unit Value Since Inception',
     dateLocale: 'en-US',
   },
@@ -129,6 +135,7 @@ export default function FundDetailPage() {
               <div><p className="text-gray-500 text-xs mb-1">{t.entryDays}</p><p className="text-white">{fund.entry_days || t.noData}</p></div>
               <div><p className="text-gray-500 text-xs mb-1">{t.exitDays}</p><p className="text-white">{fund.exit_days || t.noData}</p></div>
               <div><p className="text-gray-500 text-xs mb-1">{t.riskLevel}</p><p className="text-white">{fund.risk_level || t.noData}</p></div>
+              <div><p className="text-gray-500 text-xs mb-1">{t.licenseInfo}</p><p className="text-white">{fund.license_info || t.noData}</p></div>
             </div>
 
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
@@ -153,6 +160,15 @@ export default function FundDetailPage() {
                   className="text-orange-500 text-sm font-bold hover:text-orange-400 transition"
                 >
                   {t.prospectus}
+                </a>
+              ) : fund.prospectus_url ? (
+                <a
+                  href={fund.prospectus_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-orange-500 text-sm font-bold hover:text-orange-400 transition"
+                >
+                  {t.prospectusExternal}
                 </a>
               ) : (
                 <p className="text-gray-500 text-sm">{t.noProspectus}</p>

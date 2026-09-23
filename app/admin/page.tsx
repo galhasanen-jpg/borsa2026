@@ -31,6 +31,10 @@ const L = {
     fundExitDays: 'أيام الخروج',
     fundRiskLevel: 'مستوى المخاطر',
     fundRiskNotSet: '— غير محدد —',
+    fundLicenseInfo: 'بيانات الترخيص',
+    fundLicenseInfoPh: 'مثال: ترخيص الهيئة رقم 905 لسنة 2023',
+    fundProspectusUrl: 'رابط نشرة الإصدار الرسمية (خارجي)',
+    fundProspectusUrlPh: 'https://fra.gov.eg/...',
     fundExitDaysPh: 'مثال: يومياً، أو يوم عمل واحد إشعار مسبق',
     fundSource: 'مصدر المعلومات *',
     fundSourcePh: 'رابط نشرة الإصدار الرسمية أو موقع الشركة المديرة — لا تترك هذا فارغاً',
@@ -49,6 +53,12 @@ const L = {
     startaBtn: '📥 استيراد الملف',
     startaResult: (created: number, updated: number, nav: number, skipped: number) =>
       `تم: ${created} صندوق جديد، ${updated} صندوق محدَّث، ${nav} نقطة قيمة وثيقة${skipped ? ` (وتجاهل ${skipped} صف غير صالح)` : ''}`,
+    fraTitle: '📄 استيراد نشرات إصدار من الهيئة العامة للرقابة المالية (FRA)',
+    fraHint: 'ارفع صفحة (أو صفحات) محفوظة بصيغة HTML من fra.gov.eg/نشرات-اكتتاب-مذكرات-معلومات (بتصنيف "صناديق استثمار") — بيتم ربط كل صف باسم صندوق موجود عندنا (مطابقة اسم، مش تخمين)، ويتملى رقم/سنة الترخيص ورابط نشرة الإصدار الرسمية لو الحقلين فاضيين. الصفوف اللي معندهاش تطابق واثق بتتسجّل تحت "غير مربوط" عشان تراجعها بنفسك.',
+    fraBtn: '📄 استيراد الصفحات',
+    fraResult: (parsed: number, matched: number, filled: number, unmatched: number) =>
+      `تحليل ${parsed} صف — ${matched} اترَبَط بصندوق موجود (${filled} اتملّى بيانات جديدة)، ${unmatched} غير مربوط`,
+    fraUnmatchedTitle: 'صناديق من نشرة الهيئة معندهاش تطابق واثق (راجعها يدوياً لو حابب):',
     fundEdit: 'تعديل',
     fundDelete: 'حذف',
     fundConfirmDelete: 'هل تريد حذف هذا الصندوق؟ سيتم حذف كل سجل قيمة الوثيقة المرتبط به أيضاً.',
@@ -265,6 +275,10 @@ const L = {
     fundExitDays: 'Exit Days',
     fundRiskLevel: 'Risk Level',
     fundRiskNotSet: '— Not set —',
+    fundLicenseInfo: 'License Info',
+    fundLicenseInfoPh: 'e.g. FRA License No. 905 of 2023',
+    fundProspectusUrl: 'Official Prospectus URL (external)',
+    fundProspectusUrlPh: 'https://fra.gov.eg/...',
     fundExitDaysPh: 'e.g. Daily, or 1 business day notice',
     fundSource: 'Information Source *',
     fundSourcePh: 'Official prospectus link or manager company site — do not leave empty',
@@ -283,6 +297,12 @@ const L = {
     startaBtn: '📥 Import File',
     startaResult: (created: number, updated: number, nav: number, skipped: number) =>
       `Done: ${created} new fund(s), ${updated} updated, ${nav} value point(s)${skipped ? ` (skipped ${skipped} invalid row(s))` : ''}`,
+    fraTitle: '📄 Import Prospectuses from Egypt\'s Financial Regulatory Authority (FRA)',
+    fraHint: 'Upload one or more saved HTML pages from fra.gov.eg\'s subscription-prospectus listing (filtered to "Investment Funds") — each row is matched to an existing fund by name (real matching, not guessing), filling in the license number/year and the official prospectus URL only when those fields are still empty. Rows with no confident match are listed under "unmatched" for you to review.',
+    fraBtn: '📄 Import Pages',
+    fraResult: (parsed: number, matched: number, filled: number, unmatched: number) =>
+      `Parsed ${parsed} row(s) — ${matched} matched an existing fund (${filled} filled with new data), ${unmatched} unmatched`,
+    fraUnmatchedTitle: 'Funds from the FRA listing with no confident match (review manually if you like):',
     fundEdit: 'Edit',
     fundDelete: 'Delete',
     fundConfirmDelete: 'Delete this fund? All its unit-value history will be deleted too.',
@@ -542,6 +562,7 @@ export default function AdminPage() {
     id: null as number | null, name: '', name_en: '', fund_type: '', manager_company: '',
     inception_date: '', currency: 'EGP', subscription_fee: '', redemption_fee: '',
     entry_days: '', exit_days: '', source_note: '', risk_level: '',
+    license_info: '', prospectus_url: '',
   };
   const [fundsList, setFundsList] = useState<any[]>([]);
   const [fundForm, setFundForm] = useState(emptyFundForm);
@@ -564,6 +585,10 @@ export default function AdminPage() {
   const [startaFile, setStartaFile] = useState<File | null>(null);
   const [startaImporting, setStartaImporting] = useState(false);
   const [startaMsg, setStartaMsg] = useState('');
+  const [fraFiles, setFraFiles] = useState<FileList | null>(null);
+  const [fraImporting, setFraImporting] = useState(false);
+  const [fraMsg, setFraMsg] = useState('');
+  const [fraUnmatched, setFraUnmatched] = useState<string[]>([]);
 
   useEffect(() => {
     fetchStocks();
@@ -710,6 +735,8 @@ export default function AdminPage() {
     fd.append('exit_days', fundForm.exit_days);
     fd.append('source_note', fundForm.source_note);
     fd.append('risk_level', fundForm.risk_level);
+    fd.append('license_info', fundForm.license_info);
+    fd.append('prospectus_url', fundForm.prospectus_url);
     if (fundProspectusFile) fd.append('prospectus', fundProspectusFile);
     return fd;
   }
@@ -754,6 +781,8 @@ export default function AdminPage() {
       exit_days: fund.exit_days || '',
       source_note: fund.source_note || '',
       risk_level: fund.risk_level || '',
+      license_info: fund.license_info || '',
+      prospectus_url: fund.prospectus_url || '',
     });
     setFundProspectusFile(null);
     setFundError('');
@@ -859,6 +888,30 @@ export default function AdminPage() {
       setStartaMsg(`${t.navImportErr}${e?.message ? ` — ${e.message}` : ''}`);
     }
     setStartaImporting(false);
+  }
+
+  async function handleFraImport() {
+    if (!fraFiles || fraFiles.length === 0) return;
+    setFraImporting(true);
+    setFraMsg('');
+    setFraUnmatched([]);
+    try {
+      const fd = new FormData();
+      Array.from(fraFiles).forEach(f => fd.append('files', f));
+      const res = await fetch('/api/funds/import-fra', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.success) {
+        setFraMsg(t.fraResult(data.totalParsed, data.matched, data.filled, data.unmatched.length));
+        setFraUnmatched(data.unmatched);
+        setFraFiles(null);
+        fetchFundsList();
+      } else {
+        setFraMsg(data.error || t.navImportErr);
+      }
+    } catch (e: any) {
+      setFraMsg(`${t.navImportErr}${e?.message ? ` — ${e.message}` : ''}`);
+    }
+    setFraImporting(false);
   }
 
   async function handleDeleteNavPoint(id: number) {
@@ -1950,6 +2003,30 @@ export default function AdminPage() {
               {startaMsg && <p className="text-orange-400 text-xs mt-2">{startaMsg}</p>}
             </div>
 
+            <div className="bg-gray-900 border border-orange-800 rounded-lg p-4">
+              <h3 className="text-orange-500 font-bold text-sm mb-1">{t.fraTitle}</h3>
+              <p className="text-gray-500 text-xs mb-3">{t.fraHint}</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <input type="file" accept=".html,.htm,text/html" multiple onChange={e => setFraFiles(e.target.files)} className="text-gray-300 text-xs" />
+                <button
+                  onClick={handleFraImport}
+                  disabled={fraImporting || !fraFiles || fraFiles.length === 0}
+                  className="bg-orange-500 text-black px-4 py-2 rounded text-sm font-bold hover:bg-orange-600 transition disabled:opacity-50"
+                >
+                  {t.fraBtn}
+                </button>
+              </div>
+              {fraMsg && <p className="text-orange-400 text-xs mt-2">{fraMsg}</p>}
+              {fraUnmatched.length > 0 && (
+                <div className="mt-2 bg-gray-800 rounded p-2 max-h-40 overflow-y-auto">
+                  <p className="text-gray-400 text-xs font-bold mb-1">{t.fraUnmatchedTitle}</p>
+                  <ul className="text-gray-500 text-xs space-y-0.5 list-disc pr-4">
+                    {fraUnmatched.map((name, i) => <li key={i}>{name}</li>)}
+                  </ul>
+                </div>
+              )}
+            </div>
+
             <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
               <h3 className="text-orange-500 font-bold text-sm mb-3">{fundForm.id ? t.fundEditTitle : t.fundAddTitle}</h3>
 
@@ -2008,6 +2085,17 @@ export default function AdminPage() {
               <div className="mb-3">
                 <label className="text-gray-400 text-xs mb-1 block">{t.fundSource}</label>
                 <input value={fundForm.source_note} onChange={e => setFundForm({ ...fundForm, source_note: e.target.value })} placeholder={t.fundSourcePh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.fundLicenseInfo}</label>
+                  <input value={fundForm.license_info} onChange={e => setFundForm({ ...fundForm, license_info: e.target.value })} placeholder={t.fundLicenseInfoPh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                </div>
+                <div>
+                  <label className="text-gray-400 text-xs mb-1 block">{t.fundProspectusUrl}</label>
+                  <input value={fundForm.prospectus_url} onChange={e => setFundForm({ ...fundForm, prospectus_url: e.target.value })} placeholder={t.fundProspectusUrlPh} dir="ltr" className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                </div>
               </div>
 
               <div className="mb-4">

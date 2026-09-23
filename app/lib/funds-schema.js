@@ -25,6 +25,8 @@ export async function ensureFundsSchema(client) {
             prospectus_filename TEXT,
             external_ref TEXT,
             risk_level TEXT,
+            license_info TEXT,
+            prospectus_url TEXT,
             created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
@@ -45,5 +47,7 @@ export async function ensureFundsSchema(client) {
     await client.query(`ALTER TABLE investment_funds ALTER COLUMN inception_date DROP NOT NULL`);
     await client.query(`ALTER TABLE investment_funds ADD COLUMN IF NOT EXISTS external_ref TEXT`);
     await client.query(`ALTER TABLE investment_funds ADD COLUMN IF NOT EXISTS risk_level TEXT`);
+    await client.query(`ALTER TABLE investment_funds ADD COLUMN IF NOT EXISTS license_info TEXT`);
+    await client.query(`ALTER TABLE investment_funds ADD COLUMN IF NOT EXISTS prospectus_url TEXT`);
     await client.query(`CREATE UNIQUE INDEX IF NOT EXISTS investment_funds_external_ref_idx ON investment_funds(external_ref) WHERE external_ref IS NOT NULL`);
 }
