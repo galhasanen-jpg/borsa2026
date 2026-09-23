@@ -19,6 +19,7 @@ type Fund = {
   entry_days: string | null;
   exit_days: string | null;
   risk_level: string | null;
+  license_info: string | null;
 };
 
 const L = {
@@ -36,6 +37,7 @@ const L = {
     entryDays: 'أيام الدخول',
     exitDays: 'أيام الخروج',
     riskLevel: 'مستوى المخاطر',
+    licenseInfo: 'بيانات الترخيص',
     noData: '—',
     valueChart: 'مقارنة قيمة الوثيقة',
     dateLocale: 'ar-EG',
@@ -54,6 +56,7 @@ const L = {
     entryDays: 'Entry Days',
     exitDays: 'Exit Days',
     riskLevel: 'Risk Level',
+    licenseInfo: 'License Info',
     noData: '—',
     valueChart: 'Unit Value Comparison',
     dateLocale: 'en-US',
@@ -110,6 +113,7 @@ function CompareFundsInner() {
   const rows: { key: keyof Fund; label: string; format?: (f: Fund) => string }[] = [
     { key: 'fund_type', label: t.type },
     { key: 'risk_level', label: t.riskLevel },
+    { key: 'license_info', label: t.licenseInfo },
     { key: 'manager_company', label: t.manager },
     { key: 'inception_date', label: t.inception, format: f => f.inception_date ? new Date(f.inception_date).toLocaleDateString(t.dateLocale) : t.noData },
     { key: 'subscription_fee', label: t.subscriptionFee },
