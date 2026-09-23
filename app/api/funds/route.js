@@ -5,10 +5,20 @@ import { ensureFundsSchema } from '../../lib/funds-schema';
 // بيانات صناديق الاستثمار (اسم، تاريخ إنشاء، طبيعة، رسوم، أيام دخول/خروج...) —
 // كلها بتتدخل يدوياً من الأدمن مع مصدر موثّق (source_note)، ومفيش أي رقم أو تاريخ
 // يتولّد تلقائياً أو يُخمَّن — لو المعلومة مش موجودة، الحقل بيفضل فاضي بدل ما يتملى برقم غير مؤكد.
-const LIST_COLUMNS = `id, name, name_en, fund_type, manager_company, inception_date, currency,
-    subscription_fee, redemption_fee, entry_days, exit_days, source_note, risk_level,
-    (prospectus_pdf IS NOT NULL) as has_prospectus, prospectus_filename,
-    created_at, updated_at`;
+const LIST_COLUMNS = `f.id, f.name, f.name_en, f.fund_type, f.manager_company, f.inception_date, f.currency,
+    f.subscription_fee, f.redemption_fee, f.entry_days, f.exit_days, f.source_note, f.risk_level,
+    (f.prospectus_pdf IS NOT NULL) as has_prospectus, f.prospectus_filename,
+    f.created_at, f.updated_at,
+    nav.value as latest_nav_value, nav.nav_date as latest_nav_date`;
+
+// آخر قيمة وثيقة مسجّلة لكل صندوق (عرضها بجوار الاسم في القائمة عشان المستخدم يعرف فيه
+// بيانات فعلية قبل ما يفتح صفحة التفاصيل) — LEFT JOIN LATERAL يرجّع null لو مفيش أي نقطة
+// مسجّلة، وده بيتحول في الواجهة لـ"لا توجد بيانات متوفرة" بدل ما يتخيّل رقم
+const FROM_WITH_LATEST_NAV = `investment_funds f
+    LEFT JOIN LATERAL (
+        SELECT value, to_char(nav_date, 'YYYY-MM-DD') as nav_date FROM fund_nav_history h
+        WHERE h.fund_id = f.id ORDER BY nav_date DESC LIMIT 1
+    ) nav ON true`;
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
@@ -20,14 +30,14 @@ export async function GET(request) {
         await ensureFundsSchema(client);
 
         if (id) {
-            const result = await client.query(`SELECT ${LIST_COLUMNS} FROM investment_funds WHERE id = $1`, [id]);
+            const result = await client.query(`SELECT ${LIST_COLUMNS} FROM ${FROM_WITH_LATEST_NAV} WHERE f.id = $1`, [id]);
             if (result.rows.length === 0) {
                 return Response.json({ error: 'الصندوق غير موجود' }, { status: 404 });
             }
             return Response.json(result.rows[0]);
         }
 
-        const result = await client.query(`SELECT ${LIST_COLUMNS} FROM investment_funds ORDER BY name`);
+        const result = await client.query(`SELECT ${LIST_COLUMNS} FROM ${FROM_WITH_LATEST_NAV} ORDER BY f.name`);
         return Response.json(result.rows);
     } catch (err) {
         return Response.json({ error: err.message }, { status: 500 });
