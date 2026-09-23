@@ -46,6 +46,14 @@ const L = {
     fundErrRequired: 'اسم الصندوق وطبيعته حقول مطلوبة',
     fundErrGeneric: '❌ تعذّر حفظ الصندوق',
     fundListTitle: 'الصناديق المضافة',
+    fundStatusAll: 'الكل',
+    fundStatusComplete: '✅ مكتمل الربط',
+    fundStatusPartial: '🟡 مرتبط جزئياً',
+    fundStatusNone: '⚪ بدون بيانات خارجية',
+    fundStatusFilterLabel: 'تصفية حسب حالة الربط',
+    fundBadgeNav: 'قيمة الوثيقة',
+    fundBadgeProspectus: 'نشرة الإصدار',
+    fundBadgeLicense: 'الترخيص',
     fundNoFunds: 'لا توجد صناديق مضافة حتى الآن',
     fundSelectPh: '— اختر الصندوق —',
     startaTitle: '📥 استيراد دفعة من Starta Markets',
@@ -290,6 +298,14 @@ const L = {
     fundErrRequired: 'Name and type are required',
     fundErrGeneric: '❌ Could not save the fund',
     fundListTitle: 'Added Funds',
+    fundStatusAll: 'All',
+    fundStatusComplete: '✅ Fully linked',
+    fundStatusPartial: '🟡 Partially linked',
+    fundStatusNone: '⚪ No external data',
+    fundStatusFilterLabel: 'Filter by linkage status',
+    fundBadgeNav: 'Unit value',
+    fundBadgeProspectus: 'Prospectus',
+    fundBadgeLicense: 'License',
     fundNoFunds: 'No funds added yet',
     fundSelectPh: '— Select fund —',
     startaTitle: '📥 Bulk import from Starta Markets',
@@ -589,6 +605,16 @@ export default function AdminPage() {
   const [fraImporting, setFraImporting] = useState(false);
   const [fraMsg, setFraMsg] = useState('');
   const [fraUnmatched, setFraUnmatched] = useState<string[]>([]);
+  const [fundCompletenessFilter, setFundCompletenessFilter] = useState<'all' | 'complete' | 'partial' | 'none'>('all');
+
+  function getFundCompleteness(f: any) {
+    const hasNav = !!f.latest_nav_value;
+    const hasProspectus = !!f.has_prospectus || !!f.prospectus_url;
+    const hasLicense = !!f.license_info;
+    const filledCount = [hasNav, hasProspectus, hasLicense].filter(Boolean).length;
+    const status = filledCount === 3 ? 'complete' : filledCount === 0 ? 'none' : 'partial';
+    return { hasNav, hasProspectus, hasLicense, status };
+  }
 
   useEffect(() => {
     fetchStocks();
@@ -2151,11 +2177,31 @@ export default function AdminPage() {
 
             <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
               <h3 className="text-orange-500 font-bold text-sm mb-3">{t.fundListTitle} ({fundsList.length})</h3>
+              {fundsList.length > 0 && (
+                <div className="mb-3">
+                  <p className="text-gray-500 text-xs mb-1">{t.fundStatusFilterLabel}</p>
+                  <div className="flex gap-2 flex-wrap">
+                    {(['all', 'complete', 'partial', 'none'] as const).map(s => (
+                      <button
+                        key={s}
+                        onClick={() => setFundCompletenessFilter(s)}
+                        className={`px-3 py-1.5 text-xs rounded transition ${fundCompletenessFilter === s ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+                      >
+                        {s === 'all' ? t.fundStatusAll : s === 'complete' ? t.fundStatusComplete : s === 'partial' ? t.fundStatusPartial : t.fundStatusNone}
+                        {' '}({fundsList.filter(f => s === 'all' || getFundCompleteness(f).status === s).length})
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {fundsList.length === 0 ? (
                 <p className="text-gray-500 text-sm text-center py-4">{t.fundNoFunds}</p>
               ) : (
                 <div className="space-y-3">
-                  {fundsList.map(f => (
+                  {fundsList.filter(f => fundCompletenessFilter === 'all' || getFundCompleteness(f).status === fundCompletenessFilter).map(f => {
+                    const completeness = getFundCompleteness(f);
+                    const statusLabel = completeness.status === 'complete' ? t.fundStatusComplete : completeness.status === 'partial' ? t.fundStatusPartial : t.fundStatusNone;
+                    return (
                     <div key={f.id} className="bg-gray-800 rounded-lg p-3">
                       <div className="flex justify-between items-start gap-3 flex-wrap mb-2">
                         <div>
@@ -2167,6 +2213,21 @@ export default function AdminPage() {
                           <button onClick={() => { setNavCsvFile(null); setNavImportMsg(''); handleManageNav(f.id); }} className="text-orange-500 text-xs font-bold hover:text-orange-400 transition">{t.fundManageNav}</button>
                           <button onClick={() => handleDeleteFund(f.id)} className="text-red-500 text-xs font-bold hover:text-red-400 transition">{t.fundDelete}</button>
                         </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 flex-wrap mb-2">
+                        <span className={`text-xs font-bold ${completeness.status === 'complete' ? 'text-green-400' : completeness.status === 'partial' ? 'text-yellow-400' : 'text-gray-500'}`}>
+                          {statusLabel}
+                        </span>
+                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasNav ? 'text-green-400 border-green-700' : 'text-gray-600 border-gray-700'}`}>
+                          {completeness.hasNav ? '✓' : '✗'} {t.fundBadgeNav}
+                        </span>
+                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasProspectus ? 'text-green-400 border-green-700' : 'text-gray-600 border-gray-700'}`}>
+                          {completeness.hasProspectus ? '✓' : '✗'} {t.fundBadgeProspectus}
+                        </span>
+                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasLicense ? 'text-green-400 border-green-700' : 'text-gray-600 border-gray-700'}`}>
+                          {completeness.hasLicense ? '✓' : '✗'} {t.fundBadgeLicense}
+                        </span>
                       </div>
 
                       {fundManagingId === f.id && (
@@ -2230,7 +2291,7 @@ export default function AdminPage() {
                         </div>
                       )}
                     </div>
-                  ))}
+                  );})}
                 </div>
               )}
             </div>
