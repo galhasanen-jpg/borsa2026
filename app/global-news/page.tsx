@@ -27,8 +27,6 @@ type Channel = {
 // قناة الرياضة اتأجلت لحد ما نلاقي معرّف قناة رسمي واحد مؤكد بدل الاحتمالات المتضاربة اللي ظهرت في البحث.
 const newsChannels: Channel[] = [
   { id: 'cnbc-arabia', name: 'CNBC عربية', nameEn: 'CNBC Arabia', embedUrl: 'https://www.youtube.com/embed/OLbqCS3OrPM?autoplay=1' },
-  { id: 'aljazeera', name: 'الجزيرة', nameEn: 'Al Jazeera Arabic', embedUrl: 'https://www.youtube.com/embed/live_stream?channel=UCfiwzLy-8yKzIbsmZTzxDgw&autoplay=1' },
-  { id: 'skynews-arabia', name: 'سكاي نيوز عربية', nameEn: 'Sky News Arabia', embedUrl: 'https://www.youtube.com/embed/live_stream?channel=UCIJXOvggjKtCagMfxvcCzAA&autoplay=1' },
   { id: 'france24-arabic', name: 'فرانس 24 عربي', nameEn: 'France 24 Arabic', embedUrl: 'https://www.youtube.com/embed/live_stream?channel=UCdTyuXgmJkG_O8_75eqej-w&autoplay=1' },
 ];
 
