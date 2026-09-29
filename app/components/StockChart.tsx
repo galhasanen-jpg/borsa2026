@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, BarChart, Bar
+  Tooltip, ResponsiveContainer, BarChart, Bar, ComposedChart, Cell
 } from 'recharts';
 
 const periods = [
@@ -20,7 +20,7 @@ export default function StockChart({ symbol, name, lang }: { symbol: string, nam
   const [data, setData] = useState<any[]>([]);
   const [period, setPeriod] = useState('today');
   const [loading, setLoading] = useState(true);
-  const [chartType, setChartType] = useState<'area' | 'bar'>('area');
+  const [chartType, setChartType] = useState<'area' | 'bar' | 'candlestick'>('area');
 
   useEffect(() => {
     fetchData();
@@ -47,7 +47,7 @@ export default function StockChart({ symbol, name, lang }: { symbol: string, nam
           // بيانات احتياطية إذا لا يوجد ticks
           const histRes = await fetch(`/api/stock-history?symbol=${symbol}&period=1w`);
           const hist = await histRes.json();
-          setData(hist.map((h: any) => ({ date: h.date, close: h.close, volume: h.volume })));
+          setData(hist.map((h: any) => ({ date: h.date, close: h.close, high: h.high, low: h.low, open: h.open, volume: h.volume })));
         }
       } else {
         url = `/api/stock-history?symbol=${symbol}&period=${period}`;
@@ -74,20 +74,29 @@ const lastPrice = parseFloat(data[data.length - 1]?.close) || 0;
   const priceChangePercent = firstPrice > 0 ? ((priceChange / firstPrice) * 100).toFixed(2) : '0';
   const isUp = priceChange >= 0;
 
+  const hasOHLC = data.length > 0 && data.every(d => d.open != null && d.high != null && d.low != null);
+  const candleData = data.map(d => {
+    const open = parseFloat(d.open), close = parseFloat(d.close), high = parseFloat(d.high), low = parseFloat(d.low);
+    return { ...d, wickRange: [low, high], bodyRange: [Math.min(open, close), Math.max(open, close)], up: close >= open };
+  });
+
+  useEffect(() => {
+    if (chartType === 'candlestick' && !hasOHLC) setChartType('area');
+  }, [hasOHLC, chartType]);
+
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
+      const p = payload[0]?.payload;
+      if (!p) return null;
       return (
         <div className="bg-gray-800 border border-gray-700 rounded p-3 text-xs">
           <p className="text-gray-400 mb-1">{label}</p>
-          <p className="text-white font-bold">السعر: {parseFloat(payload[0]?.value)?.toFixed(2)} ج</p>
-          {payload[0]?.payload?.high && (
-            <>
-              <p className="text-green-400">أعلى: {payload[0]?.payload?.high} ج</p>
-              <p className="text-red-400">أدنى: {payload[0]?.payload?.low} ج</p>
-            </>
-          )}
-          {payload[0]?.payload?.volume && (
-            <p className="text-gray-400">حجم: {parseInt(payload[0]?.payload?.volume).toLocaleString()}</p>
+          {p.open != null && <p className="text-gray-300">فتح: {parseFloat(p.open).toFixed(2)} ج</p>}
+          <p className="text-white font-bold">إغلاق: {parseFloat(p.close).toFixed(2)} ج</p>
+          {p.high != null && <p className="text-green-400">أعلى: {parseFloat(p.high).toFixed(2)} ج</p>}
+          {p.low != null && <p className="text-red-400">أدنى: {parseFloat(p.low).toFixed(2)} ج</p>}
+          {p.volume != null && (
+            <p className="text-gray-400">حجم: {parseInt(p.volume).toLocaleString()}</p>
           )}
         </div>
       );
@@ -140,6 +149,14 @@ const lastPrice = parseFloat(data[data.length - 1]?.close) || 0;
           >
             📊
           </button>
+          <button
+            onClick={() => hasOHLC && setChartType('candlestick')}
+            disabled={!hasOHLC}
+            title={!hasOHLC ? (lang === 'ar' ? 'الشموع اليابانية تحتاج بيانات فتح/أعلى/أدنى — متاحة من فترة شهر فأكثر' : 'Candlesticks need open/high/low data — available from 1M periods and up') : undefined}
+            className={`px-2 py-1 text-xs rounded transition ${chartType === 'candlestick' ? 'bg-gray-700 text-white' : hasOHLC ? 'text-gray-500 hover:text-white' : 'text-gray-700 cursor-not-allowed'}`}
+          >
+            🕯️
+          </button>
         </div>
       </div>
 
@@ -169,6 +186,23 @@ const lastPrice = parseFloat(data[data.length - 1]?.close) || 0;
                 <Tooltip content={<CustomTooltip />} />
                 <Area type="monotone" dataKey="close" stroke={isUp ? '#22c55e' : '#ef4444'} strokeWidth={2} fill="url(#colorClose)" />
               </AreaChart>
+            ) : chartType === 'candlestick' ? (
+              <ComposedChart data={candleData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
+                <XAxis dataKey="date" tick={{ fill: '#6b7280', fontSize: 10 }} tickFormatter={(val) => val.length > 5 ? val.slice(5) : val} />
+                <YAxis tick={{ fill: '#6b7280', fontSize: 10 }} domain={['auto', 'auto']} width={50} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="wickRange" barSize={1} isAnimationActive={false}>
+                  {candleData.map((d, i) => (
+                    <Cell key={`wick-${i}`} fill={d.up ? '#22c55e' : '#ef4444'} />
+                  ))}
+                </Bar>
+                <Bar dataKey="bodyRange" barSize={6} isAnimationActive={false}>
+                  {candleData.map((d, i) => (
+                    <Cell key={`body-${i}`} fill={d.up ? '#22c55e' : '#ef4444'} />
+                  ))}
+                </Bar>
+              </ComposedChart>
             ) : (
               <BarChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
