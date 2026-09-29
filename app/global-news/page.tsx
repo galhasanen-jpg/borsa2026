@@ -15,6 +15,25 @@ const categories = [
   { id: 'live', label: '📺 بث مباشر', labelEn: '📺 Live TV', query: '' },
 ];
 
+type Channel = {
+  id: string;
+  name: string;
+  nameEn: string;
+  embedUrl: string;
+};
+
+// روابط بث حية دائمة (channel=) بدل فيديو ثابت — بتفضل شغالة مهما اتغير البث الفعلي،
+// وكلها قنوات رسمية اتأكد من هوية معرّفها (channel id) عن طريق بحث مستقل قبل الإضافة.
+// قناة الرياضة اتأجلت لحد ما نلاقي معرّف قناة رسمي واحد مؤكد بدل الاحتمالات المتضاربة اللي ظهرت في البحث.
+const newsChannels: Channel[] = [
+  { id: 'cnbc-arabia', name: 'CNBC عربية', nameEn: 'CNBC Arabia', embedUrl: 'https://www.youtube.com/embed/OLbqCS3OrPM?autoplay=1' },
+  { id: 'aljazeera', name: 'الجزيرة', nameEn: 'Al Jazeera Arabic', embedUrl: 'https://www.youtube.com/embed/live_stream?channel=UCfiwzLy-8yKzIbsmZTzxDgw&autoplay=1' },
+  { id: 'skynews-arabia', name: 'سكاي نيوز عربية', nameEn: 'Sky News Arabia', embedUrl: 'https://www.youtube.com/embed/live_stream?channel=UCIJXOvggjKtCagMfxvcCzAA&autoplay=1' },
+  { id: 'france24-arabic', name: 'فرانس 24 عربي', nameEn: 'France 24 Arabic', embedUrl: 'https://www.youtube.com/embed/live_stream?channel=UCdTyuXgmJkG_O8_75eqej-w&autoplay=1' },
+];
+
+const sportsChannels: Channel[] = [];
+
 const metalCharts = [
   { symbol: 'XAUUSD', name: 'الذهب / دولار', nameEn: 'Gold / USD', color: '#f59e0b' },
   { symbol: 'XAGUSD', name: 'الفضة / دولار', nameEn: 'Silver / USD', color: '#94a3b8' },
@@ -81,10 +100,21 @@ export default function GlobalNewsPage() {
   const [allNews, setAllNews] = useState<any>({});
   const [newsErrors, setNewsErrors] = useState<any>({});
   const [activeMetalChart, setActiveMetalChart] = useState(metalCharts[0]);
+  const [activeChannelId, setActiveChannelId] = useState<string | null>(null);
+  const activeChannel = [...newsChannels, ...sportsChannels].find(c => c.id === activeChannelId) || null;
 
   useEffect(() => {
     fetchAllNews();
   }, []);
+
+  // الانتقال من تبويب البث المباشر لأي تبويب تاني في الموقع بيوقف القناة المفتوحة
+  useEffect(() => {
+    if (activeCategory.id !== 'live') setActiveChannelId(null);
+  }, [activeCategory]);
+
+  function toggleChannel(id: string) {
+    setActiveChannelId(prev => (prev === id ? null : id));
+  }
 
   async function fetchAllNews() {
     for (const cat of categories.filter(c => c.query)) {
@@ -150,26 +180,79 @@ export default function GlobalNewsPage() {
           ))}
         </div>
 
-        {/* بث مباشر CNBC Arabia */}
+        {/* بث مباشر - قوائم قنوات قابلة للاختيار */}
         {activeCategory.id === 'live' && (
           <div className="space-y-4">
             <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
               <div className="px-4 py-3 border-b border-gray-800 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                <h2 className="text-white font-bold text-sm">بث مباشر - CNBC Arabia</h2>
-                <span className="text-gray-500 text-xs">القناة الاقتصادية الأولى في العالم العربي</span>
+                <span className={`w-2 h-2 rounded-full ${activeChannel ? 'bg-red-500 animate-pulse' : 'bg-gray-600'}`}></span>
+                <h2 className="text-white font-bold text-sm">
+                  {activeChannel
+                    ? `${lang === 'ar' ? 'بث مباشر' : 'Live'} - ${lang === 'ar' ? activeChannel.name : activeChannel.nameEn}`
+                    : (lang === 'ar' ? 'اختر قناة من القائمة تحت للمشاهدة' : 'Pick a channel below to watch')}
+                </h2>
               </div>
-              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-                {activeCategory.id === 'live' && (
+              {activeChannel && (
+                <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
                   <iframe
+                    key={activeChannel.id}
                     className="absolute top-0 left-0 w-full h-full"
-                    src="https://www.youtube.com/embed/OLbqCS3OrPM?autoplay=1"
-                    title="CNBC Arabia Live"
+                    src={activeChannel.embedUrl}
+                    title={activeChannel.name}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
-                )}
+                </div>
+              )}
+            </div>
+
+            {/* قوائم القنوات */}
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+              <h3 className="text-orange-500 font-bold text-sm mb-2">
+                {lang === 'ar' ? '📰 قنوات إخبارية' : '📰 News Channels'}
+              </h3>
+              <div className="flex gap-2 flex-wrap mb-4">
+                {newsChannels.map(ch => (
+                  <button
+                    key={ch.id}
+                    onClick={() => toggleChannel(ch.id)}
+                    className={`px-3 py-2 text-sm rounded-lg transition font-medium ${
+                      activeChannelId === ch.id
+                        ? 'bg-orange-500 text-black font-bold'
+                        : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                    }`}
+                  >
+                    {activeChannelId === ch.id && '● '}
+                    {lang === 'ar' ? ch.name : ch.nameEn}
+                  </button>
+                ))}
               </div>
+
+              <h3 className="text-orange-500 font-bold text-sm mb-2">
+                {lang === 'ar' ? '⚽ قنوات رياضية' : '⚽ Sports Channels'}
+              </h3>
+              {sportsChannels.length === 0 ? (
+                <p className="text-gray-500 text-xs">
+                  {lang === 'ar' ? 'لا توجد قنوات رياضية موثّقة متاحة حالياً' : 'No verified sports channels available yet'}
+                </p>
+              ) : (
+                <div className="flex gap-2 flex-wrap">
+                  {sportsChannels.map(ch => (
+                    <button
+                      key={ch.id}
+                      onClick={() => toggleChannel(ch.id)}
+                      className={`px-3 py-2 text-sm rounded-lg transition font-medium ${
+                        activeChannelId === ch.id
+                          ? 'bg-orange-500 text-black font-bold'
+                          : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                      }`}
+                    >
+                      {activeChannelId === ch.id && '● '}
+                      {lang === 'ar' ? ch.name : ch.nameEn}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* أخبار اقتصادية */}
