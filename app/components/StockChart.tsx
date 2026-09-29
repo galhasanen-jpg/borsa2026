@@ -153,9 +153,14 @@ const lastPrice = parseFloat(data[data.length - 1]?.close) || 0;
             onClick={() => hasOHLC && setChartType('candlestick')}
             disabled={!hasOHLC}
             title={!hasOHLC ? (lang === 'ar' ? 'الشموع اليابانية تحتاج بيانات فتح/أعلى/أدنى — متاحة من فترة شهر فأكثر' : 'Candlesticks need open/high/low data — available from 1M periods and up') : undefined}
-            className={`px-2 py-1 text-xs rounded transition ${chartType === 'candlestick' ? 'bg-gray-700 text-white' : hasOHLC ? 'text-gray-500 hover:text-white' : 'text-gray-700 cursor-not-allowed'}`}
+            className={`px-2 py-1 rounded transition ${chartType === 'candlestick' ? 'bg-gray-700 text-white' : hasOHLC ? 'text-gray-500 hover:text-white' : 'text-gray-700 cursor-not-allowed'}`}
           >
-            🕯️
+            <svg width="14" height="14" viewBox="0 0 16 16" className="inline-block align-middle">
+              <line x1="4" y1="1" x2="4" y2="15" stroke="currentColor" strokeWidth="1" />
+              <rect x="2.5" y="5" width="3" height="6" fill="#22c55e" />
+              <line x1="12" y1="2" x2="12" y2="14" stroke="currentColor" strokeWidth="1" />
+              <rect x="10.5" y="4" width="3" height="5" fill="#ef4444" />
+            </svg>
           </button>
         </div>
       </div>
