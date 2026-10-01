@@ -51,9 +51,9 @@ html.light {
   --surface-3-hover: #cbd5e1;
   --border: #e2e8f0;
   --border-strong: #cbd5e1;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-tertiary: #64748b;
+  --text-primary: #000000;
+  --text-secondary: #334155;
+  --text-tertiary: #475569;
   --accent-text: #c2410c;
   --scrollbar-thumb: #cbd5e1;
   --scrollbar-track: #f1f5f9;
@@ -77,7 +77,7 @@ body {
    يكون نص فاتح على خلفية غامقة (ظاهرة بصرية معروفة)، فبنعوّض عنها بزيادة وزن
    الخط شوية في الوضع الفاتح بس */
 html.light body {
-  font-weight: 500;
+  font-weight: 700;
 }
 
 ::-webkit-scrollbar {
