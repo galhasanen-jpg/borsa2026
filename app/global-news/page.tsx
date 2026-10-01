@@ -153,7 +153,7 @@ export default function GlobalNewsPage() {
           <h1 className="text-orange-500 font-bold text-xl">
             🌐 {lang === 'ar' ? 'الأخبار العالمية' : 'Global News'}
           </h1>
-          <span className="text-gray-500 text-xs">
+          <span className="text-gray-400 text-xs">
             {lang === 'ar' ? 'أخبار تؤثر على الاقتصاد المصري' : 'News affecting Egyptian economy'}
           </span>
         </div>
@@ -230,7 +230,7 @@ export default function GlobalNewsPage() {
                 {lang === 'ar' ? '⚽ قنوات رياضية' : '⚽ Sports Channels'}
               </h3>
               {sportsChannels.length === 0 ? (
-                <p className="text-gray-500 text-xs">
+                <p className="text-gray-400 text-xs">
                   {lang === 'ar' ? 'لا توجد قنوات رياضية موثّقة متاحة حالياً' : 'No verified sports channels available yet'}
                 </p>
               ) : (
@@ -267,7 +267,7 @@ export default function GlobalNewsPage() {
                   </p>
                   <div className="flex justify-between items-center">
                     <span className="text-orange-500 text-xs font-bold">{item.source}</span>
-                    <span className="text-gray-500 text-xs">{item.date}</span>
+                    <span className="text-gray-400 text-xs">{item.date}</span>
                   </div>
                 </div>
               ))}
@@ -301,7 +301,7 @@ export default function GlobalNewsPage() {
                 <h2 className="text-white font-bold text-sm">
                   {lang === 'ar' ? activeMetalChart.name : activeMetalChart.nameEn}
                 </h2>
-                <span className="text-gray-500 text-xs mr-2">بيانات لحظية من TradingView</span>
+                <span className="text-gray-400 text-xs mr-2">بيانات لحظية من TradingView</span>
               </div>
               <TradingViewChart symbol={activeMetalChart.symbol} />
             </div>
@@ -318,11 +318,11 @@ export default function GlobalNewsPage() {
                   </p>
                   <div className="flex justify-between items-center">
                     <span className="text-orange-500 text-xs font-bold">{item.source}</span>
-                    <span className="text-gray-500 text-xs">{item.date}</span>
+                    <span className="text-gray-400 text-xs">{item.date}</span>
                   </div>
                 </div>
               )) : (
-                <div className="col-span-3 text-center py-8 text-gray-500 animate-pulse">
+                <div className="col-span-3 text-center py-8 text-gray-400 animate-pulse">
                   جاري تحميل أخبار المعادن...
                 </div>
               )}
@@ -346,7 +346,7 @@ export default function GlobalNewsPage() {
                 </div>
               ))
             ) : news.length === 0 ? (
-              <div className="col-span-3 text-center py-16 text-gray-500">
+              <div className="col-span-3 text-center py-16 text-gray-400">
                 <p className="text-4xl mb-3">😕</p>
                 <p>لا توجد أخبار حالياً</p>
               </div>
@@ -362,7 +362,7 @@ export default function GlobalNewsPage() {
                   </p>
                   <div className="flex justify-between items-center">
                     <span className="text-orange-500 text-xs font-bold">{item.source}</span>
-                    <span className="text-gray-500 text-xs">{item.date}</span>
+                    <span className="text-gray-400 text-xs">{item.date}</span>
                   </div>
                 </div>
               ))

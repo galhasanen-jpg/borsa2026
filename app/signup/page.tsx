@@ -119,7 +119,7 @@ export default function SignupPage() {
 
         <div className="text-center mb-6">
           <h1 className="text-orange-500 font-bold text-2xl mb-1">{t.title}</h1>
-          <p className="text-gray-500 text-sm">{t.subtitle}</p>
+          <p className="text-gray-400 text-sm">{t.subtitle}</p>
         </div>
 
         {message && (
@@ -179,7 +179,7 @@ export default function SignupPage() {
             {loading ? t.submitting : t.submit}
           </button>
 
-          <p className="text-center text-gray-500 text-sm">
+          <p className="text-center text-gray-400 text-sm">
             {t.haveAccount}{' '}
             <a href="/signin" className="text-orange-500 hover:text-orange-400">
               {t.signIn}

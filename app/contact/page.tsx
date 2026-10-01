@@ -128,12 +128,12 @@ export default function ContactPage() {
 
   return (
     <main className="min-h-screen bg-gray-950 p-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-3xl mx-auto">
 
         {/* العنوان */}
         <div className="text-center mb-8">
           <h1 className="text-orange-500 font-bold text-3xl mb-2">{tr.title}</h1>
-          <p className="text-gray-500 text-sm">{tr.subtitle}</p>
+          <p className="text-gray-400 text-sm">{tr.subtitle}</p>
         </div>
 
         {/* بطاقات وسائل التواصل */}
@@ -148,7 +148,7 @@ export default function ContactPage() {
             >
               <div className="text-3xl mb-2">{card.icon}</div>
               <h3 className="text-white font-bold text-sm mb-1">{card.title}</h3>
-              <p className="text-gray-500 text-xs">{card.value}</p>
+              <p className="text-gray-400 text-xs">{card.value}</p>
             </a>
           ))}
         </div>
@@ -230,7 +230,7 @@ export default function ContactPage() {
         </div>
 
         {/* ملاحظة أسفل النموذج */}
-        <p className="text-center text-gray-600 text-xs mt-6">{tr.note}</p>
+        <p className="text-center text-gray-500 text-xs mt-6">{tr.note}</p>
 
       </div>
     </main>

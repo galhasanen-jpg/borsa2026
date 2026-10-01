@@ -5,6 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import { useLanguage } from '../../components/LanguageProvider';
 import DataError from '../../components/DataError';
 import FundValueChart, { FUND_COLORS } from '../../components/FundValueChart';
+import { SkeletonBlock } from '../../components/Skeleton';
+import RiskBadge from '../../components/RiskBadge';
 
 type Fund = {
   id: number;
@@ -110,9 +112,9 @@ function CompareFundsInner() {
     setLoading(false);
   }
 
-  const rows: { key: keyof Fund; label: string; format?: (f: Fund) => string }[] = [
+  const rows: { key: keyof Fund; label: string; format?: (f: Fund) => React.ReactNode }[] = [
     { key: 'fund_type', label: t.type },
-    { key: 'risk_level', label: t.riskLevel },
+    { key: 'risk_level', label: t.riskLevel, format: f => f.risk_level ? <RiskBadge level={f.risk_level} /> : t.noData },
     { key: 'license_info', label: t.licenseInfo },
     { key: 'manager_company', label: t.manager },
     { key: 'inception_date', label: t.inception, format: f => f.inception_date ? new Date(f.inception_date).toLocaleDateString(t.dateLocale) : t.noData },
@@ -126,7 +128,7 @@ function CompareFundsInner() {
     <main className="min-h-screen bg-gray-950 p-4">
       <div className="max-w-5xl mx-auto">
 
-        <a href="/funds" className="text-gray-500 text-sm hover:text-orange-500 transition mb-4 block">
+        <a href="/funds" className="text-gray-400 text-sm hover:text-orange-500 transition mb-4 block">
           {t.back}
         </a>
 
@@ -135,11 +137,14 @@ function CompareFundsInner() {
         </div>
 
         {loading ? (
-          <div className="text-center py-16 text-gray-500 text-sm animate-pulse">{t.loading}</div>
+          <div className="space-y-6">
+            <SkeletonBlock className="h-56" />
+            <SkeletonBlock className="h-64" />
+          </div>
         ) : error ? (
           <DataError onRetry={fetchAll} />
         ) : funds.length === 0 ? (
-          <div className="text-center py-20 text-gray-500">
+          <div className="text-center py-20 text-gray-400">
             <p className="text-6xl mb-4">⚖️</p>
             <p className="text-xl">{t.noSelection}</p>
           </div>
@@ -149,7 +154,7 @@ function CompareFundsInner() {
               <table className="w-full text-sm border-collapse">
                 <thead>
                   <tr>
-                    <th className="text-gray-500 text-xs text-right px-3 py-2 whitespace-nowrap">{t.field}</th>
+                    <th className="text-gray-400 text-xs text-right px-3 py-2 whitespace-nowrap">{t.field}</th>
                     {funds.map((f, i) => (
                       <th key={f.id} className="text-right px-3 py-2 whitespace-nowrap" style={{ color: FUND_COLORS[i % FUND_COLORS.length] }}>
                         {f.name}
@@ -160,7 +165,7 @@ function CompareFundsInner() {
                 <tbody>
                   {rows.map(row => (
                     <tr key={row.key} className="border-t border-gray-800">
-                      <td className="text-gray-500 text-xs px-3 py-2">{row.label}</td>
+                      <td className="text-gray-400 text-xs px-3 py-2">{row.label}</td>
                       {funds.map(f => (
                         <td key={f.id} className="text-white px-3 py-2">
                           {row.format ? row.format(f) : ((f[row.key] as string) || t.noData)}

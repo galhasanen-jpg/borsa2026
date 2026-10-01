@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from '../../components/LanguageProvider';
 import DataError from '../../components/DataError';
 import AiReportView from '../../components/AiReportView';
+import { SkeletonCard } from '../../components/Skeleton';
 
 type Report = {
   id: number;
@@ -68,9 +69,9 @@ export default function AiAnalystPage() {
 
   return (
     <main className="min-h-screen bg-gray-950 p-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-3xl mx-auto">
 
-        <a href="/analysts" className="text-gray-500 text-sm hover:text-orange-500 transition mb-4 block">
+        <a href="/analysts" className="text-gray-400 text-sm hover:text-orange-500 transition mb-4 block">
           {t.back}
         </a>
 
@@ -80,11 +81,13 @@ export default function AiAnalystPage() {
         </div>
 
         {loading ? (
-          <div className="text-center py-16 text-gray-500 text-sm animate-pulse">{t.loading}</div>
+          <div className="space-y-4">
+            {Array(3).fill(0).map((_, i) => <SkeletonCard key={i} lines={4} />)}
+          </div>
         ) : error ? (
           <DataError onRetry={fetchReports} />
         ) : reports.length === 0 ? (
-          <div className="text-center py-20 text-gray-500">
+          <div className="text-center py-20 text-gray-400">
             <p className="text-6xl mb-4">🤖</p>
             <p className="text-xl mb-2">{t.empty}</p>
             <p className="text-sm">{t.emptySub}</p>
@@ -95,7 +98,7 @@ export default function AiAnalystPage() {
               <div key={r.id} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
                 <div className="flex justify-between items-start mb-3 gap-3 flex-wrap">
                   <h3 className="text-white font-bold text-sm">{r.command}</h3>
-                  <span className="text-gray-500 text-xs whitespace-nowrap">
+                  <span className="text-gray-400 text-xs whitespace-nowrap">
                     {new Date(r.created_at).toLocaleString(t.dateLocale)}
                   </span>
                 </div>

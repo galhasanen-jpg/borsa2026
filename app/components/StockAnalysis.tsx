@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { SkeletonLine } from './Skeleton';
 
 type PriceData = { price?: string; changePercent?: string; volume?: string } | null;
 
@@ -180,7 +181,11 @@ export default function StockAnalysis({
     return (
       <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
         <h3 className="text-orange-500 font-bold text-sm mb-3">{t.title}</h3>
-        <p className="text-gray-500 text-sm animate-pulse text-center py-6">{t.loading}</p>
+        <div className="space-y-2">
+          <SkeletonLine className="w-full" />
+          <SkeletonLine className="w-3/4" />
+          <SkeletonLine className="w-1/2" />
+        </div>
       </div>
     );
   }
@@ -199,7 +204,7 @@ export default function StockAnalysis({
     return (
       <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
         <h3 className="text-orange-500 font-bold text-sm mb-3">{t.title}</h3>
-        <p className="text-gray-500 text-sm text-center py-6">{t.insufficient}</p>
+        <p className="text-gray-400 text-sm text-center py-6">{t.insufficient}</p>
       </div>
     );
   }
@@ -323,7 +328,7 @@ export default function StockAnalysis({
         <p className="text-gray-400 text-xs">{label}</p>
       </div>
       <p className={`font-bold text-sm ${valueColor || 'text-white'}`}>{value}</p>
-      <p className="text-gray-500 text-xs mt-1 leading-relaxed">{desc}</p>
+      <p className="text-gray-400 text-xs mt-1 leading-relaxed">{desc}</p>
     </div>
   );
 
@@ -390,11 +395,11 @@ export default function StockAnalysis({
                   />
                 </div>
                 <div className="flex justify-between mt-1.5 text-xs">
-                  <span className="text-gray-500">{t.low} {low.toFixed(2)}</span>
-                  <span className="text-gray-500">{t.high} {high.toFixed(2)}</span>
+                  <span className="text-gray-400">{t.low} {low.toFixed(2)}</span>
+                  <span className="text-gray-400">{t.high} {high.toFixed(2)}</span>
                 </div>
               </div>
-              <p className="text-gray-500 text-xs mt-2 leading-relaxed">
+              <p className="text-gray-400 text-xs mt-2 leading-relaxed">
                 {pricePosition > 70 ? t.rangeHigh : pricePosition < 30 ? t.rangeLow : t.rangeMid}
               </p>
             </div>
@@ -443,7 +448,7 @@ export default function StockAnalysis({
               </p>
             )}
             {fairGap !== null && (
-              <p className="text-gray-500 text-xs mt-1 leading-relaxed">
+              <p className="text-gray-400 text-xs mt-1 leading-relaxed">
                 {fairGap > 2 ? `${t.fairUnder} ${fairGap.toFixed(1)}%` : fairGap < -2 ? `${t.fairOver} ${Math.abs(fairGap).toFixed(1)}%` : t.fairEqual}
               </p>
             )}
@@ -454,11 +459,11 @@ export default function StockAnalysis({
 
       {/* ملاحظة عند ندرة التاريخ */}
       {!hasHistory && (
-        <p className="text-gray-600 text-xs mt-3 leading-relaxed">{t.limitedNote}</p>
+        <p className="text-gray-500 text-xs mt-3 leading-relaxed">{t.limitedNote}</p>
       )}
 
       {/* تنبيه */}
-      <p className="text-gray-600 text-xs mt-4 leading-relaxed border-t border-gray-800 pt-3">
+      <p className="text-gray-500 text-xs mt-4 leading-relaxed border-t border-gray-800 pt-3">
         {t.disclaimer}
       </p>
 

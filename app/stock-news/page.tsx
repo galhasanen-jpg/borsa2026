@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../components/LanguageProvider';
 import DataError from '../components/DataError';
+import { SkeletonBlock } from '../components/Skeleton';
 
 export default function StockNewsPage() {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -197,9 +198,9 @@ export default function StockNewsPage() {
                   <div>
                     <p className="text-orange-400 font-bold text-xs">{stock.symbol}</p>
                     <p className="text-white text-xs mt-0.5">{lang === 'ar' ? stock.name : stock.name_en}</p>
-                    <p className="text-gray-500 text-xs">{lang === 'ar' ? stock.sector : stock.sector_en}</p>
+                    <p className="text-gray-400 text-xs">{lang === 'ar' ? stock.sector : stock.sector_en}</p>
                   </div>
-                  <span className="text-gray-600 text-xs">←</span>
+                  <span className="text-gray-500 text-xs">←</span>
                 </div>
               ))}
             </div>
@@ -209,7 +210,7 @@ export default function StockNewsPage() {
           <div ref={contentRef} className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
 
             {!selectedStock && (
-              <div className="flex items-center justify-center h-64 text-gray-500">
+              <div className="flex items-center justify-center h-64 text-gray-400">
                 <div className="text-center">
                   <p className="text-4xl mb-3">📰</p>
                   <p className="text-sm">{lang === 'ar' ? 'اختر سهماً للعرض' : 'Select a stock to view'}</p>
@@ -253,10 +254,10 @@ export default function StockNewsPage() {
                   <>
                     {loadingNews ? (
                       <div className="flex items-center justify-center h-48">
-                        <p className="text-gray-500 text-sm animate-pulse">جاري تحميل الأخبار...</p>
+                        <p className="text-gray-400 text-sm animate-pulse">جاري تحميل الأخبار...</p>
                       </div>
                     ) : news.length === 0 ? (
-                      <div className="flex items-center justify-center h-48 text-gray-500">
+                      <div className="flex items-center justify-center h-48 text-gray-400">
                         <div className="text-center">
                           <p className="text-3xl mb-2">😕</p>
                           <p className="text-sm">لا توجد أخبار حالياً</p>
@@ -275,7 +276,7 @@ export default function StockNewsPage() {
                             </p>
                             <div className="flex justify-between items-center">
                               <span className="text-orange-500 text-xs font-bold">{item.source}</span>
-                              <span className="text-gray-500 text-xs">{item.date}</span>
+                              <span className="text-gray-400 text-xs">{item.date}</span>
                             </div>
                           </div>
                         ))}
@@ -368,8 +369,9 @@ export default function StockNewsPage() {
                     )}
 
                     {loadingFV ? (
-                      <div className="text-center py-8">
-                        <p className="text-gray-500 text-sm animate-pulse">جاري التحميل...</p>
+                      <div className="space-y-2">
+                        <SkeletonBlock className="h-16" />
+                        <SkeletonBlock className="h-16" />
                       </div>
                     ) : (
                       <div className="space-y-4">
@@ -377,14 +379,14 @@ export default function StockNewsPage() {
                         {/* التحليلات المحفوظة يدوياً */}
                         {fairValues.length > 0 && (
                           <div>
-                            <p className="text-gray-500 text-xs mb-2 font-bold">📌 تحليلات محفوظة</p>
+                            <p className="text-gray-400 text-xs mb-2 font-bold">📌 تحليلات محفوظة</p>
                             <div className="space-y-3">
                               {fairValues.map((fv, i) => (
                                 <div key={i} className="bg-gray-800 rounded-lg p-4 border border-gray-700">
                                   <div className="flex justify-between items-start mb-3">
                                     <div>
                                       <p className="text-white font-bold text-sm">{fv.analyst}</p>
-                                      <p className="text-gray-500 text-xs mt-0.5">
+                                      <p className="text-gray-400 text-xs mt-0.5">
                                         {new Date(fv.analysis_date).toLocaleDateString('ar-EG')}
                                       </p>
                                     </div>
@@ -401,7 +403,7 @@ export default function StockNewsPage() {
                                     </div>
                                   </div>
                                   <div className="bg-gray-900 rounded p-2 text-center">
-                                    <p className="text-gray-500 text-xs mb-1">القيمة العادلة</p>
+                                    <p className="text-gray-400 text-xs mb-1">القيمة العادلة</p>
                                     <p className="text-orange-500 font-bold text-lg">{fv.fair_value} ج</p>
                                   </div>
                                   {fv.notes && (
@@ -416,7 +418,7 @@ export default function StockNewsPage() {
                         {/* التحليلات من الأخبار */}
                         {fairNewsValues.length > 0 && (
                           <div>
-                            <p className="text-gray-500 text-xs mb-2 font-bold">📡 من أخبار التحليل</p>
+                            <p className="text-gray-400 text-xs mb-2 font-bold">📡 من أخبار التحليل</p>
                             <div className="space-y-3">
                               {fairNewsValues.map((item, i) => (
                                 <div
@@ -426,13 +428,13 @@ export default function StockNewsPage() {
                                 >
                                   <div className="flex justify-between items-start mb-2">
                                     <span className="text-orange-500 text-xs font-bold">{item.source}</span>
-                                    <span className="text-gray-500 text-xs">{item.date}</span>
+                                    <span className="text-gray-400 text-xs">{item.date}</span>
                                   </div>
                                   <p className="text-white text-sm leading-relaxed mb-3">{item.title}</p>
                                   <div className="flex gap-3">
                                     {item.fairValue && (
                                       <div className="bg-gray-900 rounded p-2 flex-1 text-center">
-                                        <p className="text-gray-500 text-xs mb-1">القيمة العادلة</p>
+                                        <p className="text-gray-400 text-xs mb-1">القيمة العادلة</p>
                                         <p className="text-orange-500 font-bold">{item.fairValue} ج</p>
                                       </div>
                                     )}
@@ -451,7 +453,7 @@ export default function StockNewsPage() {
 
                         {/* لا توجد بيانات */}
                         {fairValues.length === 0 && fairNewsValues.length === 0 && (
-                          <div className="text-center py-8 text-gray-500">
+                          <div className="text-center py-8 text-gray-400">
                             <p className="text-3xl mb-2">📊</p>
                             <p className="text-sm">لا توجد تحليلات لهذا السهم</p>
                             <p className="text-xs mt-1">اضغط على إضافة يدوي لإضافة تحليل</p>

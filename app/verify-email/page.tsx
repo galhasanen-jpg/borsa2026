@@ -139,7 +139,7 @@ function VerifyEmailContent() {
       <div className="text-center mb-6">
         <p className="text-4xl mb-2">📧</p>
         <h1 className="text-orange-500 font-bold text-xl mb-1">{t.title}</h1>
-        <p className="text-gray-500 text-sm">{t.subtitle}</p>
+        <p className="text-gray-400 text-sm">{t.subtitle}</p>
       </div>
 
       {message && (
@@ -168,7 +168,7 @@ function VerifyEmailContent() {
         <button
           onClick={handleResend}
           disabled={resending}
-          className="w-full text-gray-500 hover:text-orange-500 text-xs transition disabled:opacity-50"
+          className="w-full text-gray-400 hover:text-orange-500 text-xs transition disabled:opacity-50"
         >
           {resending ? t.resending : t.resend}
         </button>
@@ -180,7 +180,7 @@ function VerifyEmailContent() {
 export default function VerifyEmailPage() {
   return (
     <main className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-      <Suspense fallback={<div className="text-gray-500">...</div>}>
+      <Suspense fallback={<div className="text-gray-400">...</div>}>
         <VerifyEmailContent />
       </Suspense>
     </main>

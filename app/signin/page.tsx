@@ -105,7 +105,7 @@ function SigninForm() {
 
       <div className="text-center mb-6">
         <h1 className="text-orange-500 font-bold text-2xl mb-1">{t.title}</h1>
-        <p className="text-gray-500 text-sm">{t.subtitle}</p>
+        <p className="text-gray-400 text-sm">{t.subtitle}</p>
       </div>
 
       {locked && (
@@ -127,11 +127,11 @@ function SigninForm() {
             >
               {t.guestButton}
             </button>
-            <p className="text-center text-gray-500 text-xs leading-relaxed">{t.guestHint}</p>
+            <p className="text-center text-gray-400 text-xs leading-relaxed">{t.guestHint}</p>
 
             <div className="flex items-center gap-3">
               <div className="flex-1 h-px bg-gray-800" />
-              <span className="text-gray-600 text-xs">{t.orDivider}</span>
+              <span className="text-gray-500 text-xs">{t.orDivider}</span>
               <div className="flex-1 h-px bg-gray-800" />
             </div>
           </>
@@ -177,7 +177,7 @@ function SigninForm() {
               {loading ? t.submitting : t.submit}
             </button>
 
-            <p className="text-center text-gray-500 text-sm">
+            <p className="text-center text-gray-400 text-sm">
               {t.noAccount}{' '}
               <a href="/signup" className="text-orange-500 hover:text-orange-400">
                 {t.signUp}
@@ -187,7 +187,7 @@ function SigninForm() {
             {!locked && (
               <button
                 onClick={() => setShowLoginForm(false)}
-                className="w-full text-gray-600 text-xs hover:text-gray-400 transition"
+                className="w-full text-gray-500 text-xs hover:text-gray-400 transition"
               >
                 {t.hideForm}
               </button>
@@ -203,7 +203,7 @@ function SigninForm() {
 export default function SigninPage() {
   return (
     <main className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-      <Suspense fallback={<div className="text-gray-500">...</div>}>
+      <Suspense fallback={<div className="text-gray-400">...</div>}>
         <SigninForm />
       </Suspense>
     </main>

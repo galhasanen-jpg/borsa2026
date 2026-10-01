@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
+import { Cairo } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import TickerBar from "./components/TickerBar";
 import { LanguageProvider } from "./components/LanguageProvider";
+
+// Cairo بتغطي العربي والإنجليزي بوزن واحد متسق، وشكلها في الأرقام والنصوص المالية
+// أوضح بكتير من Arial الافتراضي اللي كان شغال قبل كده
+const cairo = Cairo({ subsets: ["arabic", "latin"], weight: ["400", "500", "600", "700"], display: "swap" });
 
 export const metadata: Metadata = {
   title: "بورصة 2026",
@@ -17,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className="bg-gray-950 text-white min-h-screen">
+      <body className={`${cairo.className} bg-gray-950 text-white min-h-screen`}>
         <LanguageProvider>
           {/* شريط التنبيه */}
           <div className="bg-yellow-500 text-black text-center py-2 px-4 text-xs font-bold sticky top-0 z-50">

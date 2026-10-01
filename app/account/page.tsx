@@ -115,9 +115,9 @@ export default function AccountPage() {
         <h1 className="text-orange-500 font-bold text-xl mb-6">{t.title}</h1>
 
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
-          <p className="text-gray-500 text-xs mb-1">{t.nameLabel}</p>
+          <p className="text-gray-400 text-xs mb-1">{t.nameLabel}</p>
           <p className="text-white text-sm mb-4">{siteUser.name}</p>
-          <p className="text-gray-500 text-xs mb-1">{t.emailLabel}</p>
+          <p className="text-gray-400 text-xs mb-1">{t.emailLabel}</p>
           <p className="text-white text-sm">{siteUser.email}</p>
         </div>
 

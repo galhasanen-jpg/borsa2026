@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useLanguage } from '../components/LanguageProvider';
+import { SkeletonBlock } from '../components/Skeleton';
 
 const L = {
   ar: {
@@ -230,8 +231,12 @@ export default function DashboardPage() {
     : recommendations.filter(r => r.status === filterStatus);
 
   if (loading) return (
-    <main className="min-h-screen bg-gray-950 flex items-center justify-center">
-      <p className="text-gray-500 animate-pulse">{t.loading}</p>
+    <main className="min-h-screen bg-gray-950 p-4">
+      <div className="max-w-5xl mx-auto space-y-4">
+        <SkeletonBlock className="h-28" />
+        <SkeletonBlock className="h-24" />
+        <SkeletonBlock className="h-56" />
+      </div>
     </main>
   );
   return (
@@ -242,7 +247,7 @@ export default function DashboardPage() {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-orange-500 font-bold text-xl">{t.title}</h1>
-            <p className="text-gray-500 text-sm mt-1">{t.welcome} {user?.name}</p>
+            <p className="text-gray-400 text-sm mt-1">{t.welcome} {user?.name}</p>
           </div>
           <button
             onClick={handleLogout}
@@ -260,7 +265,7 @@ export default function DashboardPage() {
         {analyst && (
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 mb-6 flex justify-between items-center">
             <div>
-              <p className="text-gray-500 text-xs mb-1">{t.followedAnalyst}</p>
+              <p className="text-gray-400 text-xs mb-1">{t.followedAnalyst}</p>
               <p className="text-white font-bold text-lg">{lang === 'ar' ? analyst.name : (analyst.name_en || analyst.name)}</p>
               <p className="text-orange-500 text-xs">{analyst.specialization}</p>
             </div>
@@ -317,7 +322,7 @@ export default function DashboardPage() {
             </div>
 
             {filteredRecs.length === 0 ? (
-              <div className="text-center py-16 text-gray-500">
+              <div className="text-center py-16 text-gray-400">
                 <p className="text-4xl mb-3">📊</p>
                 <p>{t.noRecs}</p>
               </div>
@@ -334,19 +339,19 @@ export default function DashboardPage() {
                         </div>
                         <p className="text-gray-400 text-xs">{rec.stock_name}</p>
                       </div>
-                      <span className="text-gray-500 text-xs">{new Date(rec.created_at).toLocaleDateString(t.dateLocale)}</span>
+                      <span className="text-gray-400 text-xs">{new Date(rec.created_at).toLocaleDateString(t.dateLocale)}</span>
                     </div>
                     <div className="grid grid-cols-3 gap-3 mb-3">
                       <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-500 text-xs mb-1">{t.entryPrice}</p>
+                        <p className="text-gray-400 text-xs mb-1">{t.entryPrice}</p>
                         <p className="text-white font-bold text-sm">{rec.entry_price} {t.currency}</p>
                       </div>
                       <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-500 text-xs mb-1">{t.target}</p>
+                        <p className="text-gray-400 text-xs mb-1">{t.target}</p>
                         <p className="text-green-400 font-bold text-sm">{rec.target_price ? `${rec.target_price} ${t.currency}` : '-'}</p>
                       </div>
                       <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-500 text-xs mb-1">{t.stopLoss}</p>
+                        <p className="text-gray-400 text-xs mb-1">{t.stopLoss}</p>
                         <p className="text-red-400 font-bold text-sm">{rec.stop_loss ? `${rec.stop_loss} ${t.currency}` : '-'}</p>
                       </div>
                     </div>
@@ -379,7 +384,7 @@ export default function DashboardPage() {
               </h3>
               {user?.plan === 'free' ? (
                 <div className="text-center py-4">
-                  <p className="text-gray-500 text-sm mb-3">{t.needsUpgrade}</p>
+                  <p className="text-gray-400 text-sm mb-3">{t.needsUpgrade}</p>
                   <button onClick={() => setActiveTab('plan')} className="bg-orange-500 text-black px-4 py-2 rounded text-sm font-bold">{t.upgradePlan}</button>
                 </div>
               ) : (
@@ -398,13 +403,13 @@ export default function DashboardPage() {
 
             {/* قائمة الملاحظات */}
             {user?.plan !== 'premium' ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-gray-400">
                 <p className="text-3xl mb-2">🔒</p>
                 <p className="text-sm">{t.premiumOnly}</p>
                 <button onClick={() => setActiveTab('plan')} className="mt-3 bg-orange-500 text-black px-4 py-2 rounded text-sm font-bold">{t.upgradePremium}</button>
               </div>
             ) : comments.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-gray-400">
                 <p className="text-3xl mb-2">💬</p>
                 <p>{t.noComments}</p>
               </div>
@@ -416,7 +421,7 @@ export default function DashboardPage() {
                       <div className="w-7 h-7 rounded-full bg-orange-500 flex items-center justify-center text-black font-bold text-xs">{comment.user_name[0]}</div>
                       <div>
                         <p className="text-white text-sm font-bold">{comment.user_name}</p>
-                        <p className="text-gray-500 text-xs">{new Date(comment.created_at).toLocaleDateString(t.dateLocale)}</p>
+                        <p className="text-gray-400 text-xs">{new Date(comment.created_at).toLocaleDateString(t.dateLocale)}</p>
                       </div>
                     </div>
                     <p className="text-gray-300 text-sm">{comment.content}</p>
@@ -431,7 +436,7 @@ export default function DashboardPage() {
         {activeTab === 'plan' && (
           <div className="space-y-4">
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 text-center">
-              <p className="text-gray-500 text-sm mb-2">{t.currentPlan}</p>
+              <p className="text-gray-400 text-sm mb-2">{t.currentPlan}</p>
               <span className={`text-xl font-bold px-4 py-2 rounded-lg ${getPlanStyle(user?.plan)}`}>
                 {getPlanLabel(user?.plan)}
               </span>
@@ -446,7 +451,7 @@ export default function DashboardPage() {
                   <h3 className={`font-bold text-lg mb-1 ${plan.color === 'orange' ? 'text-orange-500' : plan.color === 'blue' ? 'text-blue-400' : 'text-gray-400'}`}>
                     {plan.label}
                   </h3>
-                  <p className="text-gray-500 text-xs mb-4">{plan.description}</p>
+                  <p className="text-gray-400 text-xs mb-4">{plan.description}</p>
                   <ul className="space-y-1 mb-4">
                     {plan.features.map((f, i) => (
                       <li key={i} className="text-gray-300 text-xs flex items-center gap-2">
