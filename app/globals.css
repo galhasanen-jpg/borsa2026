@@ -73,6 +73,13 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+/* النص الغامق على خلفية فاتحة بيحس العين إنه أخف وزناً من نفس الوزن بالظبط لما
+   يكون نص فاتح على خلفية غامقة (ظاهرة بصرية معروفة)، فبنعوّض عنها بزيادة وزن
+   الخط شوية في الوضع الفاتح بس */
+html.light body {
+  font-weight: 500;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
