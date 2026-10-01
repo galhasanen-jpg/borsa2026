@@ -140,7 +140,7 @@ export default function Home() {
 
         {/* تحديث تلقائي */}
         <div className="flex justify-end mb-3">
-          <span className="text-xs text-gray-600">
+          <span className="text-xs text-gray-500">
             {lang === 'ar' ? '⏱ يتحدث كل دقيقة - البيانات متأخرة 15 دقيقة' : '⏱ Updates every minute - 15 min delay'}
           </span>
         </div>
@@ -154,13 +154,13 @@ export default function Home() {
               <h2 className="text-orange-500 font-bold text-sm">
                 {lang === 'ar' ? 'أبرز الأسهم' : 'Top Stocks'}
               </h2>
-              <a href="/stocks" className="text-xs text-gray-500 hover:text-orange-500 transition">
+              <a href="/stocks" className="text-xs text-gray-400 hover:text-orange-500 transition">
                 {lang === 'ar' ? 'عرض الكل ←' : 'View All →'}
               </a>
             </div>
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-800 text-gray-500 text-xs">
+                <tr className="border-b border-gray-800 text-gray-400 text-xs">
                   <th className="px-4 py-2 text-right">{lang === 'ar' ? 'السهم' : 'Stock'}</th>
                   <th className="px-4 py-2 text-right">{lang === 'ar' ? 'السعر' : 'Price'}</th>
                   <th className="px-4 py-2 text-right">{lang === 'ar' ? 'التغيير' : 'Change'}</th>
@@ -188,7 +188,7 @@ export default function Home() {
                     <tr key={i} className="border-b border-gray-800 hover:bg-gray-800 transition cursor-pointer">
                       <td className="px-4 py-3">
                         <p className="text-orange-400 font-bold text-xs">{stock.symbol.replace('.CA', '')}</p>
-                        <p className="text-gray-500 text-xs">{lang === 'ar' ? stock.name : stock.nameEn}</p>
+                        <p className="text-gray-400 text-xs">{lang === 'ar' ? stock.name : stock.nameEn}</p>
                       </td>
                       <td className="px-4 py-3 text-white font-mono text-xs">{stock.price} ج</td>
                       <td className="px-4 py-3">
@@ -196,7 +196,7 @@ export default function Home() {
                           {stock.up ? '▲' : '▼'} {stock.change}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-500 text-xs hidden md:table-cell">{stock.volume}</td>
+                      <td className="px-4 py-3 text-gray-400 text-xs hidden md:table-cell">{stock.volume}</td>
                     </tr>
                   ))
                 )}
@@ -235,7 +235,7 @@ export default function Home() {
                     </p>
                     <div className="flex justify-between items-center mt-2">
                       <span className="text-orange-500 text-xs">{item.source}</span>
-                      <span className="text-gray-500 text-xs">{timeAgo(item.rawDate, lang)}</span>
+                      <span className="text-gray-400 text-xs">{timeAgo(item.rawDate, lang)}</span>
                     </div>
                   </a>
                 ))

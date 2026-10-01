@@ -18,7 +18,7 @@ export default function FundValueChart({ series, currency = 'EGP', emptyLabel }:
   const hasData = series.some(s => s.data.length > 0);
   if (!hasData) {
     return (
-      <div className="h-64 flex items-center justify-center text-gray-500 text-sm">
+      <div className="h-64 flex items-center justify-center text-gray-400 text-sm">
         {emptyLabel || 'لا توجد بيانات قيمة وثيقة مسجّلة بعد'}
       </div>
     );

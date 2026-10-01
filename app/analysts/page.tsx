@@ -129,7 +129,7 @@ export default function AnalystsPage() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-orange-500 font-bold text-2xl">{t.title}</h1>
-            <p className="text-gray-500 text-sm mt-1">{t.subtitle}</p>
+            <p className="text-gray-400 text-sm mt-1">{t.subtitle}</p>
           </div>
           <button
             onClick={() => setShowRegister(!showRegister)}
@@ -202,7 +202,7 @@ export default function AnalystsPage() {
             ))}
           </div>
         ) : analysts.length === 0 ? (
-          <div className="text-center py-20 text-gray-500">
+          <div className="text-center py-20 text-gray-400">
             <p className="text-6xl mb-4">👨‍💼</p>
             <p className="text-xl mb-2">{t.empty}</p>
             <p className="text-sm">{t.emptySub}</p>
@@ -246,15 +246,15 @@ export default function AnalystsPage() {
                   <div className="hidden md:flex gap-3">
                     <div className="text-center">
                       <p className="text-white font-bold text-sm">{analyst.total_recommendations || 0}</p>
-                      <p className="text-gray-500 text-xs">{t.recCount}</p>
+                      <p className="text-gray-400 text-xs">{t.recCount}</p>
                     </div>
                     <div className="text-center">
                       <p className="text-green-400 font-bold text-sm">{analyst.successful || 0}</p>
-                      <p className="text-gray-500 text-xs">{t.successful}</p>
+                      <p className="text-gray-400 text-xs">{t.successful}</p>
                     </div>
                     <div className="text-center">
                       <p className="text-orange-500 font-bold text-sm">{getSuccessRate(analyst)}%</p>
-                      <p className="text-gray-500 text-xs">{t.successRate}</p>
+                      <p className="text-gray-400 text-xs">{t.successRate}</p>
                     </div>
                   </div>
                 )}

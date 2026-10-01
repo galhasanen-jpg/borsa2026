@@ -3,6 +3,7 @@
 import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useLanguage } from '../components/LanguageProvider';
+import { SkeletonBlock } from '../components/Skeleton';
 
 const L = {
   ar: {
@@ -107,7 +108,7 @@ function VerifyContent() {
       <div className="text-center mb-6">
         <p className="text-4xl mb-2">📧</p>
         <h1 className="text-orange-500 font-bold text-xl mb-1">{t.title}</h1>
-        <p className="text-gray-500 text-sm">{t.subtitle}</p>
+        <p className="text-gray-400 text-sm">{t.subtitle}</p>
       </div>
 
       {message && (
@@ -162,7 +163,7 @@ export default function VerifyPage() {
   const t = L[lang];
   return (
     <main className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-      <Suspense fallback={<div className="text-gray-500">{t.loading}</div>}>
+      <Suspense fallback={<SkeletonBlock className="h-80 w-full max-w-md" />}>
         <VerifyContent />
       </Suspense>
     </main>

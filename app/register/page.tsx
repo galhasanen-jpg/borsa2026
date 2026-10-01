@@ -152,7 +152,7 @@ export default function RegisterPage() {
         {/* العنوان */}
         <div className="text-center mb-6">
           <h1 className="text-orange-500 font-bold text-2xl mb-1">{t.title}</h1>
-          <p className="text-gray-500 text-sm">{t.subtitle}</p>
+          <p className="text-gray-400 text-sm">{t.subtitle}</p>
         </div>
 
         {message && (
@@ -253,7 +253,7 @@ export default function RegisterPage() {
                   <p className={`font-bold text-sm ${form.plan === plan.value ? 'text-orange-500' : 'text-white'}`}>
                     {plan.label}
                   </p>
-                  <p className="text-gray-500 text-xs mt-1">{plan.description}</p>
+                  <p className="text-gray-400 text-xs mt-1">{plan.description}</p>
                 </div>
               ))}
             </div>
@@ -269,7 +269,7 @@ export default function RegisterPage() {
           </button>
 
           {/* رابط تسجيل الدخول */}
-          <p className="text-center text-gray-500 text-sm">
+          <p className="text-center text-gray-400 text-sm">
             {t.haveAccount}{' '}
             <a href="/login" className="text-orange-500 hover:text-orange-400">
               {t.signIn}

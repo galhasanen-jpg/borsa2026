@@ -1349,7 +1349,7 @@ export default function AdminPage() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-orange-500 font-bold text-xl">{t.title}</h1>
           <div className="flex items-center gap-3">
-            <span className="text-gray-500 text-xs">{t.updatedCount(prices.length, stocks.length)}</span>
+            <span className="text-gray-400 text-xs">{t.updatedCount(prices.length, stocks.length)}</span>
             <a
               href="https://vercel.com/galhasanen-jpgs-projects/borsa2026cd/analytics"
               target="_blank"
@@ -1402,7 +1402,7 @@ export default function AdminPage() {
                   <div className="md:col-span-3">
                     <label className="text-gray-400 text-xs mb-1 block">{t.isinLabel}</label>
                     <input value={formData.isin} onChange={e => setFormData({...formData, isin: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm font-mono" placeholder={t.isinPh} dir="ltr" />
-                    <p className="text-gray-600 text-xs mt-1">{t.isinHint}</p>
+                    <p className="text-gray-500 text-xs mt-1">{t.isinHint}</p>
                   </div>
                 </div>
                 <div className="flex gap-3">
@@ -1440,7 +1440,7 @@ export default function AdminPage() {
                   <div className="md:col-span-2">
                     <label className="text-gray-400 text-xs mb-1 block">{t.isinLabel}</label>
                     <input value={newStock.isin} onChange={e => setNewStock({...newStock, isin: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm font-mono" placeholder={t.isinPh} dir="ltr" />
-                    <p className="text-gray-600 text-xs mt-1">{t.isinHint}</p>
+                    <p className="text-gray-500 text-xs mt-1">{t.isinHint}</p>
                   </div>
                 </div>
                 {addStockError && <p className="text-red-400 text-sm mb-3">{addStockError}</p>}
@@ -1457,12 +1457,12 @@ export default function AdminPage() {
                 <button onClick={() => setShowAddStock(true)} className="bg-orange-500 text-black px-4 py-2 rounded font-bold text-sm hover:bg-orange-600 w-fit">{t.addStockBtn}</button>
               )}
             </div>
-            <p className="text-gray-600 text-xs mb-1">💡 {t.quoteTimeHint}</p>
-            <p className="text-gray-600 text-xs mb-3">💡 {t.egx30Hint}</p>
+            <p className="text-gray-500 text-xs mb-1">💡 {t.quoteTimeHint}</p>
+            <p className="text-gray-500 text-xs mb-3">💡 {t.egx30Hint}</p>
             <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-800 text-gray-500 text-xs">
+                  <tr className="border-b border-gray-800 text-gray-400 text-xs">
                     {columns.map(col => (
                       <th key={col.key} onClick={() => handleSort(col.key)} className="px-4 py-3 text-right cursor-pointer hover:text-orange-500 transition select-none">
                         {col.label} {sortBy === col.key ? (sortDir === 'asc' ? '▲' : '▼') : ''}
@@ -1478,17 +1478,17 @@ export default function AdminPage() {
                     return (
                       <tr key={i} className="border-b border-gray-800 hover:bg-gray-800 transition">
                         <td className="px-4 py-3"><span className="text-orange-400 font-bold text-xs">{stock.symbol}</span></td>
-                        <td className="px-4 py-3">{stock.isin ? <span className="text-gray-400 text-xs font-mono" dir="ltr">{stock.isin}</span> : <span className="text-gray-600 text-xs">-</span>}</td>
-                        <td className="px-4 py-3"><p className="text-white text-xs">{stock.name}</p><p className="text-gray-500 text-xs">{stock.name_en}</p></td>
+                        <td className="px-4 py-3">{stock.isin ? <span className="text-gray-400 text-xs font-mono" dir="ltr">{stock.isin}</span> : <span className="text-gray-500 text-xs">-</span>}</td>
+                        <td className="px-4 py-3"><p className="text-white text-xs">{stock.name}</p><p className="text-gray-400 text-xs">{stock.name_en}</p></td>
                         <td className="px-4 py-3"><span className="text-xs bg-gray-800 text-gray-400 px-2 py-0.5 rounded">{stock.sector}</span></td>
-                        <td className="px-4 py-3">{price ? <span className="text-white font-mono text-xs">{price.price} ج</span> : <span className="text-gray-600 text-xs">{t.notSet}</span>}</td>
-                        <td className="px-4 py-3">{price ? <span className={`text-xs font-bold ${up ? 'text-green-400' : 'text-red-400'}`}>{up ? '▲' : '▼'} {Math.abs(parseFloat(price.change_percent))}%</span> : <span className="text-gray-600 text-xs">-</span>}</td>
-                        <td className="px-4 py-3">{price ? <span className="text-gray-500 text-xs">{new Date(price.updated_at).toLocaleString(t.dateLocale)}</span> : <span className="text-gray-600 text-xs">-</span>}</td>
+                        <td className="px-4 py-3">{price ? <span className="text-white font-mono text-xs">{price.price} ج</span> : <span className="text-gray-500 text-xs">{t.notSet}</span>}</td>
+                        <td className="px-4 py-3">{price ? <span className={`text-xs font-bold ${up ? 'text-green-400' : 'text-red-400'}`}>{up ? '▲' : '▼'} {Math.abs(parseFloat(price.change_percent))}%</span> : <span className="text-gray-500 text-xs">-</span>}</td>
+                        <td className="px-4 py-3">{price ? <span className="text-gray-400 text-xs">{new Date(price.updated_at).toLocaleString(t.dateLocale)}</span> : <span className="text-gray-500 text-xs">-</span>}</td>
                         <td className="px-4 py-3">
                           {price?.quote_time ? (() => {
                             const stale = Date.now() - new Date(price.quote_time).getTime() > 3 * 24 * 60 * 60 * 1000;
-                            return <span className={`text-xs ${stale ? 'text-red-400' : 'text-gray-500'}`}>{new Date(price.quote_time).toLocaleString(t.dateLocale)}</span>;
-                          })() : <span className="text-gray-600 text-xs">-</span>}
+                            return <span className={`text-xs ${stale ? 'text-red-400' : 'text-gray-400'}`}>{new Date(price.quote_time).toLocaleString(t.dateLocale)}</span>;
+                          })() : <span className="text-gray-500 text-xs">-</span>}
                         </td>
                         <td className="px-4 py-3">
                           <input type="checkbox" checked={!!stock.is_egx30} onChange={() => handleToggleEgx30(stock)} className="w-4 h-4 accent-orange-500 cursor-pointer" />
@@ -1513,7 +1513,7 @@ export default function AdminPage() {
           <div className="space-y-6">
             <div className="bg-gray-900 border border-orange-900 rounded-lg p-6">
               <h2 className="text-orange-500 font-bold mb-2">{t.yahooSyncTitle}</h2>
-              <p className="text-gray-500 text-xs mb-4 leading-relaxed">{t.yahooSyncDesc}</p>
+              <p className="text-gray-400 text-xs mb-4 leading-relaxed">{t.yahooSyncDesc}</p>
               <button
                 onClick={handleYahooSync}
                 disabled={syncing || stocks.length === 0}
@@ -1535,7 +1535,7 @@ export default function AdminPage() {
                 <div className="mt-4">
                   <p className="text-green-400 text-sm font-bold">{t.yahooSyncDone(syncSuccessCount, syncProgress.total)}</p>
                   {syncFailed.length > 0 && (
-                    <p className="text-gray-500 text-xs mt-2">{t.yahooSyncFailedList} {syncFailed.join(', ')}</p>
+                    <p className="text-gray-400 text-xs mt-2">{t.yahooSyncFailedList} {syncFailed.join(', ')}</p>
                   )}
                 </div>
               )}
@@ -1556,7 +1556,7 @@ export default function AdminPage() {
             </div>
             <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
               <h2 className="text-orange-500 font-bold mb-2">{t.bulkImport}</h2>
-              <p className="text-gray-500 text-xs mb-4">{t.bulkFormat}</p>
+              <p className="text-gray-400 text-xs mb-4">{t.bulkFormat}</p>
               <textarea value={bulkHistory} onChange={e => setBulkHistory(e.target.value)} rows={6} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm font-mono mb-4" placeholder="COMI, 2024-01-15, 120.00, 125.00, 119.00, 123.00, 1500000" />
               <button onClick={handleBulkImport} className="bg-orange-500 text-black px-6 py-2 rounded font-bold text-sm hover:bg-orange-600">{t.import}</button>
             </div>
@@ -1597,7 +1597,7 @@ export default function AdminPage() {
                         <p className="text-white font-bold text-sm">{analyst.name}</p>
                         <p className="text-orange-500 text-xs">{analyst.specialization}</p>
                       </div>
-                      <span className="text-gray-500 text-xs">{t.clickToManage}</span>
+                      <span className="text-gray-400 text-xs">{t.clickToManage}</span>
                     </div>
                   </div>
                 ))}
@@ -1626,7 +1626,7 @@ export default function AdminPage() {
                           <div className="mt-1 flex items-center gap-3 bg-gray-900 rounded p-2">
                             <span className="text-orange-400 font-bold text-xs">{recForm.symbol}</span>
                             <span className="text-white text-xs">{recForm.stock_name}</span>
-                            {getPrice(recForm.symbol) && <><span className="text-gray-500 text-xs">|</span><span className="text-gray-400 text-xs">{t.lastPrice}</span><span className="text-orange-500 font-bold text-xs">{getPrice(recForm.symbol)?.price} ج</span></>}
+                            {getPrice(recForm.symbol) && <><span className="text-gray-400 text-xs">|</span><span className="text-gray-400 text-xs">{t.lastPrice}</span><span className="text-orange-500 font-bold text-xs">{getPrice(recForm.symbol)?.price} ج</span></>}
                           </div>
                         )}
                       </div>
@@ -1721,7 +1721,7 @@ export default function AdminPage() {
             <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
               <h2 className="text-orange-500 font-bold mb-4">{t.activeFollowers(followers.length)}</h2>
               {followers.length === 0 ? (
-                <p className="text-gray-500 text-sm text-center py-4">{t.noActiveFollowers}</p>
+                <p className="text-gray-400 text-sm text-center py-4">{t.noActiveFollowers}</p>
               ) : (
                 <div className="space-y-2">
                   {followers.map((follower, i) => (
@@ -1753,7 +1753,7 @@ export default function AdminPage() {
             {/* إضافة حساب مباشرة - حل مؤقت لحين توفر دومين موثّق للإيميلات */}
             <div className="bg-gray-900 border border-orange-800 rounded-lg p-4">
               <h2 className="text-orange-500 font-bold mb-1">{t.addAccountTitle}</h2>
-              <p className="text-gray-500 text-xs mb-4">{t.addAccountDesc}</p>
+              <p className="text-gray-400 text-xs mb-4">{t.addAccountDesc}</p>
 
               {addAccountMessage && (
                 <div className={`p-2 rounded mb-3 text-xs ${addAccountMessage.startsWith('✅') ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'}`}>
@@ -1802,7 +1802,7 @@ export default function AdminPage() {
                         <div>
                           <p className="text-white font-bold text-sm">{user.name}</p>
                           <p className="text-gray-400 text-xs mt-1">📧 {user.email}</p>
-                          <p className="text-gray-500 text-xs mt-1">{new Date(user.created_at).toLocaleString(t.dateLocale)}</p>
+                          <p className="text-gray-400 text-xs mt-1">{new Date(user.created_at).toLocaleString(t.dateLocale)}</p>
                         </div>
                         <div className="flex gap-2 flex-shrink-0">
                           <button
@@ -1829,7 +1829,7 @@ export default function AdminPage() {
             <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
               <h2 className="text-orange-500 font-bold mb-4">{t.allAccounts(activeSiteUsers.length)}</h2>
               {activeSiteUsers.length === 0 ? (
-                <p className="text-gray-500 text-sm text-center py-4">{t.noAccountsYet}</p>
+                <p className="text-gray-400 text-sm text-center py-4">{t.noAccountsYet}</p>
               ) : (
                 <div className="space-y-2">
                   {activeSiteUsers.map((user, i) => (
@@ -1863,7 +1863,7 @@ export default function AdminPage() {
             </div>
 
             <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-              <p className="text-gray-500 text-xs font-bold mb-2">{t.aiQuickCommands}</p>
+              <p className="text-gray-400 text-xs font-bold mb-2">{t.aiQuickCommands}</p>
               <div className="flex flex-wrap gap-2 mb-4">
                 {aiQuickCommandsList.map(cmd => (
                   <button
@@ -1899,7 +1899,7 @@ export default function AdminPage() {
                 </button>
               </div>
 
-              <label className="flex items-center gap-2 text-gray-500 text-xs cursor-pointer">
+              <label className="flex items-center gap-2 text-gray-400 text-xs cursor-pointer">
                 <input type="checkbox" checked={aiForce} onChange={e => setAiForce(e.target.checked)} disabled={aiRunning} />
                 {t.aiForceLabel}
               </label>
@@ -1950,14 +1950,14 @@ export default function AdminPage() {
             <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
               <h3 className="text-orange-500 font-bold text-sm mb-3">{t.aiHistory} ({aiReports.length})</h3>
               {aiReports.length === 0 ? (
-                <p className="text-gray-500 text-sm text-center py-4">{t.aiNoHistory}</p>
+                <p className="text-gray-400 text-sm text-center py-4">{t.aiNoHistory}</p>
               ) : (
                 <div className="space-y-3">
                   {aiReports.map(r => (
                     <div key={r.id} className="bg-gray-800 rounded-lg p-3">
                       <div className="flex justify-between items-start gap-3 flex-wrap mb-2">
                         <p className="text-white font-bold text-sm">{r.command}</p>
-                        <span className="text-gray-500 text-xs whitespace-nowrap">{new Date(r.created_at).toLocaleString(t.dateLocale)}</span>
+                        <span className="text-gray-400 text-xs whitespace-nowrap">{new Date(r.created_at).toLocaleString(t.dateLocale)}</span>
                       </div>
                       {aiExpanded[r.id] ? (
                         <AiReportView report={r.report} />
@@ -2015,7 +2015,7 @@ export default function AdminPage() {
 
             <div className="bg-gray-900 border border-orange-800 rounded-lg p-4">
               <h3 className="text-orange-500 font-bold text-sm mb-1">{t.startaTitle}</h3>
-              <p className="text-gray-500 text-xs mb-3">{t.startaHint}</p>
+              <p className="text-gray-400 text-xs mb-3">{t.startaHint}</p>
               <div className="flex items-center gap-2 flex-wrap">
                 <input type="file" accept=".csv,text/csv" onChange={e => setStartaFile(e.target.files?.[0] || null)} className="text-gray-300 text-xs" />
                 <button
@@ -2031,7 +2031,7 @@ export default function AdminPage() {
 
             <div className="bg-gray-900 border border-orange-800 rounded-lg p-4">
               <h3 className="text-orange-500 font-bold text-sm mb-1">{t.fraTitle}</h3>
-              <p className="text-gray-500 text-xs mb-3">{t.fraHint}</p>
+              <p className="text-gray-400 text-xs mb-3">{t.fraHint}</p>
               <div className="flex items-center gap-2 flex-wrap">
                 <input type="file" accept=".html,.htm,text/html" multiple onChange={e => setFraFiles(e.target.files)} className="text-gray-300 text-xs" />
                 <button
@@ -2046,7 +2046,7 @@ export default function AdminPage() {
               {fraUnmatched.length > 0 && (
                 <div className="mt-2 bg-gray-800 rounded p-2 max-h-40 overflow-y-auto">
                   <p className="text-gray-400 text-xs font-bold mb-1">{t.fraUnmatchedTitle}</p>
-                  <ul className="text-gray-500 text-xs space-y-0.5 list-disc pr-4">
+                  <ul className="text-gray-400 text-xs space-y-0.5 list-disc pr-4">
                     {fraUnmatched.map((name, i) => <li key={i}>{name}</li>)}
                   </ul>
                 </div>
@@ -2127,7 +2127,7 @@ export default function AdminPage() {
               <div className="mb-4">
                 <label className="text-gray-400 text-xs mb-1 block">{t.fundProspectus}</label>
                 <input type="file" accept="application/pdf" onChange={e => setFundProspectusFile(e.target.files?.[0] || null)} className="text-gray-300 text-xs w-full" />
-                <p className="text-gray-600 text-xs mt-1">{t.fundProspectusHint}</p>
+                <p className="text-gray-500 text-xs mt-1">{t.fundProspectusHint}</p>
               </div>
 
               <div className="flex gap-3">
@@ -2152,7 +2152,7 @@ export default function AdminPage() {
             {fundsList.length > 0 && (
               <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
                 <h3 className="text-orange-500 font-bold text-sm mb-1">{t.navImportTitle}</h3>
-                <p className="text-gray-600 text-xs mb-3">{t.navImportHint}</p>
+                <p className="text-gray-500 text-xs mb-3">{t.navImportHint}</p>
                 <div className="flex items-center gap-2 flex-wrap">
                   <select
                     value={quickImportFundId}
@@ -2179,7 +2179,7 @@ export default function AdminPage() {
               <h3 className="text-orange-500 font-bold text-sm mb-3">{t.fundListTitle} ({fundsList.length})</h3>
               {fundsList.length > 0 && (
                 <div className="mb-3">
-                  <p className="text-gray-500 text-xs mb-1">{t.fundStatusFilterLabel}</p>
+                  <p className="text-gray-400 text-xs mb-1">{t.fundStatusFilterLabel}</p>
                   <div className="flex gap-2 flex-wrap">
                     {(['all', 'complete', 'partial', 'none'] as const).map(s => (
                       <button
@@ -2195,7 +2195,7 @@ export default function AdminPage() {
                 </div>
               )}
               {fundsList.length === 0 ? (
-                <p className="text-gray-500 text-sm text-center py-4">{t.fundNoFunds}</p>
+                <p className="text-gray-400 text-sm text-center py-4">{t.fundNoFunds}</p>
               ) : (
                 <div className="space-y-3">
                   {fundsList.filter(f => fundCompletenessFilter === 'all' || getFundCompleteness(f).status === fundCompletenessFilter).map(f => {
@@ -2206,7 +2206,7 @@ export default function AdminPage() {
                       <div className="flex justify-between items-start gap-3 flex-wrap mb-2">
                         <div>
                           <p className="text-white font-bold text-sm">{f.name}</p>
-                          <p className="text-gray-500 text-xs">{f.fund_type}</p>
+                          <p className="text-gray-400 text-xs">{f.fund_type}</p>
                         </div>
                         <div className="flex gap-3">
                           <button onClick={() => handleEditFund(f)} className="text-orange-500 text-xs font-bold hover:text-orange-400 transition">{t.fundEdit}</button>
@@ -2216,16 +2216,16 @@ export default function AdminPage() {
                       </div>
 
                       <div className="flex items-center gap-2 flex-wrap mb-2">
-                        <span className={`text-xs font-bold ${completeness.status === 'complete' ? 'text-green-400' : completeness.status === 'partial' ? 'text-yellow-400' : 'text-gray-500'}`}>
+                        <span className={`text-xs font-bold ${completeness.status === 'complete' ? 'text-green-400' : completeness.status === 'partial' ? 'text-yellow-400' : 'text-gray-400'}`}>
                           {statusLabel}
                         </span>
-                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasNav ? 'text-green-400 border-green-700' : 'text-gray-600 border-gray-700'}`}>
+                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasNav ? 'text-green-400 border-green-700' : 'text-gray-500 border-gray-700'}`}>
                           {completeness.hasNav ? '✓' : '✗'} {t.fundBadgeNav}
                         </span>
-                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasProspectus ? 'text-green-400 border-green-700' : 'text-gray-600 border-gray-700'}`}>
+                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasProspectus ? 'text-green-400 border-green-700' : 'text-gray-500 border-gray-700'}`}>
                           {completeness.hasProspectus ? '✓' : '✗'} {t.fundBadgeProspectus}
                         </span>
-                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasLicense ? 'text-green-400 border-green-700' : 'text-gray-600 border-gray-700'}`}>
+                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasLicense ? 'text-green-400 border-green-700' : 'text-gray-500 border-gray-700'}`}>
                           {completeness.hasLicense ? '✓' : '✗'} {t.fundBadgeLicense}
                         </span>
                       </div>
@@ -2234,20 +2234,20 @@ export default function AdminPage() {
                         <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 mt-2">
                           <div className="flex justify-between items-center mb-2">
                             <h4 className="text-orange-400 font-bold text-xs">{t.navTitle(f.name)}</h4>
-                            <button onClick={() => setFundManagingId(null)} className="text-gray-500 text-xs hover:text-white transition">{t.navClose}</button>
+                            <button onClick={() => setFundManagingId(null)} className="text-gray-400 text-xs hover:text-white transition">{t.navClose}</button>
                           </div>
 
                           <div className="grid sm:grid-cols-3 gap-2 mb-2">
                             <div>
-                              <label className="text-gray-500 text-xs mb-1 block">{t.navDate}</label>
+                              <label className="text-gray-400 text-xs mb-1 block">{t.navDate}</label>
                               <input type="date" value={navForm.nav_date} onChange={e => setNavForm({ ...navForm, nav_date: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1.5 w-full text-xs" />
                             </div>
                             <div>
-                              <label className="text-gray-500 text-xs mb-1 block">{t.navValue}</label>
+                              <label className="text-gray-400 text-xs mb-1 block">{t.navValue}</label>
                               <input type="number" step="0.0001" value={navForm.value} onChange={e => setNavForm({ ...navForm, value: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1.5 w-full text-xs" dir="ltr" />
                             </div>
                             <div>
-                              <label className="text-gray-500 text-xs mb-1 block">{t.navSource}</label>
+                              <label className="text-gray-400 text-xs mb-1 block">{t.navSource}</label>
                               <input value={navForm.source_note} onChange={e => setNavForm({ ...navForm, source_note: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1.5 w-full text-xs" />
                             </div>
                           </div>
@@ -2261,7 +2261,7 @@ export default function AdminPage() {
 
                           <div className="border-t border-gray-800 pt-3 mb-3">
                             <p className="text-gray-400 text-xs font-bold mb-1">{t.navImportTitle}</p>
-                            <p className="text-gray-600 text-xs mb-2">{t.navImportHint}</p>
+                            <p className="text-gray-500 text-xs mb-2">{t.navImportHint}</p>
                             <div className="flex items-center gap-2 flex-wrap">
                               <input type="file" accept=".csv,text/csv" onChange={e => setNavCsvFile(e.target.files?.[0] || null)} className="text-gray-300 text-xs" />
                               <button
@@ -2275,9 +2275,9 @@ export default function AdminPage() {
                             {navImportMsg && <p className="text-orange-400 text-xs mt-1">{navImportMsg}</p>}
                           </div>
 
-                          <p className="text-gray-500 text-xs mb-1">{t.navExisting} ({fundNavList.length})</p>
+                          <p className="text-gray-400 text-xs mb-1">{t.navExisting} ({fundNavList.length})</p>
                           {fundNavList.length === 0 ? (
-                            <p className="text-gray-600 text-xs">{t.navNoPoints}</p>
+                            <p className="text-gray-500 text-xs">{t.navNoPoints}</p>
                           ) : (
                             <div className="max-h-40 overflow-y-auto space-y-1">
                               {fundNavList.map(p => (

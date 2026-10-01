@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '../components/LanguageProvider';
 import DataError from '../components/DataError';
+import { SkeletonBlock } from '../components/Skeleton';
 
 type BriefingStock = {
   id: number;
@@ -145,7 +146,7 @@ export default function DailyBriefingPage() {
         <div className="flex justify-between items-start mb-2 flex-wrap gap-2">
           <div>
             <h1 className="text-orange-500 font-bold text-xl">{t.title}</h1>
-            <p className="text-gray-500 text-xs mt-1">{t.subtitle}</p>
+            <p className="text-gray-400 text-xs mt-1">{t.subtitle}</p>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -164,7 +165,7 @@ export default function DailyBriefingPage() {
         </div>
 
         {date && (
-          <p className="text-gray-600 text-xs mb-4">{t.lastUpdate}: {date}</p>
+          <p className="text-gray-500 text-xs mb-4">{t.lastUpdate}: {date}</p>
         )}
 
         {/* تنبيه للزوار غير المسجلين */}
@@ -223,7 +224,7 @@ export default function DailyBriefingPage() {
                   {t.addStock}
                 </button>
 
-                <p className="text-gray-500 text-xs font-bold mb-2">{t.currentList}</p>
+                <p className="text-gray-400 text-xs font-bold mb-2">{t.currentList}</p>
                 <div className="space-y-2">
                   {manageList.map(s => (
                     <div key={s.id} className="flex justify-between items-center bg-gray-800 rounded px-3 py-2">
@@ -247,11 +248,14 @@ export default function DailyBriefingPage() {
 
         {/* النشرة */}
         {loading ? (
-          <div className="text-center py-16 text-gray-500 text-sm animate-pulse">{t.loading}</div>
+          <div className="space-y-4">
+            <SkeletonBlock className="h-20" />
+            {Array(4).fill(0).map((_, i) => <SkeletonBlock key={i} className="h-28" />)}
+          </div>
         ) : briefingError ? (
           <DataError onRetry={() => fetchBriefing(siteUser?.id)} />
         ) : stocks.length === 0 ? (
-          <div className="text-center py-16 text-gray-500 text-sm">{t.emptyList}</div>
+          <div className="text-center py-16 text-gray-400 text-sm">{t.emptyList}</div>
         ) : (
           <div className="space-y-4">
             {stocks.map(stock => (
@@ -266,7 +270,7 @@ export default function DailyBriefingPage() {
                 </div>
 
                 {stock.news.length === 0 ? (
-                  <div className="px-4 py-6 text-center text-gray-600 text-xs">{t.noNews}</div>
+                  <div className="px-4 py-6 text-center text-gray-500 text-xs">{t.noNews}</div>
                 ) : (
                   <div className="divide-y divide-gray-800">
                     {stock.news.map((item, i) => (
@@ -280,7 +284,7 @@ export default function DailyBriefingPage() {
                         </p>
                         <div className="flex justify-between items-center">
                           <span className="text-orange-500 text-xs font-bold">{item.source}</span>
-                          <span className="text-gray-500 text-xs">{item.date}</span>
+                          <span className="text-gray-400 text-xs">{item.date}</span>
                         </div>
                       </div>
                     ))}

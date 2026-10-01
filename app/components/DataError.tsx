@@ -9,10 +9,10 @@ export default function DataError({ onRetry, compact = false }: { onRetry: () =>
 
   return (
     <div className={`flex flex-col items-center justify-center text-center ${compact ? 'py-6' : 'py-10'} px-4`}>
-      <p className="text-gray-500 text-sm mb-2">
+      <p className="text-gray-400 text-sm mb-2">
         {lang === 'ar' ? '⚠️ تعذّر تحميل البيانات' : '⚠️ Couldn’t load the data'}
       </p>
-      <p className="text-gray-600 text-xs mb-3">
+      <p className="text-gray-500 text-xs mb-3">
         {lang === 'ar' ? 'تحقّق من اتصالك بالإنترنت وحاول مرة أخرى' : 'Check your connection and try again'}
       </p>
       <button

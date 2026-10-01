@@ -3,6 +3,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useLanguage } from '../components/LanguageProvider';
 import DataError from '../components/DataError';
+import { SkeletonCard } from '../components/Skeleton';
+import RiskBadge from '../components/RiskBadge';
 import { RISK_LEVELS } from '../lib/funds-schema';
 
 type Fund = {
@@ -79,12 +81,6 @@ const L = {
 
 const MAX_COMPARE = 4;
 
-const RISK_COLORS: Record<string, string> = {
-  'منخفضة': 'text-green-400 border-green-700',
-  'متوسطة': 'text-yellow-400 border-yellow-700',
-  'مرتفعة': 'text-red-400 border-red-700',
-};
-
 export default function FundsPage() {
   const { lang } = useLanguage();
   const t = L[lang];
@@ -155,7 +151,7 @@ export default function FundsPage() {
         {!loading && !error && funds.length > 0 && (
           <div className="mb-4 space-y-2">
             <div>
-              <p className="text-gray-500 text-xs mb-1">{t.filterByType}</p>
+              <p className="text-gray-400 text-xs mb-1">{t.filterByType}</p>
               <div className="flex gap-2 flex-wrap">
                 <button
                   onClick={() => setActiveType(t.all)}
@@ -175,7 +171,7 @@ export default function FundsPage() {
               </div>
             </div>
             <div>
-              <p className="text-gray-500 text-xs mb-1">{t.filterByRisk}</p>
+              <p className="text-gray-400 text-xs mb-1">{t.filterByRisk}</p>
               <div className="flex gap-2 flex-wrap">
                 {[t.all, ...RISK_LEVELS, t.riskUnset].map(risk => (
                   <button
@@ -192,16 +188,18 @@ export default function FundsPage() {
         )}
 
         {loading ? (
-          <div className="text-center py-16 text-gray-500 text-sm animate-pulse">{t.loading}</div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {Array(6).fill(0).map((_, i) => <SkeletonCard key={i} lines={3} />)}
+          </div>
         ) : error ? (
           <DataError onRetry={fetchFunds} />
         ) : funds.length === 0 ? (
-          <div className="text-center py-20 text-gray-500">
+          <div className="text-center py-20 text-gray-400">
             <p className="text-6xl mb-4">💼</p>
             <p className="text-xl">{t.empty}</p>
           </div>
         ) : filteredFunds.length === 0 ? (
-          <div className="text-center py-20 text-gray-500">
+          <div className="text-center py-20 text-gray-400">
             <p className="text-xl">{t.noMatch}</p>
           </div>
         ) : (
@@ -211,7 +209,7 @@ export default function FundsPage() {
                 <div className="flex justify-between items-start gap-3 mb-2">
                   <div>
                     <h3 className="text-white font-bold text-base">{f.name}</h3>
-                    {f.name_en && <p className="text-gray-500 text-xs">{f.name_en}</p>}
+                    {f.name_en && <p className="text-gray-400 text-xs">{f.name_en}</p>}
                   </div>
                   <label className="flex items-center gap-1.5 text-xs text-gray-400 cursor-pointer whitespace-nowrap">
                     <input
@@ -227,21 +225,19 @@ export default function FundsPage() {
                   {f.latest_nav_value ? (
                     <p className="text-orange-400 font-bold text-sm">
                       {t.navValue}: {Number(f.latest_nav_value).toFixed(4)} {f.currency}
-                      {f.latest_nav_date && <span className="text-gray-500 font-normal text-xs"> ({t.navAsOf(f.latest_nav_date)})</span>}
+                      {f.latest_nav_date && <span className="text-gray-400 font-normal text-xs"> ({t.navAsOf(f.latest_nav_date)})</span>}
                     </p>
                   ) : (
-                    <p className="text-gray-600 text-sm">{t.navValue}: {t.navNoData}</p>
+                    <p className="text-gray-500 text-sm">{t.navValue}: {t.navNoData}</p>
                   )}
                 </div>
                 <div className="text-xs text-gray-400 space-y-1 mb-3">
-                  <p><span className="text-gray-500">{t.type}:</span> {f.fund_type}</p>
-                  {f.manager_company && <p><span className="text-gray-500">{t.manager}:</span> {f.manager_company}</p>}
-                  {f.inception_date && <p><span className="text-gray-500">{t.since}:</span> {new Date(f.inception_date).toLocaleDateString(t.dateLocale)}</p>}
+                  <p><span className="text-gray-400">{t.type}:</span> {f.fund_type}</p>
+                  {f.manager_company && <p><span className="text-gray-400">{t.manager}:</span> {f.manager_company}</p>}
+                  {f.inception_date && <p><span className="text-gray-400">{t.since}:</span> {new Date(f.inception_date).toLocaleDateString(t.dateLocale)}</p>}
                 </div>
                 {f.risk_level && (
-                  <span className={`inline-block text-xs font-bold border rounded px-2 py-0.5 mb-3 ${RISK_COLORS[f.risk_level] || 'text-gray-400 border-gray-700'}`}>
-                    {t.riskLabel}: {f.risk_level}
-                  </span>
+                  <RiskBadge level={f.risk_level} label={`${t.riskLabel}: ${f.risk_level}`} className="mb-3" />
                 )}
                 <div className="mb-3">
                   {f.has_prospectus ? (
@@ -263,7 +259,7 @@ export default function FundsPage() {
                       {t.prospectusExternal}
                     </a>
                   ) : (
-                    <p className="text-gray-600 text-xs">{t.noProspectus}</p>
+                    <p className="text-gray-500 text-xs">{t.noProspectus}</p>
                   )}
                 </div>
                 <div>
@@ -280,11 +276,11 @@ export default function FundsPage() {
           <div className="fixed bottom-11 left-0 right-0 bg-gray-900 border-t border-orange-700 p-4 flex items-center justify-between gap-4 flex-wrap z-40">
             <p className="text-gray-300 text-sm">
               {t.compareBar(selected.length)}
-              {selected.length >= MAX_COMPARE && <span className="text-gray-500"> — {t.compareMax}</span>}
+              {selected.length >= MAX_COMPARE && <span className="text-gray-400"> — {t.compareMax}</span>}
             </p>
             <a
               href={`/funds/compare?ids=${selected.join(',')}`}
-              className={`px-5 py-2 rounded text-sm font-bold transition ${selected.length >= 2 ? 'bg-orange-500 text-black hover:bg-orange-600' : 'bg-gray-700 text-gray-500 pointer-events-none'}`}
+              className={`px-5 py-2 rounded text-sm font-bold transition ${selected.length >= 2 ? 'bg-orange-500 text-black hover:bg-orange-600' : 'bg-gray-700 text-gray-400 pointer-events-none'}`}
             >
               {t.compareBtn}
             </a>

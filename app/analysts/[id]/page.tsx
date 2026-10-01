@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useLanguage } from '../../components/LanguageProvider';
+import { SkeletonBlock } from '../../components/Skeleton';
 
 const L = {
   ar: {
@@ -265,14 +266,18 @@ export default function AnalystPage() {
     ? recommendations
     : recommendations.filter(r => r.status === filterStatus);
     if (loading) return (
-    <main className="min-h-screen bg-gray-950 p-4 flex items-center justify-center">
-      <p className="text-gray-500 animate-pulse">{t.loading}</p>
+    <main className="min-h-screen bg-gray-950 p-4">
+      <div className="max-w-5xl mx-auto space-y-4">
+        <SkeletonBlock className="h-32" />
+        <SkeletonBlock className="h-24" />
+        <SkeletonBlock className="h-64" />
+      </div>
     </main>
   );
 
   if (!analyst) return (
     <main className="min-h-screen bg-gray-950 p-4 flex items-center justify-center">
-      <p className="text-gray-500">{t.notFound}</p>
+      <p className="text-gray-400">{t.notFound}</p>
     </main>
   );
 
@@ -280,7 +285,7 @@ export default function AnalystPage() {
     <main className="min-h-screen bg-gray-950 p-4">
       <div className="max-w-5xl mx-auto">
 
-        <a href="/analysts" className="text-gray-500 text-sm hover:text-orange-500 transition mb-4 block">
+        <a href="/analysts" className="text-gray-400 text-sm hover:text-orange-500 transition mb-4 block">
           {t.back}
         </a>
 
@@ -310,19 +315,19 @@ export default function AnalystPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
             <div className="bg-gray-800 rounded-lg p-3 text-center">
               <p className="text-white font-bold text-xl">{recommendations.length}</p>
-              <p className="text-gray-500 text-xs">{t.totalRecs}</p>
+              <p className="text-gray-400 text-xs">{t.totalRecs}</p>
             </div>
             <div className="bg-gray-800 rounded-lg p-3 text-center">
               <p className="text-green-400 font-bold text-xl">{recommendations.filter(r => r.status === 'success').length}</p>
-              <p className="text-gray-500 text-xs">{t.successfulRecs}</p>
+              <p className="text-gray-400 text-xs">{t.successfulRecs}</p>
             </div>
             <div className="bg-gray-800 rounded-lg p-3 text-center">
               <p className="text-blue-400 font-bold text-xl">{recommendations.filter(r => r.status === 'open').length}</p>
-              <p className="text-gray-500 text-xs">{t.openRecs}</p>
+              <p className="text-gray-400 text-xs">{t.openRecs}</p>
             </div>
             <div className="bg-gray-800 rounded-lg p-3 text-center">
               <p className="text-orange-500 font-bold text-xl">{getSuccessRate()}%</p>
-              <p className="text-gray-500 text-xs">{t.successRate}</p>
+              <p className="text-gray-400 text-xs">{t.successRate}</p>
             </div>
           </div>
         </div>
@@ -372,7 +377,7 @@ export default function AnalystPage() {
             </div>
 
             {filteredRecs.length === 0 ? (
-              <div className="text-center py-16 text-gray-500">
+              <div className="text-center py-16 text-gray-400">
                 <p className="text-4xl mb-3">📊</p>
                 <p>{t.noRecs}</p>
               </div>
@@ -389,19 +394,19 @@ export default function AnalystPage() {
                         </div>
                         <p className="text-gray-400 text-xs">{rec.stock_name}</p>
                       </div>
-                      <span className="text-gray-500 text-xs">{new Date(rec.created_at).toLocaleDateString(t.dateLocale)}</span>
+                      <span className="text-gray-400 text-xs">{new Date(rec.created_at).toLocaleDateString(t.dateLocale)}</span>
                     </div>
                     <div className="grid grid-cols-3 gap-3 mb-4">
                       <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-500 text-xs mb-1">{t.entryPrice}</p>
+                        <p className="text-gray-400 text-xs mb-1">{t.entryPrice}</p>
                         <p className="text-white font-bold text-sm">{rec.entry_price} {t.currency}</p>
                       </div>
                       <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-500 text-xs mb-1">{t.target}</p>
+                        <p className="text-gray-400 text-xs mb-1">{t.target}</p>
                         <p className="text-green-400 font-bold text-sm">{rec.target_price ? `${rec.target_price} ${t.currency}` : '-'}</p>
                       </div>
                       <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-500 text-xs mb-1">{t.stopLoss}</p>
+                        <p className="text-gray-400 text-xs mb-1">{t.stopLoss}</p>
                         <p className="text-red-400 font-bold text-sm">{rec.stop_loss ? `${rec.stop_loss} ${t.currency}` : '-'}</p>
                       </div>
                     </div>
@@ -450,7 +455,7 @@ export default function AnalystPage() {
             </div>
 
             {comments.length === 0 ? (
-              <div className="text-center py-16 text-gray-500">
+              <div className="text-center py-16 text-gray-400">
                 <p className="text-4xl mb-3">💬</p>
                 <p>{t.noComments}</p>
               </div>
@@ -463,7 +468,7 @@ export default function AnalystPage() {
                         <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-black font-bold text-sm">{comment.user_name[0]}</div>
                         <div>
                           <p className="text-white text-sm font-bold">{comment.user_name}</p>
-                          <p className="text-gray-500 text-xs">{new Date(comment.created_at).toLocaleDateString(t.dateLocale)}</p>
+                          <p className="text-gray-400 text-xs">{new Date(comment.created_at).toLocaleDateString(t.dateLocale)}</p>
                         </div>
                       </div>
                       <span className="text-xs bg-blue-900 text-blue-400 px-2 py-0.5 rounded">{t.premiumBadge}</span>
@@ -475,7 +480,7 @@ export default function AnalystPage() {
                           <div key={j} className={`p-2 rounded text-xs ${reply.is_analyst ? 'bg-orange-900 bg-opacity-30 border border-orange-800' : 'bg-gray-800'}`}>
                             <div className="flex justify-between mb-1">
                               <span className={`font-bold ${reply.is_analyst ? 'text-orange-400' : 'text-gray-300'}`}>{reply.is_analyst ? t.analystLabel : reply.user_name}</span>
-                              <span className="text-gray-500">{new Date(reply.created_at).toLocaleDateString(t.dateLocale)}</span>
+                              <span className="text-gray-400">{new Date(reply.created_at).toLocaleDateString(t.dateLocale)}</span>
                             </div>
                             <p className="text-gray-300">{reply.content}</p>
                           </div>
@@ -500,7 +505,7 @@ export default function AnalystPage() {
         {activeTab === 'pending' && (
           <div>
             {pendingFollowers.length === 0 ? (
-              <div className="text-center py-16 text-gray-500">
+              <div className="text-center py-16 text-gray-400">
                 <p className="text-4xl mb-3">👥</p>
                 <p>{t.noPending}</p>
               </div>

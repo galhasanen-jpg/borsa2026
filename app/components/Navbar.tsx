@@ -56,19 +56,19 @@ export default function Navbar() {
       {/* الشريط العلوي */}
       <div className="flex items-center justify-between px-6 py-3 border-b border-gray-800">
         <a href="/" className="text-orange-500 font-bold text-2xl tracking-wider">
-          بورصة<span className="text-white">2026</span>
+          {lang === 'ar' ? 'بورصة' : 'Borsa'}<span className="text-white">2026</span>
         </a>
 
         <div className="flex items-center gap-4">
           {siteUser ? (
             <div className="hidden sm:flex items-center gap-2 text-xs">
               <span className="text-gray-400">{lang === 'ar' ? 'مرحباً' : 'Hi'}, {siteUser.name}</span>
-              <a href="/account" className="text-gray-500 hover:text-orange-500 transition">
+              <a href="/account" className="text-gray-400 hover:text-orange-500 transition">
                 {lang === 'ar' ? 'حسابي' : 'My Account'}
               </a>
               <button
                 onClick={handleLogout}
-                className="text-gray-500 hover:text-orange-500 transition"
+                className="text-gray-400 hover:text-orange-500 transition"
               >
                 {lang === 'ar' ? 'خروج' : 'Logout'}
               </button>
@@ -91,9 +91,12 @@ export default function Navbar() {
 
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden text-white text-xl"
+            aria-label={menuOpen ? (lang === 'ar' ? 'إغلاق القائمة' : 'Close menu') : (lang === 'ar' ? 'فتح القائمة' : 'Open menu')}
+            className="md:hidden relative w-6 h-5 flex-shrink-0"
           >
-            {menuOpen ? '✕' : '☰'}
+            <span className={`absolute left-0 w-6 h-0.5 bg-white rounded transition-all duration-300 ${menuOpen ? 'top-2 rotate-45' : 'top-0'}`} />
+            <span className={`absolute left-0 top-2 w-6 h-0.5 bg-white rounded transition-all duration-300 ${menuOpen ? 'opacity-0' : 'opacity-100'}`} />
+            <span className={`absolute left-0 w-6 h-0.5 bg-white rounded transition-all duration-300 ${menuOpen ? 'top-2 -rotate-45' : 'top-4'}`} />
           </button>
         </div>
       </div>
@@ -117,10 +120,10 @@ export default function Navbar() {
       </div>
 
       {/* قائمة الموبايل */}
-      {menuOpen && (
-        <div className="md:hidden flex flex-col border-t border-gray-800">
+      <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'}`}>
+        <div className="flex flex-col border-t border-gray-800">
           {navItems.map(item => (
-            
+
 
 
             <a
@@ -163,7 +166,7 @@ export default function Navbar() {
             </a>
           )}
         </div>
-      )}
+      </div>
 
     </nav>
   );

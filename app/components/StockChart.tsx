@@ -5,6 +5,7 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, BarChart, Bar, ComposedChart, Cell
 } from 'recharts';
+import { SkeletonLine } from './Skeleton';
 
 const periods = [
   { label: 'اليوم', labelEn: 'Today', value: 'today', type: 'ticks' },
@@ -139,13 +140,13 @@ const lastPrice = parseFloat(data[data.length - 1]?.close) || 0;
         <div className="mr-auto flex gap-1">
           <button
             onClick={() => setChartType('area')}
-            className={`px-2 py-1 text-xs rounded transition ${chartType === 'area' ? 'bg-gray-700 text-white' : 'text-gray-500 hover:text-white'}`}
+            className={`px-2 py-1 text-xs rounded transition ${chartType === 'area' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'}`}
           >
             📈
           </button>
           <button
             onClick={() => setChartType('bar')}
-            className={`px-2 py-1 text-xs rounded transition ${chartType === 'bar' ? 'bg-gray-700 text-white' : 'text-gray-500 hover:text-white'}`}
+            className={`px-2 py-1 text-xs rounded transition ${chartType === 'bar' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'}`}
           >
             📊
           </button>
@@ -153,7 +154,7 @@ const lastPrice = parseFloat(data[data.length - 1]?.close) || 0;
             onClick={() => hasOHLC && setChartType('candlestick')}
             disabled={!hasOHLC}
             title={!hasOHLC ? (lang === 'ar' ? 'الشموع اليابانية تحتاج بيانات فتح/أعلى/أدنى — متاحة من فترة شهر فأكثر' : 'Candlesticks need open/high/low data — available from 1M periods and up') : undefined}
-            className={`px-2 py-1 rounded transition ${chartType === 'candlestick' ? 'bg-gray-700 text-white' : hasOHLC ? 'text-gray-500 hover:text-white' : 'text-gray-700 cursor-not-allowed'}`}
+            className={`px-2 py-1 rounded transition ${chartType === 'candlestick' ? 'bg-gray-700 text-white' : hasOHLC ? 'text-gray-400 hover:text-white' : 'text-gray-700 cursor-not-allowed'}`}
           >
             <svg width="14" height="14" viewBox="0 0 16 16" className="inline-block align-middle">
               <line x1="4" y1="1" x2="4" y2="15" stroke="currentColor" strokeWidth="1" />
@@ -167,11 +168,13 @@ const lastPrice = parseFloat(data[data.length - 1]?.close) || 0;
 
       {/* الرسم البياني */}
       {loading ? (
-        <div className="h-48 flex items-center justify-center text-gray-500 text-sm animate-pulse">
-          جاري التحميل...
+        <div className="h-48 flex items-end gap-2 px-2 pb-2">
+          {Array(12).fill(0).map((_, i) => (
+            <SkeletonLine key={i} className="flex-1" style={{ height: `${30 + ((i * 37) % 60)}%` }} />
+          ))}
         </div>
       ) : data.length === 0 ? (
-        <div className="h-48 flex items-center justify-center text-gray-500 text-sm">
+        <div className="h-48 flex items-center justify-center text-gray-400 text-sm">
           {lang === 'ar' ? 'لا توجد بيانات' : 'No data available'}
         </div>
       ) : (

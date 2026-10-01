@@ -5,6 +5,8 @@ import { useParams } from 'next/navigation';
 import { useLanguage } from '../../components/LanguageProvider';
 import DataError from '../../components/DataError';
 import FundValueChart from '../../components/FundValueChart';
+import { SkeletonBlock } from '../../components/Skeleton';
+import RiskBadge from '../../components/RiskBadge';
 
 type Fund = {
   id: number;
@@ -111,12 +113,16 @@ export default function FundDetailPage() {
     <main className="min-h-screen bg-gray-950 p-4">
       <div className="max-w-3xl mx-auto">
 
-        <a href="/funds" className="text-gray-500 text-sm hover:text-orange-500 transition mb-4 block">
+        <a href="/funds" className="text-gray-400 text-sm hover:text-orange-500 transition mb-4 block">
           {t.back}
         </a>
 
         {loading ? (
-          <div className="text-center py-16 text-gray-500 text-sm animate-pulse">{t.loading}</div>
+          <div className="space-y-4">
+            <SkeletonBlock className="h-24" />
+            <SkeletonBlock className="h-40" />
+            <SkeletonBlock className="h-48" />
+          </div>
         ) : error || !fund ? (
           <DataError onRetry={fetchAll} />
         ) : (
@@ -127,15 +133,15 @@ export default function FundDetailPage() {
             </div>
 
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 grid sm:grid-cols-2 gap-4 text-sm">
-              <div><p className="text-gray-500 text-xs mb-1">{t.type}</p><p className="text-white">{fund.fund_type}</p></div>
-              <div><p className="text-gray-500 text-xs mb-1">{t.manager}</p><p className="text-white">{fund.manager_company || t.noData}</p></div>
-              <div><p className="text-gray-500 text-xs mb-1">{t.inception}</p><p className="text-white">{fund.inception_date ? new Date(fund.inception_date).toLocaleDateString(t.dateLocale) : t.noData}</p></div>
-              <div><p className="text-gray-500 text-xs mb-1">{t.subscriptionFee}</p><p className="text-white">{fund.subscription_fee || t.noData}</p></div>
-              <div><p className="text-gray-500 text-xs mb-1">{t.redemptionFee}</p><p className="text-white">{fund.redemption_fee || t.noData}</p></div>
-              <div><p className="text-gray-500 text-xs mb-1">{t.entryDays}</p><p className="text-white">{fund.entry_days || t.noData}</p></div>
-              <div><p className="text-gray-500 text-xs mb-1">{t.exitDays}</p><p className="text-white">{fund.exit_days || t.noData}</p></div>
-              <div><p className="text-gray-500 text-xs mb-1">{t.riskLevel}</p><p className="text-white">{fund.risk_level || t.noData}</p></div>
-              <div><p className="text-gray-500 text-xs mb-1">{t.licenseInfo}</p><p className="text-white">{fund.license_info || t.noData}</p></div>
+              <div><p className="text-gray-400 text-xs mb-1">{t.type}</p><p className="text-white">{fund.fund_type}</p></div>
+              <div><p className="text-gray-400 text-xs mb-1">{t.manager}</p><p className="text-white">{fund.manager_company || t.noData}</p></div>
+              <div><p className="text-gray-400 text-xs mb-1">{t.inception}</p><p className="text-white">{fund.inception_date ? new Date(fund.inception_date).toLocaleDateString(t.dateLocale) : t.noData}</p></div>
+              <div><p className="text-gray-400 text-xs mb-1">{t.subscriptionFee}</p><p className="text-white">{fund.subscription_fee || t.noData}</p></div>
+              <div><p className="text-gray-400 text-xs mb-1">{t.redemptionFee}</p><p className="text-white">{fund.redemption_fee || t.noData}</p></div>
+              <div><p className="text-gray-400 text-xs mb-1">{t.entryDays}</p><p className="text-white">{fund.entry_days || t.noData}</p></div>
+              <div><p className="text-gray-400 text-xs mb-1">{t.exitDays}</p><p className="text-white">{fund.exit_days || t.noData}</p></div>
+              <div><p className="text-gray-400 text-xs mb-1">{t.riskLevel}</p>{fund.risk_level ? <RiskBadge level={fund.risk_level} /> : <p className="text-white">{t.noData}</p>}</div>
+              <div><p className="text-gray-400 text-xs mb-1">{t.licenseInfo}</p><p className="text-white">{fund.license_info || t.noData}</p></div>
             </div>
 
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
@@ -171,12 +177,12 @@ export default function FundDetailPage() {
                   {t.prospectusExternal}
                 </a>
               ) : (
-                <p className="text-gray-500 text-sm">{t.noProspectus}</p>
+                <p className="text-gray-400 text-sm">{t.noProspectus}</p>
               )}
             </div>
 
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <p className="text-gray-500 text-xs mb-1">{t.source}</p>
+              <p className="text-gray-400 text-xs mb-1">{t.source}</p>
               <p className="text-gray-300 text-sm">{fund.source_note || t.noData}</p>
             </div>
           </div>

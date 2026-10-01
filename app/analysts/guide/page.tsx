@@ -57,7 +57,7 @@ export default function InvestorGuidePage() {
     <main className="min-h-screen bg-gray-950 p-4" style={{ userSelect: 'none' }}>
       <div className="max-w-3xl mx-auto">
 
-        <a href="/analysts" className="text-gray-500 text-sm hover:text-orange-500 transition mb-4 block">
+        <a href="/analysts" className="text-gray-400 text-sm hover:text-orange-500 transition mb-4 block">
           {t.back}
         </a>
 
@@ -66,7 +66,7 @@ export default function InvestorGuidePage() {
           <p className="text-gray-400 text-sm">{t.subtitle}</p>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-3 mb-6 text-gray-500 text-xs text-center">
+        <div className="bg-gray-900 border border-gray-800 rounded-lg p-3 mb-6 text-gray-400 text-xs text-center">
           {t.notice}
         </div>
 

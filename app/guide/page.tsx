@@ -625,12 +625,12 @@ export default function GuidePage() {
 
   return (
     <main className="min-h-screen bg-gray-950 p-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
 
         {/* العنوان */}
         <div className="text-center mb-8">
           <h1 className="text-orange-500 font-bold text-3xl mb-2">{t.title}</h1>
-          <p className="text-gray-500 text-sm">{t.subtitle}</p>
+          <p className="text-gray-400 text-sm">{t.subtitle}</p>
         </div>
 
         {/* التبويبات */}
@@ -676,7 +676,7 @@ export default function GuidePage() {
                   <span className="text-3xl">{page.icon}</span>
                   <div>
                     <h2 className="text-white font-bold text-lg">{page.title}</h2>
-                    <p className="text-gray-600 text-xs font-mono" dir="ltr">{page.path}</p>
+                    <p className="text-gray-500 text-xs font-mono" dir="ltr">{page.path}</p>
                   </div>
                 </div>
 
@@ -686,7 +686,7 @@ export default function GuidePage() {
                     <ul className="space-y-1.5">
                       {page.data.map((d, j) => (
                         <li key={j} className="flex items-start gap-2 text-gray-300 text-sm leading-relaxed">
-                          <span className="text-gray-600 mt-1">•</span>
+                          <span className="text-gray-500 mt-1">•</span>
                           <span>{d}</span>
                         </li>
                       ))}
@@ -707,7 +707,7 @@ export default function GuidePage() {
                 </div>
 
                 {page.note && (
-                  <p className="text-gray-500 text-xs mt-4 border-t border-gray-800 pt-3">{page.note}</p>
+                  <p className="text-gray-400 text-xs mt-4 border-t border-gray-800 pt-3">{page.note}</p>
                 )}
               </div>
             ))}
