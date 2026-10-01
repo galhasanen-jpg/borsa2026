@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+/* بدون تسجيل المتغيرات دي كـ @property، كان الـ minifier (Lightning CSS) بتاع
+   Tailwind v4 بيعتبرها "ثابتة القيمة" طول ما بتتستخدم مرة واحدة بس (زي
+   body/scrollbar-color)، فبيستبدلها بقيمتها المباشرة وقت البناء ويشيل تعريف
+   :root/.light خالص — يعني تبديل الكلاس وقت التشغيل مكنش بيعمل أي فرق فعلي في
+   الإنتاج رغم إنه كان شغال في dev. تسجيلها كـ @property بيمنع الـ minifier من
+   عمل الحقنة (inlining) دي لأنها بقت "خاصية" حقيقية ليها نوع، مش مجرد نص قابل
+   للاستبدال السطحي. */
+@property --bg-page { syntax: "<color>"; inherits: true; initial-value: #0a0a0a; }
+@property --bg-nav { syntax: "<color>"; inherits: true; initial-value: #000000; }
+@property --bg-card { syntax: "<color>"; inherits: true; initial-value: #111827; }
+@property --surface-2 { syntax: "<color>"; inherits: true; initial-value: #1f2937; }
+@property --surface-3 { syntax: "<color>"; inherits: true; initial-value: #374151; }
+@property --surface-3-hover { syntax: "<color>"; inherits: true; initial-value: #4b5563; }
+@property --border { syntax: "<color>"; inherits: true; initial-value: #1f2937; }
+@property --border-strong { syntax: "<color>"; inherits: true; initial-value: #374151; }
+@property --text-primary { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --text-secondary { syntax: "<color>"; inherits: true; initial-value: #9ca3af; }
+@property --text-tertiary { syntax: "<color>"; inherits: true; initial-value: #6b7280; }
+@property --accent-text { syntax: "<color>"; inherits: true; initial-value: #f97316; }
+@property --scrollbar-thumb { syntax: "<color>"; inherits: true; initial-value: #333333; }
+@property --scrollbar-track { syntax: "<color>"; inherits: true; initial-value: #1a1a1a; }
+
 /* نظام الألوان (الوضع الغامق هو الافتراضي والأصلي، والفاتح بيستبدل نفس
    المتغيرات تحت كلاس .light على <html>). كل قيمة هنا بتتغيّر في مكان واحد —
    أي طلب لاحق بتغيير لون معيّن في أي وضع بيبقى تعديل سطر واحد بس. */
