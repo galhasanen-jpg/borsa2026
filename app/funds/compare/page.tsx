@@ -132,7 +132,7 @@ function CompareFundsInner() {
           {t.back}
         </a>
 
-        <div className="bg-gradient-to-l from-orange-950 to-gray-900 border border-orange-700 rounded-xl p-6 mb-6">
+        <div className="bg-gradient-to-l from-[var(--hero-from)] to-[var(--hero-to)] border border-orange-700 rounded-xl p-6 mb-6">
           <h1 className="text-[var(--accent-text)] font-bold text-2xl">{t.title}</h1>
         </div>
 

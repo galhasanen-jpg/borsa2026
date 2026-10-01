@@ -1857,7 +1857,7 @@ export default function AdminPage() {
         {activeTab === 'aiAnalyst' && (
           <div className="space-y-6">
 
-            <div className="bg-gradient-to-l from-orange-950 to-gray-900 border border-orange-700 rounded-lg p-4">
+            <div className="bg-gradient-to-l from-[var(--hero-from)] to-[var(--hero-to)] border border-orange-700 rounded-lg p-4">
               <h2 className="text-[var(--accent-text)] font-bold mb-1">{t.aiTitle}</h2>
               <p className="text-[var(--text-secondary)] text-xs">{t.aiDesc}</p>
             </div>

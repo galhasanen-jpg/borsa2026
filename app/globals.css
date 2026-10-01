@@ -21,6 +21,8 @@
 @property --accent-text { syntax: "<color>"; inherits: true; initial-value: #f97316; }
 @property --scrollbar-thumb { syntax: "<color>"; inherits: true; initial-value: #333333; }
 @property --scrollbar-track { syntax: "<color>"; inherits: true; initial-value: #1a1a1a; }
+@property --hero-from { syntax: "<color>"; inherits: true; initial-value: #431407; }
+@property --hero-to { syntax: "<color>"; inherits: true; initial-value: #111827; }
 
 /* نظام الألوان (الوضع الغامق هو الافتراضي والأصلي، والفاتح بيستبدل نفس
    المتغيرات تحت كلاس .light على <html>). كل قيمة هنا بتتغيّر في مكان واحد —
@@ -40,6 +42,8 @@
   --accent-text: #f97316;
   --scrollbar-thumb: #333333;
   --scrollbar-track: #1a1a1a;
+  --hero-from: #431407;
+  --hero-to: #111827;
 }
 
 html.light {
@@ -57,6 +61,8 @@ html.light {
   --accent-text: #c2410c;
   --scrollbar-thumb: #cbd5e1;
   --scrollbar-track: #f1f5f9;
+  --hero-from: #fff7ed;
+  --hero-to: #ffffff;
 }
 
 * {
