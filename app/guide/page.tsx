@@ -624,38 +624,38 @@ export default function GuidePage() {
   const [activeTab, setActiveTab] = useState<'pages' | 'follower' | 'analyst' | 'glossary'>('pages');
 
   return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-5xl mx-auto">
 
         {/* العنوان */}
         <div className="text-center mb-8">
-          <h1 className="text-orange-500 font-bold text-3xl mb-2">{t.title}</h1>
-          <p className="text-gray-400 text-sm">{t.subtitle}</p>
+          <h1 className="text-[var(--accent-text)] font-bold text-3xl mb-2">{t.title}</h1>
+          <p className="text-[var(--text-secondary)] text-sm">{t.subtitle}</p>
         </div>
 
         {/* التبويبات */}
         <div className="flex gap-2 mb-8 justify-center flex-wrap">
           <button
             onClick={() => setActiveTab('pages')}
-            className={`px-6 py-3 rounded-lg text-sm font-bold transition ${activeTab === 'pages' ? 'bg-orange-500 text-black' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+            className={`px-6 py-3 rounded-lg text-sm font-bold transition ${activeTab === 'pages' ? 'bg-orange-500 text-black' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           >
             {t.tabs.pages}
           </button>
           <button
             onClick={() => setActiveTab('follower')}
-            className={`px-6 py-3 rounded-lg text-sm font-bold transition ${activeTab === 'follower' ? 'bg-orange-500 text-black' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+            className={`px-6 py-3 rounded-lg text-sm font-bold transition ${activeTab === 'follower' ? 'bg-orange-500 text-black' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           >
             {t.tabs.follower}
           </button>
           <button
             onClick={() => setActiveTab('analyst')}
-            className={`px-6 py-3 rounded-lg text-sm font-bold transition ${activeTab === 'analyst' ? 'bg-orange-500 text-black' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+            className={`px-6 py-3 rounded-lg text-sm font-bold transition ${activeTab === 'analyst' ? 'bg-orange-500 text-black' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           >
             {t.tabs.analyst}
           </button>
           <button
             onClick={() => setActiveTab('glossary')}
-            className={`px-6 py-3 rounded-lg text-sm font-bold transition ${activeTab === 'glossary' ? 'bg-orange-500 text-black' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+            className={`px-6 py-3 rounded-lg text-sm font-bold transition ${activeTab === 'glossary' ? 'bg-orange-500 text-black' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           >
             {t.tabs.glossary}
           </button>
@@ -664,29 +664,29 @@ export default function GuidePage() {
         {/* دليل صفحات الموقع */}
         {activeTab === 'pages' && (
           <div className="space-y-4">
-            <div className="bg-gray-900 border border-orange-500 border-opacity-30 rounded-xl p-4 mb-6">
-              <p className="text-gray-400 text-sm text-center">{t.pagesIntro}</p>
+            <div className="bg-[var(--bg-card)] border border-orange-500 border-opacity-30 rounded-xl p-4 mb-6">
+              <p className="text-[var(--text-secondary)] text-sm text-center">{t.pagesIntro}</p>
             </div>
             <div className="bg-red-900 bg-opacity-20 border border-red-800 rounded-xl p-4 mb-6">
               <p className="text-red-300 text-sm text-center leading-relaxed">{t.accessNote}</p>
             </div>
             {t.pagesGuide.map((page, i) => (
-              <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+              <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-3xl">{page.icon}</span>
                   <div>
-                    <h2 className="text-white font-bold text-lg">{page.title}</h2>
-                    <p className="text-gray-500 text-xs font-mono" dir="ltr">{page.path}</p>
+                    <h2 className="text-[var(--text-primary)] font-bold text-lg">{page.title}</h2>
+                    <p className="text-[var(--text-tertiary)] text-xs font-mono" dir="ltr">{page.path}</p>
                   </div>
                 </div>
 
                 {page.data.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-orange-500 text-xs font-bold mb-2">{t.dataLabel}</p>
+                    <p className="text-[var(--accent-text)] text-xs font-bold mb-2">{t.dataLabel}</p>
                     <ul className="space-y-1.5">
                       {page.data.map((d, j) => (
-                        <li key={j} className="flex items-start gap-2 text-gray-300 text-sm leading-relaxed">
-                          <span className="text-gray-500 mt-1">•</span>
+                        <li key={j} className="flex items-start gap-2 text-[var(--text-primary)] text-sm leading-relaxed">
+                          <span className="text-[var(--text-tertiary)] mt-1">•</span>
                           <span>{d}</span>
                         </li>
                       ))}
@@ -695,10 +695,10 @@ export default function GuidePage() {
                 )}
 
                 <div>
-                  <p className="text-orange-500 text-xs font-bold mb-2">{t.tasksLabel}</p>
+                  <p className="text-[var(--accent-text)] text-xs font-bold mb-2">{t.tasksLabel}</p>
                   <ul className="space-y-1.5">
                     {page.tasks.map((task, j) => (
-                      <li key={j} className="flex items-start gap-2 text-gray-300 text-sm leading-relaxed">
+                      <li key={j} className="flex items-start gap-2 text-[var(--text-primary)] text-sm leading-relaxed">
                         <span className="text-green-400 mt-0.5">✓</span>
                         <span>{task}</span>
                       </li>
@@ -707,7 +707,7 @@ export default function GuidePage() {
                 </div>
 
                 {page.note && (
-                  <p className="text-gray-400 text-xs mt-4 border-t border-gray-800 pt-3">{page.note}</p>
+                  <p className="text-[var(--text-secondary)] text-xs mt-4 border-t border-[var(--border)] pt-3">{page.note}</p>
                 )}
               </div>
             ))}
@@ -717,14 +717,14 @@ export default function GuidePage() {
         {/* دليل المتابع */}
         {activeTab === 'follower' && (
           <div className="space-y-4">
-            <div className="bg-gray-900 border border-orange-500 border-opacity-30 rounded-xl p-4 mb-6">
-              <p className="text-gray-400 text-sm text-center">{t.followerIntro}</p>
+            <div className="bg-[var(--bg-card)] border border-orange-500 border-opacity-30 rounded-xl p-4 mb-6">
+              <p className="text-[var(--text-secondary)] text-sm text-center">{t.followerIntro}</p>
             </div>
             {t.followerGuide.map((section, i) => (
-              <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+              <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-3xl">{section.icon}</span>
-                  <h2 className="text-white font-bold text-lg">{section.title}</h2>
+                  <h2 className="text-[var(--text-primary)] font-bold text-lg">{section.title}</h2>
                 </div>
                 <div className="space-y-2">
                   {section.steps.map((step, j) => (
@@ -732,7 +732,7 @@ export default function GuidePage() {
                       <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-black text-xs font-bold flex-shrink-0 mt-0.5">
                         {j + 1}
                       </div>
-                      <p className="text-gray-300 text-sm leading-relaxed">{step}</p>
+                      <p className="text-[var(--text-primary)] text-sm leading-relaxed">{step}</p>
                     </div>
                   ))}
                 </div>
@@ -744,14 +744,14 @@ export default function GuidePage() {
         {/* دليل المحلل */}
         {activeTab === 'analyst' && (
           <div className="space-y-4">
-            <div className="bg-gray-900 border border-orange-500 border-opacity-30 rounded-xl p-4 mb-6">
-              <p className="text-gray-400 text-sm text-center">{t.analystIntro}</p>
+            <div className="bg-[var(--bg-card)] border border-orange-500 border-opacity-30 rounded-xl p-4 mb-6">
+              <p className="text-[var(--text-secondary)] text-sm text-center">{t.analystIntro}</p>
             </div>
             {t.analystGuide.map((section, i) => (
-              <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+              <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-3xl">{section.icon}</span>
-                  <h2 className="text-white font-bold text-lg">{section.title}</h2>
+                  <h2 className="text-[var(--text-primary)] font-bold text-lg">{section.title}</h2>
                 </div>
                 <div className="space-y-2">
                   {section.steps.map((step, j) => (
@@ -759,7 +759,7 @@ export default function GuidePage() {
                       <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-black text-xs font-bold flex-shrink-0 mt-0.5">
                         {j + 1}
                       </div>
-                      <p className="text-gray-300 text-sm leading-relaxed">{step}</p>
+                      <p className="text-[var(--text-primary)] text-sm leading-relaxed">{step}</p>
                     </div>
                   ))}
                 </div>
@@ -781,18 +781,18 @@ export default function GuidePage() {
         {/* مصطلحات البورصة */}
         {activeTab === 'glossary' && (
           <div className="space-y-3">
-            <div className="bg-gray-900 border border-orange-500 border-opacity-30 rounded-xl p-4 mb-6">
-              <p className="text-gray-400 text-sm text-center">{t.glossaryIntro}</p>
+            <div className="bg-[var(--bg-card)] border border-orange-500 border-opacity-30 rounded-xl p-4 mb-6">
+              <p className="text-[var(--text-secondary)] text-sm text-center">{t.glossaryIntro}</p>
             </div>
             {t.glossary.map((item, i) => (
-              <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-4 hover:border-orange-500 transition">
+              <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 hover:border-orange-500 transition">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-orange-500 bg-opacity-20 border border-orange-500 flex items-center justify-center text-orange-500 font-bold text-xs flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-orange-500 bg-opacity-20 border border-orange-500 flex items-center justify-center text-[var(--accent-text)] font-bold text-xs flex-shrink-0">
                     {i + 1}
                   </div>
                   <div>
-                    <h3 className="text-orange-500 font-bold text-sm mb-1">{item.term}</h3>
-                    <p className="text-gray-300 text-sm leading-relaxed">{item.definition}</p>
+                    <h3 className="text-[var(--accent-text)] font-bold text-sm mb-1">{item.term}</h3>
+                    <p className="text-[var(--text-primary)] text-sm leading-relaxed">{item.definition}</p>
                   </div>
                 </div>
               </div>

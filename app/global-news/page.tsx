@@ -145,15 +145,15 @@ export default function GlobalNewsPage() {
   }, [activeCategory, allNews, newsErrors]);
 
   return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-7xl mx-auto">
 
         {/* العنوان */}
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-orange-500 font-bold text-xl">
+          <h1 className="text-[var(--accent-text)] font-bold text-xl">
             🌐 {lang === 'ar' ? 'الأخبار العالمية' : 'Global News'}
           </h1>
-          <span className="text-gray-400 text-xs">
+          <span className="text-[var(--text-secondary)] text-xs">
             {lang === 'ar' ? 'أخبار تؤثر على الاقتصاد المصري' : 'News affecting Egyptian economy'}
           </span>
         </div>
@@ -167,7 +167,7 @@ export default function GlobalNewsPage() {
               className={`px-4 py-2 text-sm rounded-lg transition font-medium ${
                 activeCategory.id === cat.id
                   ? 'bg-orange-500 text-black font-bold'
-                  : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                  : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3-hover)]'
               }`}
             >
               {lang === 'ar' ? cat.label : cat.labelEn}
@@ -181,10 +181,10 @@ export default function GlobalNewsPage() {
         {/* بث مباشر - قوائم قنوات قابلة للاختيار */}
         {activeCategory.id === 'live' && (
           <div className="space-y-4">
-            <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
-              <div className="px-4 py-3 border-b border-gray-800 flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${activeChannel ? 'bg-red-500 animate-pulse' : 'bg-gray-600'}`}></span>
-                <h2 className="text-white font-bold text-sm">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
+              <div className="px-4 py-3 border-b border-[var(--border)] flex items-center gap-2">
+                <span className={`w-2 h-2 rounded-full ${activeChannel ? 'bg-red-500 animate-pulse' : 'bg-[var(--surface-3)]'}`}></span>
+                <h2 className="text-[var(--text-primary)] font-bold text-sm">
                   {activeChannel
                     ? `${lang === 'ar' ? 'بث مباشر' : 'Live'} - ${lang === 'ar' ? activeChannel.name : activeChannel.nameEn}`
                     : (lang === 'ar' ? 'اختر قناة من القائمة تحت للمشاهدة' : 'Pick a channel below to watch')}
@@ -205,8 +205,8 @@ export default function GlobalNewsPage() {
             </div>
 
             {/* قوائم القنوات */}
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-              <h3 className="text-orange-500 font-bold text-sm mb-2">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4">
+              <h3 className="text-[var(--accent-text)] font-bold text-sm mb-2">
                 {lang === 'ar' ? '📰 قنوات إخبارية' : '📰 News Channels'}
               </h3>
               <div className="flex gap-2 flex-wrap mb-4">
@@ -217,7 +217,7 @@ export default function GlobalNewsPage() {
                     className={`px-3 py-2 text-sm rounded-lg transition font-medium ${
                       activeChannelId === ch.id
                         ? 'bg-orange-500 text-black font-bold'
-                        : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                        : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3-hover)]'
                     }`}
                   >
                     {activeChannelId === ch.id && '● '}
@@ -226,11 +226,11 @@ export default function GlobalNewsPage() {
                 ))}
               </div>
 
-              <h3 className="text-orange-500 font-bold text-sm mb-2">
+              <h3 className="text-[var(--accent-text)] font-bold text-sm mb-2">
                 {lang === 'ar' ? '⚽ قنوات رياضية' : '⚽ Sports Channels'}
               </h3>
               {sportsChannels.length === 0 ? (
-                <p className="text-gray-400 text-xs">
+                <p className="text-[var(--text-secondary)] text-xs">
                   {lang === 'ar' ? 'لا توجد قنوات رياضية موثّقة متاحة حالياً' : 'No verified sports channels available yet'}
                 </p>
               ) : (
@@ -242,7 +242,7 @@ export default function GlobalNewsPage() {
                       className={`px-3 py-2 text-sm rounded-lg transition font-medium ${
                         activeChannelId === ch.id
                           ? 'bg-orange-500 text-black font-bold'
-                          : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                          : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3-hover)]'
                       }`}
                     >
                       {activeChannelId === ch.id && '● '}
@@ -254,20 +254,20 @@ export default function GlobalNewsPage() {
             </div>
 
             {/* أخبار اقتصادية */}
-            <h3 className="text-orange-500 font-bold text-sm mt-4">آخر الأخبار الاقتصادية</h3>
+            <h3 className="text-[var(--accent-text)] font-bold text-sm mt-4">آخر الأخبار الاقتصادية</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {allNews['egypt'] && allNews['egypt'].map((item: any, i: number) => (
                 <div
                   key={i}
                   onClick={() => window.open(item.link, '_blank')}
-                  className="bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-orange-500 transition cursor-pointer"
+                  className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4 hover:border-orange-500 transition cursor-pointer"
                 >
-                  <p className="text-white text-sm leading-relaxed mb-3 hover:text-orange-400 transition line-clamp-3">
+                  <p className="text-[var(--text-primary)] text-sm leading-relaxed mb-3 hover:text-orange-400 transition line-clamp-3">
                     {item.title}
                   </p>
                   <div className="flex justify-between items-center">
-                    <span className="text-orange-500 text-xs font-bold">{item.source}</span>
-                    <span className="text-gray-400 text-xs">{item.date}</span>
+                    <span className="text-[var(--accent-text)] text-xs font-bold">{item.source}</span>
+                    <span className="text-[var(--text-secondary)] text-xs">{item.date}</span>
                   </div>
                 </div>
               ))}
@@ -285,8 +285,8 @@ export default function GlobalNewsPage() {
                   onClick={() => setActiveMetalChart(metal)}
                   className={`px-4 py-2 text-sm rounded-lg transition flex items-center gap-2 ${
                     activeMetalChart.symbol === metal.symbol
-                      ? 'bg-gray-700 text-white font-bold border border-gray-500'
-                      : 'bg-gray-800 text-gray-400 hover:text-white'
+                      ? 'bg-[var(--surface-3)] text-[var(--text-primary)] font-bold border border-[var(--border-strong)]'
+                      : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                   }`}
                 >
                   <span className="w-3 h-3 rounded-full" style={{ backgroundColor: metal.color }} />
@@ -295,13 +295,13 @@ export default function GlobalNewsPage() {
               ))}
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden mb-4">
-              <div className="px-4 py-3 border-b border-gray-800 flex items-center gap-2">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden mb-4">
+              <div className="px-4 py-3 border-b border-[var(--border)] flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full" style={{ backgroundColor: activeMetalChart.color }} />
-                <h2 className="text-white font-bold text-sm">
+                <h2 className="text-[var(--text-primary)] font-bold text-sm">
                   {lang === 'ar' ? activeMetalChart.name : activeMetalChart.nameEn}
                 </h2>
-                <span className="text-gray-400 text-xs mr-2">بيانات لحظية من TradingView</span>
+                <span className="text-[var(--text-secondary)] text-xs mr-2">بيانات لحظية من TradingView</span>
               </div>
               <TradingViewChart symbol={activeMetalChart.symbol} />
             </div>
@@ -311,18 +311,18 @@ export default function GlobalNewsPage() {
                 <div
                   key={i}
                   onClick={() => window.open(item.link, '_blank')}
-                  className="bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-orange-500 transition cursor-pointer"
+                  className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4 hover:border-orange-500 transition cursor-pointer"
                 >
-                  <p className="text-white text-sm leading-relaxed mb-3 hover:text-orange-400 transition line-clamp-3">
+                  <p className="text-[var(--text-primary)] text-sm leading-relaxed mb-3 hover:text-orange-400 transition line-clamp-3">
                     {item.title}
                   </p>
                   <div className="flex justify-between items-center">
-                    <span className="text-orange-500 text-xs font-bold">{item.source}</span>
-                    <span className="text-gray-400 text-xs">{item.date}</span>
+                    <span className="text-[var(--accent-text)] text-xs font-bold">{item.source}</span>
+                    <span className="text-[var(--text-secondary)] text-xs">{item.date}</span>
                   </div>
                 </div>
               )) : (
-                <div className="col-span-3 text-center py-8 text-gray-400 animate-pulse">
+                <div className="col-span-3 text-center py-8 text-[var(--text-secondary)] animate-pulse">
                   جاري تحميل أخبار المعادن...
                 </div>
               )}
@@ -339,14 +339,14 @@ export default function GlobalNewsPage() {
               </div>
             ) : loading || !allNews[activeCategory.id] ? (
               Array(6).fill(0).map((_, i) => (
-                <div key={i} className="bg-gray-900 border border-gray-800 rounded-lg p-4 animate-pulse">
-                  <div className="h-4 bg-gray-800 rounded mb-2"></div>
-                  <div className="h-4 bg-gray-800 rounded mb-2 w-3/4"></div>
-                  <div className="h-3 bg-gray-800 rounded w-1/2"></div>
+                <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4 animate-pulse">
+                  <div className="h-4 bg-[var(--surface-2)] rounded mb-2"></div>
+                  <div className="h-4 bg-[var(--surface-2)] rounded mb-2 w-3/4"></div>
+                  <div className="h-3 bg-[var(--surface-2)] rounded w-1/2"></div>
                 </div>
               ))
             ) : news.length === 0 ? (
-              <div className="col-span-3 text-center py-16 text-gray-400">
+              <div className="col-span-3 text-center py-16 text-[var(--text-secondary)]">
                 <p className="text-4xl mb-3">😕</p>
                 <p>لا توجد أخبار حالياً</p>
               </div>
@@ -355,14 +355,14 @@ export default function GlobalNewsPage() {
                 <div
                   key={i}
                   onClick={() => window.open(item.link, '_blank')}
-                  className="bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-orange-500 transition cursor-pointer"
+                  className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4 hover:border-orange-500 transition cursor-pointer"
                 >
-                  <p className="text-white text-sm leading-relaxed mb-3 hover:text-orange-400 transition line-clamp-3">
+                  <p className="text-[var(--text-primary)] text-sm leading-relaxed mb-3 hover:text-orange-400 transition line-clamp-3">
                     {item.title}
                   </p>
                   <div className="flex justify-between items-center">
-                    <span className="text-orange-500 text-xs font-bold">{item.source}</span>
-                    <span className="text-gray-400 text-xs">{item.date}</span>
+                    <span className="text-[var(--accent-text)] text-xs font-bold">{item.source}</span>
+                    <span className="text-[var(--text-secondary)] text-xs">{item.date}</span>
                   </div>
                 </div>
               ))

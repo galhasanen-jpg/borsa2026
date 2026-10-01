@@ -229,8 +229,8 @@ export default function AnalystPage() {
       case 'open': return 'bg-blue-900 text-blue-400';
       case 'success': return 'bg-green-900 text-green-400';
       case 'failed': return 'bg-red-900 text-red-400';
-      case 'cancelled': return 'bg-gray-700 text-gray-400';
-      default: return 'bg-gray-700 text-gray-400';
+      case 'cancelled': return 'bg-[var(--surface-3)] text-[var(--text-secondary)]';
+      default: return 'bg-[var(--surface-3)] text-[var(--text-secondary)]';
     }
   }
 
@@ -243,7 +243,7 @@ export default function AnalystPage() {
       case 'شراء': return 'bg-green-900 text-green-400';
       case 'بيع': return 'bg-red-900 text-red-400';
       case 'احتفاظ': return 'bg-yellow-900 text-yellow-400';
-      default: return 'bg-gray-700 text-gray-400';
+      default: return 'bg-[var(--surface-3)] text-[var(--text-secondary)]';
     }
   }
 
@@ -266,7 +266,7 @@ export default function AnalystPage() {
     ? recommendations
     : recommendations.filter(r => r.status === filterStatus);
     if (loading) return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-5xl mx-auto space-y-4">
         <SkeletonBlock className="h-32" />
         <SkeletonBlock className="h-24" />
@@ -276,26 +276,26 @@ export default function AnalystPage() {
   );
 
   if (!analyst) return (
-    <main className="min-h-screen bg-gray-950 p-4 flex items-center justify-center">
-      <p className="text-gray-400">{t.notFound}</p>
+    <main className="min-h-screen bg-[var(--bg-page)] p-4 flex items-center justify-center">
+      <p className="text-[var(--text-secondary)]">{t.notFound}</p>
     </main>
   );
 
   return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-5xl mx-auto">
 
-        <a href="/analysts" className="text-gray-400 text-sm hover:text-orange-500 transition mb-4 block">
+        <a href="/analysts" className="text-[var(--text-secondary)] text-sm hover:text-[var(--accent-text)] transition mb-4 block">
           {t.back}
         </a>
 
         {/* بيانات المحلل */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6 mb-6">
           <div className="flex flex-col md:flex-row justify-between items-start gap-4">
             <div>
-              <h1 className="text-white font-bold text-2xl mb-1">{lang === 'ar' ? analyst.name : (analyst.name_en || analyst.name)}</h1>
-              <p className="text-orange-500 text-sm mb-2">{analyst.specialization}</p>
-              <p className="text-gray-400 text-sm leading-relaxed max-w-xl">{lang === 'ar' ? analyst.bio : (analyst.bio_en || analyst.bio)}</p>
+              <h1 className="text-[var(--text-primary)] font-bold text-2xl mb-1">{lang === 'ar' ? analyst.name : (analyst.name_en || analyst.name)}</h1>
+              <p className="text-[var(--accent-text)] text-sm mb-2">{analyst.specialization}</p>
+              <p className="text-[var(--text-secondary)] text-sm leading-relaxed max-w-xl">{lang === 'ar' ? analyst.bio : (analyst.bio_en || analyst.bio)}</p>
             </div>
             <div className="flex gap-3 flex-shrink-0">
               {analyst.whatsapp_link && (
@@ -313,42 +313,42 @@ export default function AnalystPage() {
 
           {/* الإحصائيات */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-            <div className="bg-gray-800 rounded-lg p-3 text-center">
-              <p className="text-white font-bold text-xl">{recommendations.length}</p>
-              <p className="text-gray-400 text-xs">{t.totalRecs}</p>
+            <div className="bg-[var(--surface-2)] rounded-lg p-3 text-center">
+              <p className="text-[var(--text-primary)] font-bold text-xl">{recommendations.length}</p>
+              <p className="text-[var(--text-secondary)] text-xs">{t.totalRecs}</p>
             </div>
-            <div className="bg-gray-800 rounded-lg p-3 text-center">
+            <div className="bg-[var(--surface-2)] rounded-lg p-3 text-center">
               <p className="text-green-400 font-bold text-xl">{recommendations.filter(r => r.status === 'success').length}</p>
-              <p className="text-gray-400 text-xs">{t.successfulRecs}</p>
+              <p className="text-[var(--text-secondary)] text-xs">{t.successfulRecs}</p>
             </div>
-            <div className="bg-gray-800 rounded-lg p-3 text-center">
+            <div className="bg-[var(--surface-2)] rounded-lg p-3 text-center">
               <p className="text-blue-400 font-bold text-xl">{recommendations.filter(r => r.status === 'open').length}</p>
-              <p className="text-gray-400 text-xs">{t.openRecs}</p>
+              <p className="text-[var(--text-secondary)] text-xs">{t.openRecs}</p>
             </div>
-            <div className="bg-gray-800 rounded-lg p-3 text-center">
-              <p className="text-orange-500 font-bold text-xl">{getSuccessRate()}%</p>
-              <p className="text-gray-400 text-xs">{t.successRate}</p>
+            <div className="bg-[var(--surface-2)] rounded-lg p-3 text-center">
+              <p className="text-[var(--accent-text)] font-bold text-xl">{getSuccessRate()}%</p>
+              <p className="text-[var(--text-secondary)] text-xs">{t.successRate}</p>
             </div>
           </div>
         </div>
 
         {/* التبويبات */}
-        <div className="flex border-b border-gray-800 mb-6">
+        <div className="flex border-b border-[var(--border)] mb-6">
           <button
             onClick={() => setActiveTab('recs')}
-            className={`px-4 py-2 text-sm transition ${activeTab === 'recs' ? 'text-orange-500 border-b-2 border-orange-500 font-bold' : 'text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 text-sm transition ${activeTab === 'recs' ? 'text-[var(--accent-text)] border-b-2 border-orange-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           >
             {t.tabRecs} ({recommendations.length})
           </button>
           <button
             onClick={() => setActiveTab('comments')}
-            className={`px-4 py-2 text-sm transition ${activeTab === 'comments' ? 'text-orange-500 border-b-2 border-orange-500 font-bold' : 'text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 text-sm transition ${activeTab === 'comments' ? 'text-[var(--accent-text)] border-b-2 border-orange-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           >
             {t.tabComments} ({comments.length})
           </button>
           <button
             onClick={() => setActiveTab('pending')}
-            className={`px-4 py-2 text-sm transition ${activeTab === 'pending' ? 'text-orange-500 border-b-2 border-orange-500 font-bold' : 'text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 text-sm transition ${activeTab === 'pending' ? 'text-[var(--accent-text)] border-b-2 border-orange-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           >
             {t.tabPending}
             {pendingFollowers.length > 0 && (
@@ -368,7 +368,7 @@ export default function AnalystPage() {
                 <button
                   key={s}
                   onClick={() => setFilterStatus(s)}
-                  className={`px-3 py-1.5 text-xs rounded transition ${filterStatus === s ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+                  className={`px-3 py-1.5 text-xs rounded transition ${filterStatus === s ? 'bg-orange-500 text-black font-bold' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                 >
                   {t.filters[s]}
                   {' '}({s === 'all' ? recommendations.length : recommendations.filter(r => r.status === s).length})
@@ -377,14 +377,14 @@ export default function AnalystPage() {
             </div>
 
             {filteredRecs.length === 0 ? (
-              <div className="text-center py-16 text-gray-400">
+              <div className="text-center py-16 text-[var(--text-secondary)]">
                 <p className="text-4xl mb-3">📊</p>
                 <p>{t.noRecs}</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {filteredRecs.map((rec, i) => (
-                  <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                  <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5">
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <div className="flex items-center gap-2 mb-1">
@@ -392,26 +392,26 @@ export default function AnalystPage() {
                           <span className={`text-xs font-bold px-2 py-0.5 rounded ${getTypeStyle(rec.type)}`}>{getTypeLabel(rec.type)}</span>
                           <span className={`text-xs px-2 py-0.5 rounded ${getStatusStyle(rec.status)}`}>{getStatusLabel(rec.status)}</span>
                         </div>
-                        <p className="text-gray-400 text-xs">{rec.stock_name}</p>
+                        <p className="text-[var(--text-secondary)] text-xs">{rec.stock_name}</p>
                       </div>
-                      <span className="text-gray-400 text-xs">{new Date(rec.created_at).toLocaleDateString(t.dateLocale)}</span>
+                      <span className="text-[var(--text-secondary)] text-xs">{new Date(rec.created_at).toLocaleDateString(t.dateLocale)}</span>
                     </div>
                     <div className="grid grid-cols-3 gap-3 mb-4">
-                      <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-400 text-xs mb-1">{t.entryPrice}</p>
-                        <p className="text-white font-bold text-sm">{rec.entry_price} {t.currency}</p>
+                      <div className="bg-[var(--surface-2)] rounded p-2 text-center">
+                        <p className="text-[var(--text-secondary)] text-xs mb-1">{t.entryPrice}</p>
+                        <p className="text-[var(--text-primary)] font-bold text-sm">{rec.entry_price} {t.currency}</p>
                       </div>
-                      <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-400 text-xs mb-1">{t.target}</p>
+                      <div className="bg-[var(--surface-2)] rounded p-2 text-center">
+                        <p className="text-[var(--text-secondary)] text-xs mb-1">{t.target}</p>
                         <p className="text-green-400 font-bold text-sm">{rec.target_price ? `${rec.target_price} ${t.currency}` : '-'}</p>
                       </div>
-                      <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-400 text-xs mb-1">{t.stopLoss}</p>
+                      <div className="bg-[var(--surface-2)] rounded p-2 text-center">
+                        <p className="text-[var(--text-secondary)] text-xs mb-1">{t.stopLoss}</p>
                         <p className="text-red-400 font-bold text-sm">{rec.stop_loss ? `${rec.stop_loss} ${t.currency}` : '-'}</p>
                       </div>
                     </div>
                     {rec.description && (
-                      <p className="text-gray-400 text-xs leading-relaxed border-t border-gray-800 pt-3">{rec.description}</p>
+                      <p className="text-[var(--text-secondary)] text-xs leading-relaxed border-t border-[var(--border)] pt-3">{rec.description}</p>
                     )}
                     {rec.status === 'success' && rec.result_price && (
                       <div className="mt-3 bg-green-900 bg-opacity-30 rounded p-2 text-center">
@@ -432,65 +432,65 @@ export default function AnalystPage() {
         {/* الملاحظات */}
         {activeTab === 'comments' && (
           <div>
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 mb-6">
-              <h3 className="text-white font-bold text-sm mb-3">{t.addComment}</h3>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 mb-6">
+              <h3 className="text-[var(--text-primary)] font-bold text-sm mb-3">{t.addComment}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.yourName}</label>
-                  <input value={commentForm.user_name} onChange={e => setCommentForm({...commentForm, user_name: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder={t.yourNamePh} />
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.yourName}</label>
+                  <input value={commentForm.user_name} onChange={e => setCommentForm({...commentForm, user_name: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" placeholder={t.yourNamePh} />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.subscriptionType}</label>
-                  <select value={commentForm.plan} onChange={e => setCommentForm({...commentForm, plan: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm">
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.subscriptionType}</label>
+                  <select value={commentForm.plan} onChange={e => setCommentForm({...commentForm, plan: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm">
                     <option value="basic">{t.basicOption}</option>
                     <option value="premium">{t.premiumOption}</option>
                   </select>
                 </div>
               </div>
               <div className="mb-3">
-                <label className="text-gray-400 text-xs mb-1 block">{t.commentLabel}</label>
-                <textarea value={commentForm.content} onChange={e => setCommentForm({...commentForm, content: e.target.value})} rows={3} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder={t.commentPh} />
+                <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.commentLabel}</label>
+                <textarea value={commentForm.content} onChange={e => setCommentForm({...commentForm, content: e.target.value})} rows={3} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" placeholder={t.commentPh} />
               </div>
               <button onClick={handleAddComment} className="bg-orange-500 text-black px-4 py-2 rounded text-sm font-bold hover:bg-orange-600 transition">{t.sendComment}</button>
             </div>
 
             {comments.length === 0 ? (
-              <div className="text-center py-16 text-gray-400">
+              <div className="text-center py-16 text-[var(--text-secondary)]">
                 <p className="text-4xl mb-3">💬</p>
                 <p>{t.noComments}</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {comments.map((comment, i) => (
-                  <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                  <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4">
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-black font-bold text-sm">{comment.user_name[0]}</div>
                         <div>
-                          <p className="text-white text-sm font-bold">{comment.user_name}</p>
-                          <p className="text-gray-400 text-xs">{new Date(comment.created_at).toLocaleDateString(t.dateLocale)}</p>
+                          <p className="text-[var(--text-primary)] text-sm font-bold">{comment.user_name}</p>
+                          <p className="text-[var(--text-secondary)] text-xs">{new Date(comment.created_at).toLocaleDateString(t.dateLocale)}</p>
                         </div>
                       </div>
                       <span className="text-xs bg-blue-900 text-blue-400 px-2 py-0.5 rounded">{t.premiumBadge}</span>
                     </div>
-                    <p className="text-gray-300 text-sm leading-relaxed mb-3">{comment.content}</p>
+                    <p className="text-[var(--text-primary)] text-sm leading-relaxed mb-3">{comment.content}</p>
                     {comment.replies && comment.replies.length > 0 && (
-                      <div className="border-t border-gray-800 pt-3 space-y-2">
+                      <div className="border-t border-[var(--border)] pt-3 space-y-2">
                         {comment.replies.map((reply: any, j: number) => (
-                          <div key={j} className={`p-2 rounded text-xs ${reply.is_analyst ? 'bg-orange-900 bg-opacity-30 border border-orange-800' : 'bg-gray-800'}`}>
+                          <div key={j} className={`p-2 rounded text-xs ${reply.is_analyst ? 'bg-orange-900 bg-opacity-30 border border-orange-800' : 'bg-[var(--surface-2)]'}`}>
                             <div className="flex justify-between mb-1">
-                              <span className={`font-bold ${reply.is_analyst ? 'text-orange-400' : 'text-gray-300'}`}>{reply.is_analyst ? t.analystLabel : reply.user_name}</span>
-                              <span className="text-gray-400">{new Date(reply.created_at).toLocaleDateString(t.dateLocale)}</span>
+                              <span className={`font-bold ${reply.is_analyst ? 'text-orange-400' : 'text-[var(--text-primary)]'}`}>{reply.is_analyst ? t.analystLabel : reply.user_name}</span>
+                              <span className="text-[var(--text-secondary)]">{new Date(reply.created_at).toLocaleDateString(t.dateLocale)}</span>
                             </div>
-                            <p className="text-gray-300">{reply.content}</p>
+                            <p className="text-[var(--text-primary)]">{reply.content}</p>
                           </div>
                         ))}
                       </div>
                     )}
-                    <div className="border-t border-gray-800 pt-3 mt-3">
+                    <div className="border-t border-[var(--border)] pt-3 mt-3">
                       <div className="flex gap-2">
-                        <input value={replyForm[comment.id]?.user_name || ''} onChange={e => setReplyForm((prev: any) => ({...prev, [comment.id]: {...prev[comment.id], user_name: e.target.value}}))} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1 text-xs w-24 flex-shrink-0" placeholder={t.replyNamePh} />
-                        <input value={replyForm[comment.id]?.content || ''} onChange={e => setReplyForm((prev: any) => ({...prev, [comment.id]: {...prev[comment.id], content: e.target.value}}))} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1 text-xs flex-1" placeholder={t.replyPh} />
+                        <input value={replyForm[comment.id]?.user_name || ''} onChange={e => setReplyForm((prev: any) => ({...prev, [comment.id]: {...prev[comment.id], user_name: e.target.value}}))} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-2 py-1 text-xs w-24 flex-shrink-0" placeholder={t.replyNamePh} />
+                        <input value={replyForm[comment.id]?.content || ''} onChange={e => setReplyForm((prev: any) => ({...prev, [comment.id]: {...prev[comment.id], content: e.target.value}}))} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-2 py-1 text-xs flex-1" placeholder={t.replyPh} />
                         <button onClick={() => handleAddReply(comment.id)} className="bg-orange-500 text-black px-3 py-1 rounded text-xs font-bold hover:bg-orange-600 transition flex-shrink-0">{t.reply}</button>
                       </div>
                     </div>
@@ -505,23 +505,23 @@ export default function AnalystPage() {
         {activeTab === 'pending' && (
           <div>
             {pendingFollowers.length === 0 ? (
-              <div className="text-center py-16 text-gray-400">
+              <div className="text-center py-16 text-[var(--text-secondary)]">
                 <p className="text-4xl mb-3">👥</p>
                 <p>{t.noPending}</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {pendingFollowers.map((follower, i) => (
-                  <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                  <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4">
                     <div className="flex justify-between items-start">
                       <div>
-                        <p className="text-white font-bold text-sm">{follower.name}</p>
-                        <p className="text-gray-400 text-xs mt-1">📧 {follower.email}</p>
-                        <p className="text-gray-400 text-xs">📱 {follower.whatsapp}</p>
+                        <p className="text-[var(--text-primary)] font-bold text-sm">{follower.name}</p>
+                        <p className="text-[var(--text-secondary)] text-xs mt-1">📧 {follower.email}</p>
+                        <p className="text-[var(--text-secondary)] text-xs">📱 {follower.whatsapp}</p>
                         <span className={`text-xs px-2 py-0.5 rounded mt-1 inline-block ${
                           follower.plan === 'premium' ? 'bg-orange-900 text-orange-400' :
                           follower.plan === 'basic' ? 'bg-blue-900 text-blue-400' :
-                          'bg-gray-700 text-gray-400'
+                          'bg-[var(--surface-3)] text-[var(--text-secondary)]'
                         }`}>
                           {getPlanLabel(follower.plan)}
                         </span>

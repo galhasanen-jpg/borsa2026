@@ -104,13 +104,13 @@ export default function AiReportView({ report }: { report: string }) {
 
   return (
     <div
-      className="ai-report-view text-gray-200 text-sm leading-relaxed"
+      className="ai-report-view text-[var(--text-primary)] text-sm leading-relaxed"
       style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
       onContextMenu={e => e.preventDefault()}
     >
       {blocks.map((b, i) => {
-        if (b.type === 'h1') return <h2 key={i} className="text-orange-500 font-bold text-lg mt-4 mb-2 first:mt-0">{renderInline(b.text, `${i}`)}</h2>;
-        if (b.type === 'h2') return <h3 key={i} className="text-orange-500 font-bold text-base mt-4 mb-2">{renderInline(b.text, `${i}`)}</h3>;
+        if (b.type === 'h1') return <h2 key={i} className="text-[var(--accent-text)] font-bold text-lg mt-4 mb-2 first:mt-0">{renderInline(b.text, `${i}`)}</h2>;
+        if (b.type === 'h2') return <h3 key={i} className="text-[var(--accent-text)] font-bold text-base mt-4 mb-2">{renderInline(b.text, `${i}`)}</h3>;
         if (b.type === 'h3') return <h4 key={i} className="text-orange-400 font-bold text-sm mt-3 mb-1.5">{renderInline(b.text, `${i}`)}</h4>;
         if (b.type === 'list') {
           return (
@@ -126,15 +126,15 @@ export default function AiReportView({ report }: { report: string }) {
                 <thead>
                   <tr>
                     {b.header.map((h, k) => (
-                      <th key={k} className="bg-gray-800 text-orange-400 border border-gray-700 px-2 py-1.5 text-center whitespace-nowrap">{renderInline(h, `${i}-h${k}`)}</th>
+                      <th key={k} className="bg-[var(--surface-2)] text-orange-400 border border-[var(--border-strong)] px-2 py-1.5 text-center whitespace-nowrap">{renderInline(h, `${i}-h${k}`)}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {b.rows.map((r, k) => (
-                    <tr key={k} className={k % 2 === 0 ? 'bg-gray-900' : 'bg-gray-900/50'}>
+                    <tr key={k} className={k % 2 === 0 ? 'bg-[var(--bg-card)]' : 'bg-[var(--bg-card)]/50'}>
                       {r.map((c, m) => (
-                        <td key={m} className="border border-gray-800 px-2 py-1.5 text-center">{renderInline(c, `${i}-${k}-${m}`)}</td>
+                        <td key={m} className="border border-[var(--border)] px-2 py-1.5 text-center">{renderInline(c, `${i}-${k}-${m}`)}</td>
                       ))}
                     </tr>
                   ))}

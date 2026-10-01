@@ -125,15 +125,15 @@ function CompareFundsInner() {
   ];
 
   return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-5xl mx-auto">
 
-        <a href="/funds" className="text-gray-400 text-sm hover:text-orange-500 transition mb-4 block">
+        <a href="/funds" className="text-[var(--text-secondary)] text-sm hover:text-[var(--accent-text)] transition mb-4 block">
           {t.back}
         </a>
 
         <div className="bg-gradient-to-l from-orange-950 to-gray-900 border border-orange-700 rounded-xl p-6 mb-6">
-          <h1 className="text-orange-500 font-bold text-2xl">{t.title}</h1>
+          <h1 className="text-[var(--accent-text)] font-bold text-2xl">{t.title}</h1>
         </div>
 
         {loading ? (
@@ -144,17 +144,17 @@ function CompareFundsInner() {
         ) : error ? (
           <DataError onRetry={fetchAll} />
         ) : funds.length === 0 ? (
-          <div className="text-center py-20 text-gray-400">
+          <div className="text-center py-20 text-[var(--text-secondary)]">
             <p className="text-6xl mb-4">⚖️</p>
             <p className="text-xl">{t.noSelection}</p>
           </div>
         ) : (
           <div className="space-y-6">
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 overflow-x-auto">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5 overflow-x-auto">
               <table className="w-full text-sm border-collapse">
                 <thead>
                   <tr>
-                    <th className="text-gray-400 text-xs text-right px-3 py-2 whitespace-nowrap">{t.field}</th>
+                    <th className="text-[var(--text-secondary)] text-xs text-right px-3 py-2 whitespace-nowrap">{t.field}</th>
                     {funds.map((f, i) => (
                       <th key={f.id} className="text-right px-3 py-2 whitespace-nowrap" style={{ color: FUND_COLORS[i % FUND_COLORS.length] }}>
                         {f.name}
@@ -164,10 +164,10 @@ function CompareFundsInner() {
                 </thead>
                 <tbody>
                   {rows.map(row => (
-                    <tr key={row.key} className="border-t border-gray-800">
-                      <td className="text-gray-400 text-xs px-3 py-2">{row.label}</td>
+                    <tr key={row.key} className="border-t border-[var(--border)]">
+                      <td className="text-[var(--text-secondary)] text-xs px-3 py-2">{row.label}</td>
                       {funds.map(f => (
-                        <td key={f.id} className="text-white px-3 py-2">
+                        <td key={f.id} className="text-[var(--text-primary)] px-3 py-2">
                           {row.format ? row.format(f) : ((f[row.key] as string) || t.noData)}
                         </td>
                       ))}
@@ -177,8 +177,8 @@ function CompareFundsInner() {
               </table>
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <h3 className="text-orange-500 font-bold text-sm mb-3">{t.valueChart}</h3>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5">
+              <h3 className="text-[var(--accent-text)] font-bold text-sm mb-3">{t.valueChart}</h3>
               <FundValueChart
                 currency={funds[0]?.currency}
                 series={funds.map((f, i) => ({

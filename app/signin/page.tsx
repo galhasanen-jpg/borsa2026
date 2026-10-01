@@ -99,13 +99,13 @@ function SigninForm() {
   }
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 max-w-md w-full">
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-8 max-w-md w-full">
 
       <LanguagePicker />
 
       <div className="text-center mb-6">
-        <h1 className="text-orange-500 font-bold text-2xl mb-1">{t.title}</h1>
-        <p className="text-gray-400 text-sm">{t.subtitle}</p>
+        <h1 className="text-[var(--accent-text)] font-bold text-2xl mb-1">{t.title}</h1>
+        <p className="text-[var(--text-secondary)] text-sm">{t.subtitle}</p>
       </div>
 
       {locked && (
@@ -127,12 +127,12 @@ function SigninForm() {
             >
               {t.guestButton}
             </button>
-            <p className="text-center text-gray-400 text-xs leading-relaxed">{t.guestHint}</p>
+            <p className="text-center text-[var(--text-secondary)] text-xs leading-relaxed">{t.guestHint}</p>
 
             <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-gray-800" />
-              <span className="text-gray-500 text-xs">{t.orDivider}</span>
-              <div className="flex-1 h-px bg-gray-800" />
+              <div className="flex-1 h-px bg-[var(--surface-2)]" />
+              <span className="text-[var(--text-tertiary)] text-xs">{t.orDivider}</span>
+              <div className="flex-1 h-px bg-[var(--surface-2)]" />
             </div>
           </>
         )}
@@ -140,31 +140,31 @@ function SigninForm() {
         {!showLoginForm ? (
           <button
             onClick={() => setShowLoginForm(true)}
-            className="w-full bg-gray-800 text-gray-200 py-3 rounded-lg font-bold text-sm hover:bg-gray-700 transition border border-gray-700"
+            className="w-full bg-[var(--surface-2)] text-[var(--text-primary)] py-3 rounded-lg font-bold text-sm hover:bg-[var(--surface-3-hover)] transition border border-[var(--border-strong)]"
           >
             {t.haveAccount}
           </button>
         ) : (
           <>
             <div>
-              <label className="text-gray-400 text-xs mb-1 block">{t.email}</label>
+              <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.email}</label>
               <input
                 type="email"
                 value={form.email}
                 onChange={e => setForm({ ...form, email: e.target.value })}
-                className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+                className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
                 placeholder={t.emailPh}
               />
             </div>
 
             <div>
-              <label className="text-gray-400 text-xs mb-1 block">{t.password}</label>
+              <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.password}</label>
               <input
                 type="password"
                 value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
                 onKeyDown={e => e.key === 'Enter' && handleLogin()}
-                className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+                className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
                 placeholder={t.passwordPh}
               />
             </div>
@@ -177,9 +177,9 @@ function SigninForm() {
               {loading ? t.submitting : t.submit}
             </button>
 
-            <p className="text-center text-gray-400 text-sm">
+            <p className="text-center text-[var(--text-secondary)] text-sm">
               {t.noAccount}{' '}
-              <a href="/signup" className="text-orange-500 hover:text-orange-400">
+              <a href="/signup" className="text-[var(--accent-text)] hover:text-orange-400">
                 {t.signUp}
               </a>
             </p>
@@ -187,7 +187,7 @@ function SigninForm() {
             {!locked && (
               <button
                 onClick={() => setShowLoginForm(false)}
-                className="w-full text-gray-500 text-xs hover:text-gray-400 transition"
+                className="w-full text-[var(--text-tertiary)] text-xs hover:text-[var(--text-secondary)] transition"
               >
                 {t.hideForm}
               </button>
@@ -202,8 +202,8 @@ function SigninForm() {
 
 export default function SigninPage() {
   return (
-    <main className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-      <Suspense fallback={<div className="text-gray-400">...</div>}>
+    <main className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center p-4">
+      <Suspense fallback={<div className="text-[var(--text-secondary)]">...</div>}>
         <SigninForm />
       </Suspense>
     </main>

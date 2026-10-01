@@ -68,16 +68,16 @@ export default function AiAnalystPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-3xl mx-auto">
 
-        <a href="/analysts" className="text-gray-400 text-sm hover:text-orange-500 transition mb-4 block">
+        <a href="/analysts" className="text-[var(--text-secondary)] text-sm hover:text-[var(--accent-text)] transition mb-4 block">
           {t.back}
         </a>
 
         <div className="bg-gradient-to-l from-orange-950 to-gray-900 border border-orange-700 rounded-xl p-6 mb-6">
-          <h1 className="text-orange-500 font-bold text-2xl mb-1">{t.title}</h1>
-          <p className="text-gray-400 text-sm">{t.subtitle}</p>
+          <h1 className="text-[var(--accent-text)] font-bold text-2xl mb-1">{t.title}</h1>
+          <p className="text-[var(--text-secondary)] text-sm">{t.subtitle}</p>
         </div>
 
         {loading ? (
@@ -87,7 +87,7 @@ export default function AiAnalystPage() {
         ) : error ? (
           <DataError onRetry={fetchReports} />
         ) : reports.length === 0 ? (
-          <div className="text-center py-20 text-gray-400">
+          <div className="text-center py-20 text-[var(--text-secondary)]">
             <p className="text-6xl mb-4">🤖</p>
             <p className="text-xl mb-2">{t.empty}</p>
             <p className="text-sm">{t.emptySub}</p>
@@ -95,24 +95,24 @@ export default function AiAnalystPage() {
         ) : (
           <div className="space-y-4">
             {reports.map(r => (
-              <div key={r.id} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+              <div key={r.id} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5">
                 <div className="flex justify-between items-start mb-3 gap-3 flex-wrap">
-                  <h3 className="text-white font-bold text-sm">{r.command}</h3>
-                  <span className="text-gray-400 text-xs whitespace-nowrap">
+                  <h3 className="text-[var(--text-primary)] font-bold text-sm">{r.command}</h3>
+                  <span className="text-[var(--text-secondary)] text-xs whitespace-nowrap">
                     {new Date(r.created_at).toLocaleString(t.dateLocale)}
                   </span>
                 </div>
                 {expanded[r.id] ? (
                   <AiReportView report={r.report} />
                 ) : (
-                  <div className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap line-clamp-4" style={{ userSelect: 'none' }}>
+                  <div className="text-[var(--text-primary)] text-sm leading-relaxed whitespace-pre-wrap line-clamp-4" style={{ userSelect: 'none' }}>
                     {r.report}
                   </div>
                 )}
                 <div className="flex gap-4 mt-3">
                   <button
                     onClick={() => setExpanded(prev => ({ ...prev, [r.id]: !prev[r.id] }))}
-                    className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                    className="text-[var(--accent-text)] text-xs font-bold hover:text-orange-400 transition"
                   >
                     {expanded[r.id] ? t.collapse : t.expand}
                   </button>
@@ -120,7 +120,7 @@ export default function AiAnalystPage() {
                     href={`/api/ai-analyst/pdf?id=${r.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                    className="text-[var(--accent-text)] text-xs font-bold hover:text-orange-400 transition"
                   >
                     {t.viewPdf}
                   </a>

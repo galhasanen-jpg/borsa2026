@@ -54,19 +54,19 @@ export default function InvestorGuidePage() {
     : t.viewingAs(lang === 'ar' ? 'مستخدم مسجّل' : 'a registered user');
 
   return (
-    <main className="min-h-screen bg-gray-950 p-4" style={{ userSelect: 'none' }}>
+    <main className="min-h-screen bg-[var(--bg-page)] p-4" style={{ userSelect: 'none' }}>
       <div className="max-w-3xl mx-auto">
 
-        <a href="/analysts" className="text-gray-400 text-sm hover:text-orange-500 transition mb-4 block">
+        <a href="/analysts" className="text-[var(--text-secondary)] text-sm hover:text-[var(--accent-text)] transition mb-4 block">
           {t.back}
         </a>
 
         <div className="bg-gradient-to-l from-orange-950 to-gray-900 border border-orange-700 rounded-xl p-6 mb-4">
-          <h1 className="text-orange-500 font-bold text-2xl mb-1">{t.title}</h1>
-          <p className="text-gray-400 text-sm">{t.subtitle}</p>
+          <h1 className="text-[var(--accent-text)] font-bold text-2xl mb-1">{t.title}</h1>
+          <p className="text-[var(--text-secondary)] text-sm">{t.subtitle}</p>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-3 mb-6 text-gray-400 text-xs text-center">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-3 mb-6 text-[var(--text-secondary)] text-xs text-center">
           {t.notice}
         </div>
 

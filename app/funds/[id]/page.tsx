@@ -110,10 +110,10 @@ export default function FundDetailPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-3xl mx-auto">
 
-        <a href="/funds" className="text-gray-400 text-sm hover:text-orange-500 transition mb-4 block">
+        <a href="/funds" className="text-[var(--text-secondary)] text-sm hover:text-[var(--accent-text)] transition mb-4 block">
           {t.back}
         </a>
 
@@ -128,24 +128,24 @@ export default function FundDetailPage() {
         ) : (
           <div className="space-y-4">
             <div className="bg-gradient-to-l from-orange-950 to-gray-900 border border-orange-700 rounded-xl p-6">
-              <h1 className="text-orange-500 font-bold text-2xl mb-1">{fund.name}</h1>
-              {fund.name_en && <p className="text-gray-400 text-sm">{fund.name_en}</p>}
+              <h1 className="text-[var(--accent-text)] font-bold text-2xl mb-1">{fund.name}</h1>
+              {fund.name_en && <p className="text-[var(--text-secondary)] text-sm">{fund.name_en}</p>}
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 grid sm:grid-cols-2 gap-4 text-sm">
-              <div><p className="text-gray-400 text-xs mb-1">{t.type}</p><p className="text-white">{fund.fund_type}</p></div>
-              <div><p className="text-gray-400 text-xs mb-1">{t.manager}</p><p className="text-white">{fund.manager_company || t.noData}</p></div>
-              <div><p className="text-gray-400 text-xs mb-1">{t.inception}</p><p className="text-white">{fund.inception_date ? new Date(fund.inception_date).toLocaleDateString(t.dateLocale) : t.noData}</p></div>
-              <div><p className="text-gray-400 text-xs mb-1">{t.subscriptionFee}</p><p className="text-white">{fund.subscription_fee || t.noData}</p></div>
-              <div><p className="text-gray-400 text-xs mb-1">{t.redemptionFee}</p><p className="text-white">{fund.redemption_fee || t.noData}</p></div>
-              <div><p className="text-gray-400 text-xs mb-1">{t.entryDays}</p><p className="text-white">{fund.entry_days || t.noData}</p></div>
-              <div><p className="text-gray-400 text-xs mb-1">{t.exitDays}</p><p className="text-white">{fund.exit_days || t.noData}</p></div>
-              <div><p className="text-gray-400 text-xs mb-1">{t.riskLevel}</p>{fund.risk_level ? <RiskBadge level={fund.risk_level} /> : <p className="text-white">{t.noData}</p>}</div>
-              <div><p className="text-gray-400 text-xs mb-1">{t.licenseInfo}</p><p className="text-white">{fund.license_info || t.noData}</p></div>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5 grid sm:grid-cols-2 gap-4 text-sm">
+              <div><p className="text-[var(--text-secondary)] text-xs mb-1">{t.type}</p><p className="text-[var(--text-primary)]">{fund.fund_type}</p></div>
+              <div><p className="text-[var(--text-secondary)] text-xs mb-1">{t.manager}</p><p className="text-[var(--text-primary)]">{fund.manager_company || t.noData}</p></div>
+              <div><p className="text-[var(--text-secondary)] text-xs mb-1">{t.inception}</p><p className="text-[var(--text-primary)]">{fund.inception_date ? new Date(fund.inception_date).toLocaleDateString(t.dateLocale) : t.noData}</p></div>
+              <div><p className="text-[var(--text-secondary)] text-xs mb-1">{t.subscriptionFee}</p><p className="text-[var(--text-primary)]">{fund.subscription_fee || t.noData}</p></div>
+              <div><p className="text-[var(--text-secondary)] text-xs mb-1">{t.redemptionFee}</p><p className="text-[var(--text-primary)]">{fund.redemption_fee || t.noData}</p></div>
+              <div><p className="text-[var(--text-secondary)] text-xs mb-1">{t.entryDays}</p><p className="text-[var(--text-primary)]">{fund.entry_days || t.noData}</p></div>
+              <div><p className="text-[var(--text-secondary)] text-xs mb-1">{t.exitDays}</p><p className="text-[var(--text-primary)]">{fund.exit_days || t.noData}</p></div>
+              <div><p className="text-[var(--text-secondary)] text-xs mb-1">{t.riskLevel}</p>{fund.risk_level ? <RiskBadge level={fund.risk_level} /> : <p className="text-[var(--text-primary)]">{t.noData}</p>}</div>
+              <div><p className="text-[var(--text-secondary)] text-xs mb-1">{t.licenseInfo}</p><p className="text-[var(--text-primary)]">{fund.license_info || t.noData}</p></div>
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <h3 className="text-orange-500 font-bold text-sm mb-3">{t.valueChart}</h3>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5">
+              <h3 className="text-[var(--accent-text)] font-bold text-sm mb-3">{t.valueChart}</h3>
               <FundValueChart
                 currency={fund.currency}
                 series={[{
@@ -157,13 +157,13 @@ export default function FundDetailPage() {
               />
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5">
               {fund.has_prospectus ? (
                 <a
                   href={`/api/funds/prospectus?id=${fund.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-orange-500 text-sm font-bold hover:text-orange-400 transition"
+                  className="text-[var(--accent-text)] text-sm font-bold hover:text-orange-400 transition"
                 >
                   {t.prospectus}
                 </a>
@@ -172,18 +172,18 @@ export default function FundDetailPage() {
                   href={fund.prospectus_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-orange-500 text-sm font-bold hover:text-orange-400 transition"
+                  className="text-[var(--accent-text)] text-sm font-bold hover:text-orange-400 transition"
                 >
                   {t.prospectusExternal}
                 </a>
               ) : (
-                <p className="text-gray-400 text-sm">{t.noProspectus}</p>
+                <p className="text-[var(--text-secondary)] text-sm">{t.noProspectus}</p>
               )}
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <p className="text-gray-400 text-xs mb-1">{t.source}</p>
-              <p className="text-gray-300 text-sm">{fund.source_note || t.noData}</p>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5">
+              <p className="text-[var(--text-secondary)] text-xs mb-1">{t.source}</p>
+              <p className="text-[var(--text-primary)] text-sm">{fund.source_note || t.noData}</p>
             </div>
           </div>
         )}

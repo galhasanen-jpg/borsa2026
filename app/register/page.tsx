@@ -132,11 +132,11 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <main className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-        <div className="bg-gray-900 border border-green-700 rounded-xl p-8 max-w-md w-full text-center">
+      <main className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center p-4">
+        <div className="bg-[var(--bg-card)] border border-green-700 rounded-xl p-8 max-w-md w-full text-center">
           <p className="text-6xl mb-4">✅</p>
-          <h2 className="text-white font-bold text-xl mb-2">{t.successTitle}</h2>
-          <p className="text-gray-400 text-sm leading-relaxed mb-6">{t.successBody}</p>
+          <h2 className="text-[var(--text-primary)] font-bold text-xl mb-2">{t.successTitle}</h2>
+          <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-6">{t.successBody}</p>
           <a href="/" className="bg-orange-500 text-black px-6 py-2 rounded-lg font-bold text-sm hover:bg-orange-600 transition">
             {t.backHome}
           </a>
@@ -146,13 +146,13 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 max-w-lg w-full">
+    <main className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center p-4">
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-8 max-w-lg w-full">
 
         {/* العنوان */}
         <div className="text-center mb-6">
-          <h1 className="text-orange-500 font-bold text-2xl mb-1">{t.title}</h1>
-          <p className="text-gray-400 text-sm">{t.subtitle}</p>
+          <h1 className="text-[var(--accent-text)] font-bold text-2xl mb-1">{t.title}</h1>
+          <p className="text-[var(--text-secondary)] text-sm">{t.subtitle}</p>
         </div>
 
         {message && (
@@ -163,69 +163,69 @@ export default function RegisterPage() {
 
           {/* الاسم */}
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">{t.fullName}</label>
+            <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fullName}</label>
             <input
               value={form.name}
               onChange={e => setForm({...form, name: e.target.value})}
-              className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+              className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
               placeholder={t.fullNamePh}
             />
           </div>
 
           {/* الإيميل */}
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">{t.email}</label>
+            <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.email}</label>
             <input
               type="email"
               value={form.email}
               onChange={e => setForm({...form, email: e.target.value})}
-              className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+              className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
               placeholder="example@email.com"
             />
           </div>
 
           {/* واتساب */}
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">{t.whatsapp}</label>
+            <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.whatsapp}</label>
             <input
               value={form.whatsapp}
               onChange={e => setForm({...form, whatsapp: e.target.value})}
-              className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+              className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
               placeholder="201XXXXXXXXX"
             />
           </div>
 
           {/* كلمة السر */}
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">{t.password}</label>
+            <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.password}</label>
             <input
               type="password"
               value={form.password}
               onChange={e => setForm({...form, password: e.target.value})}
-              className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+              className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
               placeholder={t.passwordPh}
             />
           </div>
 
           {/* تأكيد كلمة السر */}
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">{t.confirmPassword}</label>
+            <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.confirmPassword}</label>
             <input
               type="password"
               value={form.confirmPassword}
               onChange={e => setForm({...form, confirmPassword: e.target.value})}
-              className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+              className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
               placeholder={t.confirmPasswordPh}
             />
           </div>
 
           {/* اختيار المحلل */}
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">{t.chooseAnalyst}</label>
+            <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.chooseAnalyst}</label>
             <select
               value={form.analyst_id}
               onChange={e => setForm({...form, analyst_id: e.target.value})}
-              className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+              className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
             >
               <option value="">{t.chooseAnalystPh}</option>
               {analysts.map((analyst, i) => (
@@ -238,7 +238,7 @@ export default function RegisterPage() {
 
           {/* اختيار الخطة */}
           <div>
-            <label className="text-gray-400 text-xs mb-2 block">{t.choosePlan}</label>
+            <label className="text-[var(--text-secondary)] text-xs mb-2 block">{t.choosePlan}</label>
             <div className="grid grid-cols-3 gap-2">
               {t.plans.map(plan => (
                 <div
@@ -247,13 +247,13 @@ export default function RegisterPage() {
                   className={`p-3 rounded-lg border cursor-pointer transition text-center ${
                     form.plan === plan.value
                       ? 'border-orange-500 bg-orange-500 bg-opacity-10'
-                      : 'border-gray-700 hover:border-gray-500'
+                      : 'border-[var(--border-strong)] hover:border-[var(--border-strong)]'
                   }`}
                 >
-                  <p className={`font-bold text-sm ${form.plan === plan.value ? 'text-orange-500' : 'text-white'}`}>
+                  <p className={`font-bold text-sm ${form.plan === plan.value ? 'text-[var(--accent-text)]' : 'text-[var(--text-primary)]'}`}>
                     {plan.label}
                   </p>
-                  <p className="text-gray-400 text-xs mt-1">{plan.description}</p>
+                  <p className="text-[var(--text-secondary)] text-xs mt-1">{plan.description}</p>
                 </div>
               ))}
             </div>
@@ -269,9 +269,9 @@ export default function RegisterPage() {
           </button>
 
           {/* رابط تسجيل الدخول */}
-          <p className="text-center text-gray-400 text-sm">
+          <p className="text-center text-[var(--text-secondary)] text-sm">
             {t.haveAccount}{' '}
-            <a href="/login" className="text-orange-500 hover:text-orange-400">
+            <a href="/login" className="text-[var(--accent-text)] hover:text-orange-400">
               {t.signIn}
             </a>
           </p>

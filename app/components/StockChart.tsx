@@ -90,14 +90,14 @@ const lastPrice = parseFloat(data[data.length - 1]?.close) || 0;
       const p = payload[0]?.payload;
       if (!p) return null;
       return (
-        <div className="bg-gray-800 border border-gray-700 rounded p-3 text-xs">
-          <p className="text-gray-400 mb-1">{label}</p>
-          {p.open != null && <p className="text-gray-300">فتح: {parseFloat(p.open).toFixed(2)} ج</p>}
-          <p className="text-white font-bold">إغلاق: {parseFloat(p.close).toFixed(2)} ج</p>
+        <div className="bg-[var(--surface-2)] border border-[var(--border-strong)] rounded p-3 text-xs">
+          <p className="text-[var(--text-secondary)] mb-1">{label}</p>
+          {p.open != null && <p className="text-[var(--text-primary)]">فتح: {parseFloat(p.open).toFixed(2)} ج</p>}
+          <p className="text-[var(--text-primary)] font-bold">إغلاق: {parseFloat(p.close).toFixed(2)} ج</p>
           {p.high != null && <p className="text-green-400">أعلى: {parseFloat(p.high).toFixed(2)} ج</p>}
           {p.low != null && <p className="text-red-400">أدنى: {parseFloat(p.low).toFixed(2)} ج</p>}
           {p.volume != null && (
-            <p className="text-gray-400">حجم: {parseInt(p.volume).toLocaleString()}</p>
+            <p className="text-[var(--text-secondary)]">حجم: {parseInt(p.volume).toLocaleString()}</p>
           )}
         </div>
       );
@@ -106,16 +106,16 @@ const lastPrice = parseFloat(data[data.length - 1]?.close) || 0;
   };
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
 
       {/* العنوان */}
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="text-white font-bold text-sm">{symbol}</h3>
-          <p className="text-gray-400 text-xs">{name}</p>
+          <h3 className="text-[var(--text-primary)] font-bold text-sm">{symbol}</h3>
+          <p className="text-[var(--text-secondary)] text-xs">{name}</p>
         </div>
         <div className="text-right">
-          <p className="text-white font-bold">{lastPrice.toFixed(2)} ج</p>
+          <p className="text-[var(--text-primary)] font-bold">{lastPrice.toFixed(2)} ج</p>
           <p className={`text-xs font-bold ${isUp ? 'text-green-400' : 'text-red-400'}`}>
             {isUp ? '▲' : '▼'} {Math.abs(parseFloat(priceChangePercent))}%
           </p>
@@ -131,7 +131,7 @@ const lastPrice = parseFloat(data[data.length - 1]?.close) || 0;
             className={`px-2 py-1 text-xs rounded transition ${
               period === p.value
                 ? 'bg-orange-500 text-black font-bold'
-                : 'bg-gray-800 text-gray-400 hover:text-white'
+                : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
             {lang === 'ar' ? p.label : p.labelEn}
@@ -140,13 +140,13 @@ const lastPrice = parseFloat(data[data.length - 1]?.close) || 0;
         <div className="mr-auto flex gap-1">
           <button
             onClick={() => setChartType('area')}
-            className={`px-2 py-1 text-xs rounded transition ${chartType === 'area' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'}`}
+            className={`px-2 py-1 text-xs rounded transition ${chartType === 'area' ? 'bg-[var(--surface-3)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           >
             📈
           </button>
           <button
             onClick={() => setChartType('bar')}
-            className={`px-2 py-1 text-xs rounded transition ${chartType === 'bar' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'}`}
+            className={`px-2 py-1 text-xs rounded transition ${chartType === 'bar' ? 'bg-[var(--surface-3)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           >
             📊
           </button>
@@ -154,7 +154,7 @@ const lastPrice = parseFloat(data[data.length - 1]?.close) || 0;
             onClick={() => hasOHLC && setChartType('candlestick')}
             disabled={!hasOHLC}
             title={!hasOHLC ? (lang === 'ar' ? 'الشموع اليابانية تحتاج بيانات فتح/أعلى/أدنى — متاحة من فترة شهر فأكثر' : 'Candlesticks need open/high/low data — available from 1M periods and up') : undefined}
-            className={`px-2 py-1 rounded transition ${chartType === 'candlestick' ? 'bg-gray-700 text-white' : hasOHLC ? 'text-gray-400 hover:text-white' : 'text-gray-700 cursor-not-allowed'}`}
+            className={`px-2 py-1 rounded transition ${chartType === 'candlestick' ? 'bg-[var(--surface-3)] text-[var(--text-primary)]' : hasOHLC ? 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]' : 'text-[var(--text-tertiary)] cursor-not-allowed'}`}
           >
             <svg width="14" height="14" viewBox="0 0 16 16" className="inline-block align-middle">
               <line x1="4" y1="1" x2="4" y2="15" stroke="currentColor" strokeWidth="1" />
@@ -174,7 +174,7 @@ const lastPrice = parseFloat(data[data.length - 1]?.close) || 0;
           ))}
         </div>
       ) : data.length === 0 ? (
-        <div className="h-48 flex items-center justify-center text-gray-400 text-sm">
+        <div className="h-48 flex items-center justify-center text-[var(--text-secondary)] text-sm">
           {lang === 'ar' ? 'لا توجد بيانات' : 'No data available'}
         </div>
       ) : (

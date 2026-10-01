@@ -140,24 +140,24 @@ export default function DailyBriefingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-5xl mx-auto">
 
         <div className="flex justify-between items-start mb-2 flex-wrap gap-2">
           <div>
-            <h1 className="text-orange-500 font-bold text-xl">{t.title}</h1>
-            <p className="text-gray-400 text-xs mt-1">{t.subtitle}</p>
+            <h1 className="text-[var(--accent-text)] font-bold text-xl">{t.title}</h1>
+            <p className="text-[var(--text-secondary)] text-xs mt-1">{t.subtitle}</p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={toggle}
-              className="text-xs border border-gray-700 px-3 py-1.5 rounded hover:border-orange-500 hover:text-orange-500 transition text-gray-400"
+              className="text-xs border border-[var(--border-strong)] px-3 py-1.5 rounded hover:border-orange-500 hover:text-[var(--accent-text)] transition text-[var(--text-secondary)]"
             >
               {lang === 'ar' ? 'English' : 'عربي'}
             </button>
             <button
               onClick={() => fetchBriefing(siteUser?.id)}
-              className="bg-gray-800 text-gray-300 px-3 py-1.5 rounded text-xs hover:bg-gray-700 transition"
+              className="bg-[var(--surface-2)] text-[var(--text-primary)] px-3 py-1.5 rounded text-xs hover:bg-[var(--surface-3-hover)] transition"
             >
               🔄 {t.refresh}
             </button>
@@ -165,13 +165,13 @@ export default function DailyBriefingPage() {
         </div>
 
         {date && (
-          <p className="text-gray-500 text-xs mb-4">{t.lastUpdate}: {date}</p>
+          <p className="text-[var(--text-tertiary)] text-xs mb-4">{t.lastUpdate}: {date}</p>
         )}
 
         {/* تنبيه للزوار غير المسجلين */}
         {!siteUser && (
-          <div className="bg-gray-900 border border-orange-900 rounded-lg p-4 mb-6 flex items-center justify-between flex-wrap gap-2">
-            <p className="text-gray-300 text-xs">{t.guestNote}</p>
+          <div className="bg-[var(--bg-card)] border border-orange-900 rounded-lg p-4 mb-6 flex items-center justify-between flex-wrap gap-2">
+            <p className="text-[var(--text-primary)] text-xs">{t.guestNote}</p>
             <a
               href="/signin"
               className="bg-orange-500 text-black px-4 py-1.5 rounded text-xs font-bold hover:bg-orange-600 transition whitespace-nowrap"
@@ -183,10 +183,10 @@ export default function DailyBriefingPage() {
 
         {/* قسم الإدارة - للمستخدمين المسجّلين فقط */}
         {siteUser && (
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 mb-6">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4 mb-6">
             <button
               onClick={() => setShowManage(!showManage)}
-              className="text-orange-500 text-sm font-bold"
+              className="text-[var(--accent-text)] text-sm font-bold"
             >
               {showManage ? `▲ ${t.hideManage}` : `▼ ${t.manage}`}
             </button>
@@ -194,7 +194,7 @@ export default function DailyBriefingPage() {
             {showManage && (
               <div className="mt-4">
                 {message && (
-                  <div className="bg-gray-800 text-gray-200 p-2 rounded mb-3 text-xs">{message}</div>
+                  <div className="bg-[var(--surface-2)] text-[var(--text-primary)] p-2 rounded mb-3 text-xs">{message}</div>
                 )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
@@ -202,19 +202,19 @@ export default function DailyBriefingPage() {
                     value={form.name}
                     onChange={e => setForm({ ...form, name: e.target.value })}
                     placeholder={t.namePh}
-                    className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 text-xs"
+                    className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 text-xs"
                   />
                   <input
                     value={form.name_en}
                     onChange={e => setForm({ ...form, name_en: e.target.value })}
                     placeholder={t.nameEnPh}
-                    className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 text-xs"
+                    className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 text-xs"
                   />
                   <input
                     value={form.symbol}
                     onChange={e => setForm({ ...form, symbol: e.target.value })}
                     placeholder={t.symbolPh}
-                    className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 text-xs"
+                    className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 text-xs"
                   />
                 </div>
                 <button
@@ -224,12 +224,12 @@ export default function DailyBriefingPage() {
                   {t.addStock}
                 </button>
 
-                <p className="text-gray-400 text-xs font-bold mb-2">{t.currentList}</p>
+                <p className="text-[var(--text-secondary)] text-xs font-bold mb-2">{t.currentList}</p>
                 <div className="space-y-2">
                   {manageList.map(s => (
-                    <div key={s.id} className="flex justify-between items-center bg-gray-800 rounded px-3 py-2">
+                    <div key={s.id} className="flex justify-between items-center bg-[var(--surface-2)] rounded px-3 py-2">
                       <div>
-                        <span className="text-white text-xs font-bold">{lang === 'ar' ? s.name : (s.name_en || s.name)}</span>
+                        <span className="text-[var(--text-primary)] text-xs font-bold">{lang === 'ar' ? s.name : (s.name_en || s.name)}</span>
                         {s.symbol && <span className="text-orange-400 text-xs mr-2">{s.symbol}</span>}
                       </div>
                       <button
@@ -255,36 +255,36 @@ export default function DailyBriefingPage() {
         ) : briefingError ? (
           <DataError onRetry={() => fetchBriefing(siteUser?.id)} />
         ) : stocks.length === 0 ? (
-          <div className="text-center py-16 text-gray-400 text-sm">{t.emptyList}</div>
+          <div className="text-center py-16 text-[var(--text-secondary)] text-sm">{t.emptyList}</div>
         ) : (
           <div className="space-y-4">
             {stocks.map(stock => (
-              <div key={stock.id} className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
-                <div className="px-4 py-3 border-b border-gray-800 flex items-center justify-between">
+              <div key={stock.id} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden">
+                <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
                   <div>
-                    <h2 className="text-white font-bold text-sm">{lang === 'ar' ? stock.name : (stock.name_en || stock.name)}</h2>
+                    <h2 className="text-[var(--text-primary)] font-bold text-sm">{lang === 'ar' ? stock.name : (stock.name_en || stock.name)}</h2>
                   </div>
                   {stock.symbol && (
-                    <span className="text-orange-500 text-xs font-bold">{stock.symbol}</span>
+                    <span className="text-[var(--accent-text)] text-xs font-bold">{stock.symbol}</span>
                   )}
                 </div>
 
                 {stock.news.length === 0 ? (
-                  <div className="px-4 py-6 text-center text-gray-500 text-xs">{t.noNews}</div>
+                  <div className="px-4 py-6 text-center text-[var(--text-tertiary)] text-xs">{t.noNews}</div>
                 ) : (
                   <div className="divide-y divide-gray-800">
                     {stock.news.map((item, i) => (
                       <div
                         key={i}
                         onClick={() => window.open(item.link, '_blank')}
-                        className="px-4 py-3 hover:bg-gray-800 transition cursor-pointer"
+                        className="px-4 py-3 hover:bg-[var(--surface-2)] transition cursor-pointer"
                       >
-                        <p className="text-white text-sm leading-relaxed mb-1.5 hover:text-orange-400 transition">
+                        <p className="text-[var(--text-primary)] text-sm leading-relaxed mb-1.5 hover:text-orange-400 transition">
                           {item.title}
                         </p>
                         <div className="flex justify-between items-center">
-                          <span className="text-orange-500 text-xs font-bold">{item.source}</span>
-                          <span className="text-gray-400 text-xs">{item.date}</span>
+                          <span className="text-[var(--accent-text)] text-xs font-bold">{item.source}</span>
+                          <span className="text-[var(--text-secondary)] text-xs">{item.date}</span>
                         </div>
                       </div>
                     ))}

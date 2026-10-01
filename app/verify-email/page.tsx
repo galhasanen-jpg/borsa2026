@@ -120,11 +120,11 @@ function VerifyEmailContent() {
 
   if (success) {
     return (
-      <div className="bg-gray-900 border border-green-700 rounded-xl p-8 max-w-md w-full text-center">
+      <div className="bg-[var(--bg-card)] border border-green-700 rounded-xl p-8 max-w-md w-full text-center">
         <LanguagePicker />
         <p className="text-6xl mb-4">✅</p>
-        <h2 className="text-white font-bold text-xl mb-2">{t.successTitle}</h2>
-        <p className="text-gray-400 text-sm leading-relaxed mb-6">{t.successBody}</p>
+        <h2 className="text-[var(--text-primary)] font-bold text-xl mb-2">{t.successTitle}</h2>
+        <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-6">{t.successBody}</p>
         <a href="/signin" className="bg-orange-500 text-black px-6 py-2 rounded-lg font-bold text-sm hover:bg-orange-600 transition">
           {t.goSignin}
         </a>
@@ -133,27 +133,27 @@ function VerifyEmailContent() {
   }
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 max-w-md w-full">
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-8 max-w-md w-full">
       <LanguagePicker />
 
       <div className="text-center mb-6">
         <p className="text-4xl mb-2">📧</p>
-        <h1 className="text-orange-500 font-bold text-xl mb-1">{t.title}</h1>
-        <p className="text-gray-400 text-sm">{t.subtitle}</p>
+        <h1 className="text-[var(--accent-text)] font-bold text-xl mb-1">{t.title}</h1>
+        <p className="text-[var(--text-secondary)] text-sm">{t.subtitle}</p>
       </div>
 
       {message && (
-        <div className="bg-gray-800 text-gray-200 p-3 rounded-lg mb-4 text-sm">{message}</div>
+        <div className="bg-[var(--surface-2)] text-[var(--text-primary)] p-3 rounded-lg mb-4 text-sm">{message}</div>
       )}
 
       <div className="space-y-4">
         <div>
-          <label className="text-gray-400 text-xs mb-1 block">{t.code}</label>
+          <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.code}</label>
           <input
             value={code}
             onChange={e => setCode(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleVerify()}
-            className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm text-center font-bold tracking-widest"
+            className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm text-center font-bold tracking-widest"
             placeholder={t.codePh}
             maxLength={6}
           />
@@ -168,7 +168,7 @@ function VerifyEmailContent() {
         <button
           onClick={handleResend}
           disabled={resending}
-          className="w-full text-gray-400 hover:text-orange-500 text-xs transition disabled:opacity-50"
+          className="w-full text-[var(--text-secondary)] hover:text-[var(--accent-text)] text-xs transition disabled:opacity-50"
         >
           {resending ? t.resending : t.resend}
         </button>
@@ -179,8 +179,8 @@ function VerifyEmailContent() {
 
 export default function VerifyEmailPage() {
   return (
-    <main className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-      <Suspense fallback={<div className="text-gray-400">...</div>}>
+    <main className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center p-4">
+      <Suspense fallback={<div className="text-[var(--text-secondary)]">...</div>}>
         <VerifyEmailContent />
       </Suspense>
     </main>

@@ -18,7 +18,7 @@ export default function FundValueChart({ series, currency = 'EGP', emptyLabel }:
   const hasData = series.some(s => s.data.length > 0);
   if (!hasData) {
     return (
-      <div className="h-64 flex items-center justify-center text-gray-400 text-sm">
+      <div className="h-64 flex items-center justify-center text-[var(--text-secondary)] text-sm">
         {emptyLabel || 'لا توجد بيانات قيمة وثيقة مسجّلة بعد'}
       </div>
     );
@@ -39,8 +39,8 @@ export default function FundValueChart({ series, currency = 'EGP', emptyLabel }:
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-gray-800 border border-gray-700 rounded p-3 text-xs">
-          <p className="text-gray-400 mb-1">{label}</p>
+        <div className="bg-[var(--surface-2)] border border-[var(--border-strong)] rounded p-3 text-xs">
+          <p className="text-[var(--text-secondary)] mb-1">{label}</p>
           {payload.map((p: any) => (
             <p key={p.dataKey} style={{ color: p.color }} className="font-bold">
               {p.name}: {Number(p.value).toFixed(2)} {currency}
