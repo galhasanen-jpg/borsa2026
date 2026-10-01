@@ -112,14 +112,14 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 max-w-md w-full">
+    <main className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center p-4">
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-8 max-w-md w-full">
 
         <LanguagePicker />
 
         <div className="text-center mb-6">
-          <h1 className="text-orange-500 font-bold text-2xl mb-1">{t.title}</h1>
-          <p className="text-gray-400 text-sm">{t.subtitle}</p>
+          <h1 className="text-[var(--accent-text)] font-bold text-2xl mb-1">{t.title}</h1>
+          <p className="text-[var(--text-secondary)] text-sm">{t.subtitle}</p>
         </div>
 
         {message && (
@@ -128,45 +128,45 @@ export default function SignupPage() {
 
         <div className="space-y-4">
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">{t.name}</label>
+            <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.name}</label>
             <input
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
-              className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+              className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
               placeholder={t.namePh}
             />
           </div>
 
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">{t.email}</label>
+            <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.email}</label>
             <input
               type="email"
               value={form.email}
               onChange={e => setForm({ ...form, email: e.target.value })}
-              className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+              className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
               placeholder={t.emailPh}
             />
           </div>
 
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">{t.password}</label>
+            <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.password}</label>
             <input
               type="password"
               value={form.password}
               onChange={e => setForm({ ...form, password: e.target.value })}
-              className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+              className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
               placeholder={t.passwordPh}
             />
           </div>
 
           <div>
-            <label className="text-gray-400 text-xs mb-1 block">{t.confirmPassword}</label>
+            <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.confirmPassword}</label>
             <input
               type="password"
               value={form.confirmPassword}
               onChange={e => setForm({ ...form, confirmPassword: e.target.value })}
               onKeyDown={e => e.key === 'Enter' && handleSignup()}
-              className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+              className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
               placeholder={t.confirmPasswordPh}
             />
           </div>
@@ -179,9 +179,9 @@ export default function SignupPage() {
             {loading ? t.submitting : t.submit}
           </button>
 
-          <p className="text-center text-gray-400 text-sm">
+          <p className="text-center text-[var(--text-secondary)] text-sm">
             {t.haveAccount}{' '}
-            <a href="/signin" className="text-orange-500 hover:text-orange-400">
+            <a href="/signin" className="text-[var(--accent-text)] hover:text-orange-400">
               {t.signIn}
             </a>
           </p>

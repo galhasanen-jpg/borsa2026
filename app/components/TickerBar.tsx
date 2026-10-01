@@ -73,7 +73,7 @@ export default function TickerBar() {
   const allTickers = [...tickers, ...tickers];
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-40 bg-black border-t border-gray-800 overflow-hidden">
+    <div className="fixed bottom-0 inset-x-0 z-40 bg-[var(--bg-nav)] border-t border-[var(--border)] overflow-hidden">
       <div className="flex items-center">
 
         {/* Label ثابت */}
@@ -97,10 +97,10 @@ export default function TickerBar() {
               {allTickers.map((ticker, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-2 px-4 py-2 border-r border-gray-800 flex-shrink-0 cursor-pointer hover:bg-gray-900 transition"
+                  className="flex items-center gap-2 px-4 py-2 border-r border-[var(--border)] flex-shrink-0 cursor-pointer hover:bg-[var(--bg-card)] transition"
                 >
-                  <span className="text-gray-300 text-xs font-bold tracking-wider">{ticker.symbol}</span>
-                  <span className="text-white text-xs font-mono">{ticker.price}</span>
+                  <span className="text-[var(--text-primary)] text-xs font-bold tracking-wider">{ticker.symbol}</span>
+                  <span className="text-[var(--text-primary)] text-xs font-mono">{ticker.price}</span>
                   {ticker.change && (
                     <span className={`text-xs font-bold flex items-center gap-0.5 ${ticker.up ? 'text-green-400' : 'text-red-400'}`}>
                       {ticker.up ? '▲' : '▼'} {ticker.change}

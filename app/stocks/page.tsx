@@ -150,15 +150,15 @@ export default function StocksPage() {
         watchlist_stock_id: ws.id
       }));
       return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-7xl mx-auto">
 
         {/* العنوان */}
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-orange-500 font-bold text-xl">
+          <h1 className="text-[var(--accent-text)] font-bold text-xl">
             {lang === 'ar' ? 'سوق الأسهم المصري' : 'Egyptian Stock Market'}
           </h1>
-          <span className="text-gray-400 text-xs">{stocks.length} سهم</span>
+          <span className="text-[var(--text-secondary)] text-xs">{stocks.length} سهم</span>
         </div>
 
         {watchlistMessage && (
@@ -170,7 +170,7 @@ export default function StocksPage() {
           <div className="flex gap-2 flex-wrap mb-4 items-center">
             <button
               onClick={() => setActiveList('all')}
-              className={`px-3 py-1.5 text-xs rounded transition ${activeList === 'all' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+              className={`px-3 py-1.5 text-xs rounded transition ${activeList === 'all' ? 'bg-orange-500 text-black font-bold' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
             >
               📊 كل الأسهم
             </button>
@@ -178,13 +178,13 @@ export default function StocksPage() {
               <div key={wl.id} className="flex items-center gap-1">
                 <button
                   onClick={() => { setActiveList(wl.id); fetchWatchlistStocks(wl.id); }}
-                  className={`px-3 py-1.5 text-xs rounded transition ${activeList === wl.id ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+                  className={`px-3 py-1.5 text-xs rounded transition ${activeList === wl.id ? 'bg-orange-500 text-black font-bold' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                 >
                   ⭐ {wl.name} ({wl.stock_count})
                 </button>
                 <button
                   onClick={() => handleDeleteWatchlist(wl.id)}
-                  className="text-gray-500 hover:text-red-400 text-xs"
+                  className="text-[var(--text-tertiary)] hover:text-red-400 text-xs"
                 >
                   ✕
                 </button>
@@ -195,17 +195,17 @@ export default function StocksPage() {
                 <input
                   value={newWatchlistName}
                   onChange={e => setNewWatchlistName(e.target.value)}
-                  className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1 text-xs w-32"
+                  className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-2 py-1 text-xs w-32"
                   placeholder="اسم القائمة"
                   onKeyDown={e => e.key === 'Enter' && handleCreateWatchlist()}
                 />
                 <button onClick={handleCreateWatchlist} className="bg-orange-500 text-black px-2 py-1 rounded text-xs font-bold">إنشاء</button>
-                <button onClick={() => setShowCreateWatchlist(false)} className="text-gray-400 text-xs">إلغاء</button>
+                <button onClick={() => setShowCreateWatchlist(false)} className="text-[var(--text-secondary)] text-xs">إلغاء</button>
               </div>
             ) : (
               <button
                 onClick={() => setShowCreateWatchlist(true)}
-                className="px-3 py-1.5 text-xs rounded bg-gray-800 text-gray-400 hover:text-orange-500 transition"
+                className="px-3 py-1.5 text-xs rounded bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--accent-text)] transition"
               >
                 + قائمة جديدة
               </button>
@@ -218,7 +218,7 @@ export default function StocksPage() {
           <div className="flex gap-2 flex-wrap mb-4">
             <button
               onClick={() => setActiveSector('الكل')}
-              className={`px-3 py-1.5 text-xs rounded transition ${activeSector === 'الكل' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+              className={`px-3 py-1.5 text-xs rounded transition ${activeSector === 'الكل' ? 'bg-orange-500 text-black font-bold' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
             >
               {lang === 'ar' ? 'الكل' : 'All'}
             </button>
@@ -229,7 +229,7 @@ export default function StocksPage() {
                 className={`px-3 py-1.5 text-xs rounded transition ${
                   activeSector === (lang === 'ar' ? sector.name : sector.name_en)
                     ? 'bg-orange-500 text-black font-bold'
-                    : 'bg-gray-800 text-gray-400 hover:text-white'
+                    : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 {lang === 'ar' ? sector.name : sector.name_en}
@@ -241,17 +241,17 @@ export default function StocksPage() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
           {/* جدول الأسهم */}
-          <div className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800">
-              <h2 className="text-orange-500 font-bold text-sm">
+          <div className="lg:col-span-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
+              <h2 className="text-[var(--accent-text)] font-bold text-sm">
                 {activeList === 'all' ? 'الأسهم' : watchlists.find(w => w.id === activeList)?.name}
               </h2>
-              <span className="text-gray-400 text-xs">{displayedStocks.length} سهم</span>
+              <span className="text-[var(--text-secondary)] text-xs">{displayedStocks.length} سهم</span>
             </div>
             <div className="overflow-y-auto" style={{ maxHeight: '600px' }}>
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-gray-900">
-                  <tr className="border-b border-gray-800 text-gray-400 text-xs">
+                <thead className="sticky top-0 bg-[var(--bg-card)]">
+                  <tr className="border-b border-[var(--border)] text-[var(--text-secondary)] text-xs">
                     <th className="px-4 py-2 text-right">الرمز</th>
                     <th className="px-4 py-2 text-right hidden md:table-cell">الشركة</th>
                     <th className="px-4 py-2 text-right">السعر</th>
@@ -274,27 +274,27 @@ export default function StocksPage() {
                       <tr
                         key={i}
                         onClick={() => setSelectedStock(stock)}
-                        className={`border-b border-gray-800 hover:bg-gray-800 transition cursor-pointer ${isSelected ? 'bg-gray-800 border-r-2 border-r-orange-500' : ''}`}
+                        className={`border-b border-[var(--border)] hover:bg-[var(--surface-2)] transition cursor-pointer ${isSelected ? 'bg-[var(--surface-2)] border-r-2 border-r-orange-500' : ''}`}
                       >
                         <td className="px-4 py-3">
                           <span className="text-orange-400 font-bold text-xs">{stock.symbol}</span>
                         </td>
                         <td className="px-4 py-3 hidden md:table-cell">
-                          <p className="text-white text-xs">{lang === 'ar' ? stock.name : stock.name_en}</p>
-                          <p className="text-gray-400 text-xs">{lang === 'ar' ? stock.sector : stock.sector_en}</p>
+                          <p className="text-[var(--text-primary)] text-xs">{lang === 'ar' ? stock.name : stock.name_en}</p>
+                          <p className="text-[var(--text-secondary)] text-xs">{lang === 'ar' ? stock.sector : stock.sector_en}</p>
                         </td>
                         <td className="px-4 py-3">
-                          {loading ? <div className="h-4 bg-gray-800 rounded animate-pulse w-16"></div>
-                            : <span className="text-white font-mono text-xs">{data?.price || 'N/A'} ج</span>}
+                          {loading ? <div className="h-4 bg-[var(--surface-2)] rounded animate-pulse w-16"></div>
+                            : <span className="text-[var(--text-primary)] font-mono text-xs">{data?.price || 'N/A'} ج</span>}
                         </td>
                         <td className="px-4 py-3">
-                          {loading ? <div className="h-4 bg-gray-800 rounded animate-pulse w-12"></div>
+                          {loading ? <div className="h-4 bg-[var(--surface-2)] rounded animate-pulse w-12"></div>
                             : <span className={`text-xs font-bold ${up ? 'text-green-400' : 'text-red-400'}`}>
                                 {up ? '▲' : '▼'} {Math.abs(changePercent).toFixed(2)}%
                               </span>}
                         </td>
                         <td className="px-4 py-3 hidden md:table-cell">
-                          <span className="text-gray-400 text-xs">{data?.volume || 'N/A'}</span>
+                          <span className="text-[var(--text-secondary)] text-xs">{data?.volume || 'N/A'}</span>
                         </td>
                         {user && (
                           <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
@@ -309,20 +309,20 @@ export default function StocksPage() {
                               <div className="relative">
                                 <button
                                   onClick={() => setShowWatchlistMenu(showWatchlistMenu === stock.symbol ? '' : stock.symbol)}
-                                  className="text-gray-400 text-xs hover:text-orange-500 transition"
+                                  className="text-[var(--text-secondary)] text-xs hover:text-[var(--accent-text)] transition"
                                 >
                                   ⭐
                                 </button>
                                 {showWatchlistMenu === stock.symbol && (
-                                  <div className="absolute left-0 top-6 bg-gray-800 border border-gray-700 rounded-lg p-2 z-50 min-w-36">
+                                  <div className="absolute left-0 top-6 bg-[var(--surface-2)] border border-[var(--border-strong)] rounded-lg p-2 z-50 min-w-36">
                                     {watchlists.length === 0 ? (
-                                      <p className="text-gray-400 text-xs p-1">لا توجد قوائم</p>
+                                      <p className="text-[var(--text-secondary)] text-xs p-1">لا توجد قوائم</p>
                                     ) : (
                                       watchlists.map(wl => (
                                         <button
                                           key={wl.id}
                                           onClick={() => handleAddToWatchlist(wl.id, stock.symbol, stock.name)}
-                                          className="block w-full text-right text-xs text-gray-300 hover:text-orange-500 px-2 py-1.5 hover:bg-gray-700 rounded transition"
+                                          className="block w-full text-right text-xs text-[var(--text-primary)] hover:text-[var(--accent-text)] px-2 py-1.5 hover:bg-[var(--surface-3-hover)] rounded transition"
                                         >
                                           ⭐ {wl.name}
                                         </button>
@@ -351,15 +351,15 @@ export default function StocksPage() {
                 lang={lang}
               />
             ) : (
-              <div className="bg-gray-900 border border-gray-800 rounded-lg p-8 text-center">
+              <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-8 text-center">
                 <p className="text-5xl mb-4">📈</p>
-                <p className="text-gray-400 text-sm">اضغط على سهم لعرض الرسم البياني</p>
+                <p className="text-[var(--text-secondary)] text-sm">اضغط على سهم لعرض الرسم البياني</p>
               </div>
             )}
 
             {selectedStock && prices[selectedStock.symbol] && (
-              <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-                <h3 className="text-orange-500 font-bold text-sm mb-3">بيانات السهم</h3>
+              <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
+                <h3 className="text-[var(--accent-text)] font-bold text-sm mb-3">بيانات السهم</h3>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     { label: 'السعر', value: `${prices[selectedStock.symbol]?.price} ج` },
@@ -367,20 +367,20 @@ export default function StocksPage() {
                     { label: 'الحجم', value: prices[selectedStock.symbol]?.volume },
                     { label: 'القطاع', value: lang === 'ar' ? selectedStock.sector : selectedStock.sector_en },
                   ].map((item, i) => (
-                    <div key={i} className="bg-gray-800 rounded p-2">
-                      <p className="text-gray-400 text-xs">{item.label}</p>
-                      <p className="text-white text-xs font-bold mt-1">{item.value}</p>
+                    <div key={i} className="bg-[var(--surface-2)] rounded p-2">
+                      <p className="text-[var(--text-secondary)] text-xs">{item.label}</p>
+                      <p className="text-[var(--text-primary)] text-xs font-bold mt-1">{item.value}</p>
                     </div>
                   ))}
                 </div>
                 {prices[selectedStock.symbol]?.updatedAt && (
-                  <p className="text-gray-500 text-xs mt-3">
+                  <p className="text-[var(--text-tertiary)] text-xs mt-3">
                     {lang === 'ar' ? 'آخر مزامنة: ' : 'Last synced: '}
                     {new Date(prices[selectedStock.symbol].updatedAt).toLocaleString(lang === 'ar' ? 'ar-EG' : 'en-US')}
                   </p>
                 )}
                 {prices[selectedStock.symbol]?.quoteTime && (
-                  <p className="text-gray-500 text-xs mt-1">
+                  <p className="text-[var(--text-tertiary)] text-xs mt-1">
                     {lang === 'ar' ? 'تاريخ السعر (حسب المصدر): ' : 'Price date (per source): '}
                     {new Date(prices[selectedStock.symbol].quoteTime).toLocaleString(lang === 'ar' ? 'ar-EG' : 'en-US')}
                   </p>

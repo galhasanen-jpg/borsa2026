@@ -99,27 +99,27 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-7xl mx-auto">
 
         {/* بطاقات المؤشرات */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
           {indices.length > 0 ? indices.map((index, i) => (
-            <div key={i} className="bg-gray-900 border border-gray-800 rounded-lg p-3 hover:border-orange-500 transition cursor-pointer">
+            <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-3 hover:border-orange-500 transition cursor-pointer">
               <div className="flex justify-between items-start mb-2">
                 <span className="text-lg">{index.flag}</span>
                 <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${index.up ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'}`}>
                   {index.change}
                 </span>
               </div>
-              <p className="text-gray-400 text-xs flex items-center gap-1">
+              <p className="text-[var(--text-secondary)] text-xs flex items-center gap-1">
                 {lang === 'ar' ? index.name : index.nameEn}
                 <span
-                  className={`inline-block w-1.5 h-1.5 rounded-full ${index.live ? 'bg-green-500' : 'bg-gray-600'}`}
+                  className={`inline-block w-1.5 h-1.5 rounded-full ${index.live ? 'bg-green-500' : 'bg-[var(--surface-3)]'}`}
                   title={index.live ? (lang === 'ar' ? 'بيانات حية' : 'Live data') : (lang === 'ar' ? 'بيانات احتياطية غير محدّثة' : 'Fallback data, not live')}
                 />
               </p>
-              <p className="text-white font-bold text-lg mt-1">{index.price}</p>
+              <p className="text-[var(--text-primary)] font-bold text-lg mt-1">{index.price}</p>
               <p className={`text-xs mt-1 ${index.up ? 'text-green-400' : 'text-red-400'}`}>
                 {index.up ? '▲ ارتفاع' : '▼ انخفاض'}
               </p>
@@ -130,9 +130,9 @@ export default function Home() {
             </div>
           ) : (
             Array(6).fill(0).map((_, i) => (
-              <div key={i} className="bg-gray-900 border border-gray-800 rounded-lg p-3 animate-pulse">
-                <div className="h-4 bg-gray-800 rounded mb-2"></div>
-                <div className="h-6 bg-gray-800 rounded"></div>
+              <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-3 animate-pulse">
+                <div className="h-4 bg-[var(--surface-2)] rounded mb-2"></div>
+                <div className="h-6 bg-[var(--surface-2)] rounded"></div>
               </div>
             ))
           )}
@@ -140,7 +140,7 @@ export default function Home() {
 
         {/* تحديث تلقائي */}
         <div className="flex justify-end mb-3">
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-[var(--text-tertiary)]">
             {lang === 'ar' ? '⏱ يتحدث كل دقيقة - البيانات متأخرة 15 دقيقة' : '⏱ Updates every minute - 15 min delay'}
           </span>
         </div>
@@ -149,18 +149,18 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
           {/* جدول الأسهم */}
-          <div className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800">
-              <h2 className="text-orange-500 font-bold text-sm">
+          <div className="lg:col-span-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
+              <h2 className="text-[var(--accent-text)] font-bold text-sm">
                 {lang === 'ar' ? 'أبرز الأسهم' : 'Top Stocks'}
               </h2>
-              <a href="/stocks" className="text-xs text-gray-400 hover:text-orange-500 transition">
+              <a href="/stocks" className="text-xs text-[var(--text-secondary)] hover:text-[var(--accent-text)] transition">
                 {lang === 'ar' ? 'عرض الكل ←' : 'View All →'}
               </a>
             </div>
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-800 text-gray-400 text-xs">
+                <tr className="border-b border-[var(--border)] text-[var(--text-secondary)] text-xs">
                   <th className="px-4 py-2 text-right">{lang === 'ar' ? 'السهم' : 'Stock'}</th>
                   <th className="px-4 py-2 text-right">{lang === 'ar' ? 'السعر' : 'Price'}</th>
                   <th className="px-4 py-2 text-right">{lang === 'ar' ? 'التغيير' : 'Change'}</th>
@@ -176,27 +176,27 @@ export default function Home() {
                   </tr>
                 ) : loading ? (
                   Array(8).fill(0).map((_, i) => (
-                    <tr key={i} className="border-b border-gray-800">
-                      <td className="px-4 py-3"><div className="h-4 bg-gray-800 rounded animate-pulse w-16"></div></td>
-                      <td className="px-4 py-3"><div className="h-4 bg-gray-800 rounded animate-pulse w-16"></div></td>
-                      <td className="px-4 py-3"><div className="h-4 bg-gray-800 rounded animate-pulse w-12"></div></td>
-                      <td className="px-4 py-3 hidden md:table-cell"><div className="h-4 bg-gray-800 rounded animate-pulse w-16"></div></td>
+                    <tr key={i} className="border-b border-[var(--border)]">
+                      <td className="px-4 py-3"><div className="h-4 bg-[var(--surface-2)] rounded animate-pulse w-16"></div></td>
+                      <td className="px-4 py-3"><div className="h-4 bg-[var(--surface-2)] rounded animate-pulse w-16"></div></td>
+                      <td className="px-4 py-3"><div className="h-4 bg-[var(--surface-2)] rounded animate-pulse w-12"></div></td>
+                      <td className="px-4 py-3 hidden md:table-cell"><div className="h-4 bg-[var(--surface-2)] rounded animate-pulse w-16"></div></td>
                     </tr>
                   ))
                 ) : (
                   stocks.map((stock, i) => (
-                    <tr key={i} className="border-b border-gray-800 hover:bg-gray-800 transition cursor-pointer">
+                    <tr key={i} className="border-b border-[var(--border)] hover:bg-[var(--surface-2)] transition cursor-pointer">
                       <td className="px-4 py-3">
                         <p className="text-orange-400 font-bold text-xs">{stock.symbol.replace('.CA', '')}</p>
-                        <p className="text-gray-400 text-xs">{lang === 'ar' ? stock.name : stock.nameEn}</p>
+                        <p className="text-[var(--text-secondary)] text-xs">{lang === 'ar' ? stock.name : stock.nameEn}</p>
                       </td>
-                      <td className="px-4 py-3 text-white font-mono text-xs">{stock.price} ج</td>
+                      <td className="px-4 py-3 text-[var(--text-primary)] font-mono text-xs">{stock.price} ج</td>
                       <td className="px-4 py-3">
                         <span className={`text-xs font-bold ${stock.up ? 'text-green-400' : 'text-red-400'}`}>
                           {stock.up ? '▲' : '▼'} {stock.change}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-400 text-xs hidden md:table-cell">{stock.volume}</td>
+                      <td className="px-4 py-3 text-[var(--text-secondary)] text-xs hidden md:table-cell">{stock.volume}</td>
                     </tr>
                   ))
                 )}
@@ -205,9 +205,9 @@ export default function Home() {
           </div>
 
           {/* الأخبار */}
-          <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-800">
-              <h2 className="text-orange-500 font-bold text-sm">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--border)]">
+              <h2 className="text-[var(--accent-text)] font-bold text-sm">
                 {lang === 'ar' ? 'آخر الأخبار' : 'Latest News'}
               </h2>
             </div>
@@ -217,8 +217,8 @@ export default function Home() {
               ) : news.length === 0 ? (
                 Array(5).fill(0).map((_, i) => (
                   <div key={i} className="px-4 py-3">
-                    <div className="h-3 bg-gray-800 rounded animate-pulse mb-2"></div>
-                    <div className="h-3 bg-gray-800 rounded animate-pulse w-1/2"></div>
+                    <div className="h-3 bg-[var(--surface-2)] rounded animate-pulse mb-2"></div>
+                    <div className="h-3 bg-[var(--surface-2)] rounded animate-pulse w-1/2"></div>
                   </div>
                 ))
               ) : (
@@ -228,14 +228,14 @@ export default function Home() {
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-3 hover:bg-gray-800 transition cursor-pointer"
+                    className="block px-4 py-3 hover:bg-[var(--surface-2)] transition cursor-pointer"
                   >
-                    <p className="text-white text-xs leading-relaxed">
+                    <p className="text-[var(--text-primary)] text-xs leading-relaxed">
                       {item.title}
                     </p>
                     <div className="flex justify-between items-center mt-2">
-                      <span className="text-orange-500 text-xs">{item.source}</span>
-                      <span className="text-gray-400 text-xs">{timeAgo(item.rawDate, lang)}</span>
+                      <span className="text-[var(--accent-text)] text-xs">{item.source}</span>
+                      <span className="text-[var(--text-secondary)] text-xs">{timeAgo(item.rawDate, lang)}</span>
                     </div>
                   </a>
                 ))

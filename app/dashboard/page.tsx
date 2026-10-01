@@ -205,7 +205,7 @@ export default function DashboardPage() {
       case 'open': return 'bg-blue-900 text-blue-400';
       case 'success': return 'bg-green-900 text-green-400';
       case 'failed': return 'bg-red-900 text-red-400';
-      default: return 'bg-gray-700 text-gray-400';
+      default: return 'bg-[var(--surface-3)] text-[var(--text-secondary)]';
     }
   }
 
@@ -219,10 +219,10 @@ export default function DashboardPage() {
 
   function getPlanStyle(plan: string) {
     switch (plan) {
-      case 'free': return 'bg-gray-700 text-gray-400';
+      case 'free': return 'bg-[var(--surface-3)] text-[var(--text-secondary)]';
       case 'basic': return 'bg-blue-900 text-blue-400';
       case 'premium': return 'bg-orange-900 text-orange-400';
-      default: return 'bg-gray-700 text-gray-400';
+      default: return 'bg-[var(--surface-3)] text-[var(--text-secondary)]';
     }
   }
 
@@ -231,7 +231,7 @@ export default function DashboardPage() {
     : recommendations.filter(r => r.status === filterStatus);
 
   if (loading) return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-5xl mx-auto space-y-4">
         <SkeletonBlock className="h-28" />
         <SkeletonBlock className="h-24" />
@@ -240,18 +240,18 @@ export default function DashboardPage() {
     </main>
   );
   return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-5xl mx-auto">
 
         {/* العنوان */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-orange-500 font-bold text-xl">{t.title}</h1>
-            <p className="text-gray-400 text-sm mt-1">{t.welcome} {user?.name}</p>
+            <h1 className="text-[var(--accent-text)] font-bold text-xl">{t.title}</h1>
+            <p className="text-[var(--text-secondary)] text-sm mt-1">{t.welcome} {user?.name}</p>
           </div>
           <button
             onClick={handleLogout}
-            className="bg-gray-800 text-gray-400 px-4 py-2 rounded-lg text-sm hover:bg-gray-700 hover:text-white transition"
+            className="bg-[var(--surface-2)] text-[var(--text-secondary)] px-4 py-2 rounded-lg text-sm hover:bg-[var(--surface-3-hover)] hover:text-[var(--text-primary)] transition"
           >
             {t.logout}
           </button>
@@ -263,11 +263,11 @@ export default function DashboardPage() {
 
         {/* بطاقة المحلل */}
         {analyst && (
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 mb-6 flex justify-between items-center">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 mb-6 flex justify-between items-center">
             <div>
-              <p className="text-gray-400 text-xs mb-1">{t.followedAnalyst}</p>
-              <p className="text-white font-bold text-lg">{lang === 'ar' ? analyst.name : (analyst.name_en || analyst.name)}</p>
-              <p className="text-orange-500 text-xs">{analyst.specialization}</p>
+              <p className="text-[var(--text-secondary)] text-xs mb-1">{t.followedAnalyst}</p>
+              <p className="text-[var(--text-primary)] font-bold text-lg">{lang === 'ar' ? analyst.name : (analyst.name_en || analyst.name)}</p>
+              <p className="text-[var(--accent-text)] text-xs">{analyst.specialization}</p>
             </div>
             <div className="flex items-center gap-3">
               <span className={`text-xs font-bold px-3 py-1.5 rounded-lg ${getPlanStyle(user?.plan)}`}>
@@ -275,7 +275,7 @@ export default function DashboardPage() {
               </span>
               <a
                 href={`/analysts/${user?.analyst_id}`}
-                className="text-orange-500 text-xs hover:text-orange-400 transition"
+                className="text-[var(--accent-text)] text-xs hover:text-orange-400 transition"
               >
                 {t.viewPage}
               </a>
@@ -284,22 +284,22 @@ export default function DashboardPage() {
         )}
 
         {/* التبويبات */}
-        <div className="flex border-b border-gray-800 mb-6">
+        <div className="flex border-b border-[var(--border)] mb-6">
           <button
             onClick={() => setActiveTab('recs')}
-            className={`px-4 py-2 text-sm transition ${activeTab === 'recs' ? 'text-orange-500 border-b-2 border-orange-500 font-bold' : 'text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 text-sm transition ${activeTab === 'recs' ? 'text-[var(--accent-text)] border-b-2 border-orange-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           >
             {t.tabRecs} ({recommendations.length})
           </button>
           <button
             onClick={() => setActiveTab('comments')}
-            className={`px-4 py-2 text-sm transition ${activeTab === 'comments' ? 'text-orange-500 border-b-2 border-orange-500 font-bold' : 'text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 text-sm transition ${activeTab === 'comments' ? 'text-[var(--accent-text)] border-b-2 border-orange-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           >
             {t.tabComments}
           </button>
           <button
             onClick={() => setActiveTab('plan')}
-            className={`px-4 py-2 text-sm transition ${activeTab === 'plan' ? 'text-orange-500 border-b-2 border-orange-500 font-bold' : 'text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 text-sm transition ${activeTab === 'plan' ? 'text-[var(--accent-text)] border-b-2 border-orange-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           >
             {t.tabPlan}
           </button>
@@ -313,7 +313,7 @@ export default function DashboardPage() {
                 <button
                   key={s}
                   onClick={() => setFilterStatus(s)}
-                  className={`px-3 py-1.5 text-xs rounded transition ${filterStatus === s ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+                  className={`px-3 py-1.5 text-xs rounded transition ${filterStatus === s ? 'bg-orange-500 text-black font-bold' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                 >
                   {t.filters[s]}
                   {' '}({s === 'all' ? recommendations.length : recommendations.filter(r => r.status === s).length})
@@ -322,14 +322,14 @@ export default function DashboardPage() {
             </div>
 
             {filteredRecs.length === 0 ? (
-              <div className="text-center py-16 text-gray-400">
+              <div className="text-center py-16 text-[var(--text-secondary)]">
                 <p className="text-4xl mb-3">📊</p>
                 <p>{t.noRecs}</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {filteredRecs.map((rec, i) => (
-                  <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                  <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5">
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <div className="flex items-center gap-2 mb-1">
@@ -337,26 +337,26 @@ export default function DashboardPage() {
                           <span className={`text-xs font-bold px-2 py-0.5 rounded ${rec.type === 'شراء' ? 'bg-green-900 text-green-400' : rec.type === 'بيع' ? 'bg-red-900 text-red-400' : 'bg-yellow-900 text-yellow-400'}`}>{rec.type}</span>
                           <span className={`text-xs px-2 py-0.5 rounded ${getStatusStyle(rec.status)}`}>{getStatusLabel(rec.status)}</span>
                         </div>
-                        <p className="text-gray-400 text-xs">{rec.stock_name}</p>
+                        <p className="text-[var(--text-secondary)] text-xs">{rec.stock_name}</p>
                       </div>
-                      <span className="text-gray-400 text-xs">{new Date(rec.created_at).toLocaleDateString(t.dateLocale)}</span>
+                      <span className="text-[var(--text-secondary)] text-xs">{new Date(rec.created_at).toLocaleDateString(t.dateLocale)}</span>
                     </div>
                     <div className="grid grid-cols-3 gap-3 mb-3">
-                      <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-400 text-xs mb-1">{t.entryPrice}</p>
-                        <p className="text-white font-bold text-sm">{rec.entry_price} {t.currency}</p>
+                      <div className="bg-[var(--surface-2)] rounded p-2 text-center">
+                        <p className="text-[var(--text-secondary)] text-xs mb-1">{t.entryPrice}</p>
+                        <p className="text-[var(--text-primary)] font-bold text-sm">{rec.entry_price} {t.currency}</p>
                       </div>
-                      <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-400 text-xs mb-1">{t.target}</p>
+                      <div className="bg-[var(--surface-2)] rounded p-2 text-center">
+                        <p className="text-[var(--text-secondary)] text-xs mb-1">{t.target}</p>
                         <p className="text-green-400 font-bold text-sm">{rec.target_price ? `${rec.target_price} ${t.currency}` : '-'}</p>
                       </div>
-                      <div className="bg-gray-800 rounded p-2 text-center">
-                        <p className="text-gray-400 text-xs mb-1">{t.stopLoss}</p>
+                      <div className="bg-[var(--surface-2)] rounded p-2 text-center">
+                        <p className="text-[var(--text-secondary)] text-xs mb-1">{t.stopLoss}</p>
                         <p className="text-red-400 font-bold text-sm">{rec.stop_loss ? `${rec.stop_loss} ${t.currency}` : '-'}</p>
                       </div>
                     </div>
                     {rec.description && (
-                      <p className="text-gray-400 text-xs leading-relaxed border-t border-gray-800 pt-3">{rec.description}</p>
+                      <p className="text-[var(--text-secondary)] text-xs leading-relaxed border-t border-[var(--border)] pt-3">{rec.description}</p>
                     )}
                     {rec.status === 'success' && rec.result_price && (
                       <div className="mt-3 bg-green-900 bg-opacity-30 rounded p-2 text-center">
@@ -378,13 +378,13 @@ export default function DashboardPage() {
         {activeTab === 'comments' && (
           <div>
             {/* نموذج إضافة ملاحظة */}
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 mb-6">
-              <h3 className="text-white font-bold text-sm mb-3">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 mb-6">
+              <h3 className="text-[var(--text-primary)] font-bold text-sm mb-3">
                 {user?.plan === 'premium' ? t.addPublicComment : t.sendToAnalyst}
               </h3>
               {user?.plan === 'free' ? (
                 <div className="text-center py-4">
-                  <p className="text-gray-400 text-sm mb-3">{t.needsUpgrade}</p>
+                  <p className="text-[var(--text-secondary)] text-sm mb-3">{t.needsUpgrade}</p>
                   <button onClick={() => setActiveTab('plan')} className="bg-orange-500 text-black px-4 py-2 rounded text-sm font-bold">{t.upgradePlan}</button>
                 </div>
               ) : (
@@ -393,7 +393,7 @@ export default function DashboardPage() {
                     value={commentForm.content}
                     onChange={e => setCommentForm({...commentForm, content: e.target.value})}
                     rows={3}
-                    className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm mb-3"
+                    className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm mb-3"
                     placeholder={t.commentPh}
                   />
                   <button onClick={handleAddComment} className="bg-orange-500 text-black px-4 py-2 rounded text-sm font-bold hover:bg-orange-600 transition">{t.send}</button>
@@ -403,28 +403,28 @@ export default function DashboardPage() {
 
             {/* قائمة الملاحظات */}
             {user?.plan !== 'premium' ? (
-              <div className="text-center py-8 text-gray-400">
+              <div className="text-center py-8 text-[var(--text-secondary)]">
                 <p className="text-3xl mb-2">🔒</p>
                 <p className="text-sm">{t.premiumOnly}</p>
                 <button onClick={() => setActiveTab('plan')} className="mt-3 bg-orange-500 text-black px-4 py-2 rounded text-sm font-bold">{t.upgradePremium}</button>
               </div>
             ) : comments.length === 0 ? (
-              <div className="text-center py-8 text-gray-400">
+              <div className="text-center py-8 text-[var(--text-secondary)]">
                 <p className="text-3xl mb-2">💬</p>
                 <p>{t.noComments}</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {comments.map((comment, i) => (
-                  <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                  <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-7 h-7 rounded-full bg-orange-500 flex items-center justify-center text-black font-bold text-xs">{comment.user_name[0]}</div>
                       <div>
-                        <p className="text-white text-sm font-bold">{comment.user_name}</p>
-                        <p className="text-gray-400 text-xs">{new Date(comment.created_at).toLocaleDateString(t.dateLocale)}</p>
+                        <p className="text-[var(--text-primary)] text-sm font-bold">{comment.user_name}</p>
+                        <p className="text-[var(--text-secondary)] text-xs">{new Date(comment.created_at).toLocaleDateString(t.dateLocale)}</p>
                       </div>
                     </div>
-                    <p className="text-gray-300 text-sm">{comment.content}</p>
+                    <p className="text-[var(--text-primary)] text-sm">{comment.content}</p>
                   </div>
                 ))}
               </div>
@@ -435,8 +435,8 @@ export default function DashboardPage() {
         {/* الخطة */}
         {activeTab === 'plan' && (
           <div className="space-y-4">
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 text-center">
-              <p className="text-gray-400 text-sm mb-2">{t.currentPlan}</p>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6 text-center">
+              <p className="text-[var(--text-secondary)] text-sm mb-2">{t.currentPlan}</p>
               <span className={`text-xl font-bold px-4 py-2 rounded-lg ${getPlanStyle(user?.plan)}`}>
                 {getPlanLabel(user?.plan)}
               </span>
@@ -446,15 +446,15 @@ export default function DashboardPage() {
               {t.plans.map(plan => (
                 <div
                   key={plan.value}
-                  className={`bg-gray-900 border rounded-xl p-5 ${user?.plan === plan.value ? 'border-orange-500' : 'border-gray-800'}`}
+                  className={`bg-[var(--bg-card)] border rounded-xl p-5 ${user?.plan === plan.value ? 'border-orange-500' : 'border-[var(--border)]'}`}
                 >
-                  <h3 className={`font-bold text-lg mb-1 ${plan.color === 'orange' ? 'text-orange-500' : plan.color === 'blue' ? 'text-blue-400' : 'text-gray-400'}`}>
+                  <h3 className={`font-bold text-lg mb-1 ${plan.color === 'orange' ? 'text-[var(--accent-text)]' : plan.color === 'blue' ? 'text-blue-400' : 'text-[var(--text-secondary)]'}`}>
                     {plan.label}
                   </h3>
-                  <p className="text-gray-400 text-xs mb-4">{plan.description}</p>
+                  <p className="text-[var(--text-secondary)] text-xs mb-4">{plan.description}</p>
                   <ul className="space-y-1 mb-4">
                     {plan.features.map((f, i) => (
-                      <li key={i} className="text-gray-300 text-xs flex items-center gap-2">
+                      <li key={i} className="text-[var(--text-primary)] text-xs flex items-center gap-2">
                         <span className="text-green-400">✓</span> {f}
                       </li>
                     ))}
@@ -468,7 +468,7 @@ export default function DashboardPage() {
                         (plan.value === 'free') ||
                         (plan.value === 'basic' && user?.plan === 'premium')
                       }
-                      className="w-full bg-gray-700 text-white py-2 rounded-lg text-sm hover:bg-gray-600 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="w-full bg-[var(--surface-3)] text-[var(--text-primary)] py-2 rounded-lg text-sm hover:bg-[var(--surface-3-hover)] transition disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                       {plan.value === 'free' ? t.defaultPlan : t.upgradeToThis}
                     </button>

@@ -127,13 +127,13 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-3xl mx-auto">
 
         {/* العنوان */}
         <div className="text-center mb-8">
-          <h1 className="text-orange-500 font-bold text-3xl mb-2">{tr.title}</h1>
-          <p className="text-gray-400 text-sm">{tr.subtitle}</p>
+          <h1 className="text-[var(--accent-text)] font-bold text-3xl mb-2">{tr.title}</h1>
+          <p className="text-[var(--text-secondary)] text-sm">{tr.subtitle}</p>
         </div>
 
         {/* بطاقات وسائل التواصل */}
@@ -144,18 +144,18 @@ export default function ContactPage() {
               href={card.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gray-900 border border-gray-800 rounded-xl p-5 text-center hover:border-orange-500 transition"
+              className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5 text-center hover:border-orange-500 transition"
             >
               <div className="text-3xl mb-2">{card.icon}</div>
-              <h3 className="text-white font-bold text-sm mb-1">{card.title}</h3>
-              <p className="text-gray-400 text-xs">{card.value}</p>
+              <h3 className="text-[var(--text-primary)] font-bold text-sm mb-1">{card.title}</h3>
+              <p className="text-[var(--text-secondary)] text-xs">{card.value}</p>
             </a>
           ))}
         </div>
 
         {/* نموذج الاتصال */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h2 className="text-orange-500 font-bold text-lg mb-5">{tr.formTitle}</h2>
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6">
+          <h2 className="text-[var(--accent-text)] font-bold text-lg mb-5">{tr.formTitle}</h2>
 
           {status === 'success' && (
             <div className="bg-green-900 bg-opacity-30 border border-green-700 text-green-400 rounded-lg p-4 mb-5 text-sm text-center">
@@ -172,18 +172,18 @@ export default function ContactPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-400 text-xs mb-2">{tr.nameLabel}</label>
+                <label className="block text-[var(--text-secondary)] text-xs mb-2">{tr.nameLabel}</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
                   placeholder={tr.namePlaceholder}
-                  className="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:border-orange-500 focus:outline-none transition"
+                  className="w-full bg-[var(--bg-page)] border border-[var(--border-strong)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-sm focus:border-orange-500 focus:outline-none transition"
                 />
               </div>
               <div>
-                <label className="block text-gray-400 text-xs mb-2">{tr.emailLabel}</label>
+                <label className="block text-[var(--text-secondary)] text-xs mb-2">{tr.emailLabel}</label>
                 <input
                   type="email"
                   value={email}
@@ -191,31 +191,31 @@ export default function ContactPage() {
                   required
                   placeholder="example@email.com"
                   dir="ltr"
-                  className={`w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:border-orange-500 focus:outline-none transition ${lang === 'ar' ? 'text-right' : 'text-left'}`}
+                  className={`w-full bg-[var(--bg-page)] border border-[var(--border-strong)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-sm focus:border-orange-500 focus:outline-none transition ${lang === 'ar' ? 'text-right' : 'text-left'}`}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-gray-400 text-xs mb-2">{tr.subjectLabel}</label>
+              <label className="block text-[var(--text-secondary)] text-xs mb-2">{tr.subjectLabel}</label>
               <input
                 type="text"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder={tr.subjectPlaceholder}
-                className="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:border-orange-500 focus:outline-none transition"
+                className="w-full bg-[var(--bg-page)] border border-[var(--border-strong)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-sm focus:border-orange-500 focus:outline-none transition"
               />
             </div>
 
             <div>
-              <label className="block text-gray-400 text-xs mb-2">{tr.messageLabel}</label>
+              <label className="block text-[var(--text-secondary)] text-xs mb-2">{tr.messageLabel}</label>
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 required
                 rows={6}
                 placeholder={tr.messagePlaceholder}
-                className="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:border-orange-500 focus:outline-none transition resize-none"
+                className="w-full bg-[var(--bg-page)] border border-[var(--border-strong)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-sm focus:border-orange-500 focus:outline-none transition resize-none"
               />
             </div>
 
@@ -230,7 +230,7 @@ export default function ContactPage() {
         </div>
 
         {/* ملاحظة أسفل النموذج */}
-        <p className="text-center text-gray-500 text-xs mt-6">{tr.note}</p>
+        <p className="text-center text-[var(--text-tertiary)] text-xs mt-6">{tr.note}</p>
 
       </div>
     </main>

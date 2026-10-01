@@ -9,7 +9,7 @@ const RISK_COLORS: Record<string, string> = {
 
 export default function RiskBadge({ level, label, className = '' }: { level: string; label?: string; className?: string }) {
   return (
-    <span className={`inline-block text-xs font-bold border rounded px-2 py-0.5 ${RISK_COLORS[level] || 'text-gray-400 border-gray-700'} ${className}`}>
+    <span className={`inline-block text-xs font-bold border rounded px-2 py-0.5 ${RISK_COLORS[level] || 'text-[var(--text-secondary)] border-[var(--border-strong)]'} ${className}`}>
       {label ?? level}
     </span>
   );

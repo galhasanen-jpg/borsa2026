@@ -179,8 +179,8 @@ export default function StockAnalysis({
 
   if (loading) {
     return (
-      <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-        <h3 className="text-orange-500 font-bold text-sm mb-3">{t.title}</h3>
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
+        <h3 className="text-[var(--accent-text)] font-bold text-sm mb-3">{t.title}</h3>
         <div className="space-y-2">
           <SkeletonLine className="w-full" />
           <SkeletonLine className="w-3/4" />
@@ -202,9 +202,9 @@ export default function StockAnalysis({
   // لا يوجد أي شيء نعرضه إطلاقاً
   if (!hasHistory && todayChange === null && !(fv && fairValue > 0)) {
     return (
-      <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-        <h3 className="text-orange-500 font-bold text-sm mb-3">{t.title}</h3>
-        <p className="text-gray-400 text-sm text-center py-6">{t.insufficient}</p>
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
+        <h3 className="text-[var(--accent-text)] font-bold text-sm mb-3">{t.title}</h3>
+        <p className="text-[var(--text-secondary)] text-sm text-center py-6">{t.insufficient}</p>
       </div>
     );
   }
@@ -304,8 +304,8 @@ export default function StockAnalysis({
     summary = `${todayText}.${fairText}`.trim();
   }
 
-  const todayColor = todayChange === null ? 'text-gray-300' : todayChange >= 0 ? 'text-green-400' : 'text-red-400';
-  const trendColor = trend === 'up' ? 'text-green-400' : trend === 'down' ? 'text-red-400' : 'text-gray-300';
+  const todayColor = todayChange === null ? 'text-[var(--text-primary)]' : todayChange >= 0 ? 'text-green-400' : 'text-red-400';
+  const trendColor = trend === 'up' ? 'text-green-400' : trend === 'down' ? 'text-red-400' : 'text-[var(--text-primary)]';
   const perfColor = periodChange >= 0 ? 'text-green-400' : 'text-red-400';
 
   // بطاقة معلومة موحّدة الشكل
@@ -322,31 +322,31 @@ export default function StockAnalysis({
     valueColor?: string;
     desc: string;
   }) => (
-    <div className="bg-gray-800 rounded-lg p-3">
+    <div className="bg-[var(--surface-2)] rounded-lg p-3">
       <div className="flex items-center gap-2 mb-1">
         <span className="text-base">{icon}</span>
-        <p className="text-gray-400 text-xs">{label}</p>
+        <p className="text-[var(--text-secondary)] text-xs">{label}</p>
       </div>
-      <p className={`font-bold text-sm ${valueColor || 'text-white'}`}>{value}</p>
-      <p className="text-gray-400 text-xs mt-1 leading-relaxed">{desc}</p>
+      <p className={`font-bold text-sm ${valueColor || 'text-[var(--text-primary)]'}`}>{value}</p>
+      <p className="text-[var(--text-secondary)] text-xs mt-1 leading-relaxed">{desc}</p>
     </div>
   );
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
 
       {/* العنوان + التقييم العام */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-orange-500 font-bold text-sm">{t.title}</h3>
+        <h3 className="text-[var(--accent-text)] font-bold text-sm">{t.title}</h3>
         <span className={`text-xs font-bold px-3 py-1 rounded-full border ${verdictStyle}`}>
           {verdictLabel}
         </span>
       </div>
 
       {/* الخلاصة */}
-      <div className="bg-gray-800 bg-opacity-50 border-r-2 border-orange-500 rounded-lg p-3 mb-4">
+      <div className="bg-[var(--surface-2)] bg-opacity-50 border-r-2 border-orange-500 rounded-lg p-3 mb-4">
         <p className="text-orange-400 text-xs font-bold mb-1">{t.summaryLabel}</p>
-        <p className="text-gray-200 text-xs leading-relaxed">{summary}</p>
+        <p className="text-[var(--text-primary)] text-xs leading-relaxed">{summary}</p>
       </div>
 
       {/* البطاقات */}
@@ -382,24 +382,24 @@ export default function StockAnalysis({
             />
 
             {/* موقع السعر ضمن النطاق مع شريط */}
-            <div className="bg-gray-800 rounded-lg p-3 sm:col-span-2">
+            <div className="bg-[var(--surface-2)] rounded-lg p-3 sm:col-span-2">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-base">🎯</span>
-                <p className="text-gray-400 text-xs">{t.range}</p>
+                <p className="text-[var(--text-secondary)] text-xs">{t.range}</p>
               </div>
               <div dir="ltr" className="mt-1">
-                <div className="relative h-2 bg-gray-700 rounded-full">
+                <div className="relative h-2 bg-[var(--surface-3)] rounded-full">
                   <div
-                    className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-orange-500 border-2 border-gray-900"
+                    className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-orange-500 border-2 border-[var(--bg-card)]"
                     style={{ left: `${Math.max(0, Math.min(100, pricePosition))}%` }}
                   />
                 </div>
                 <div className="flex justify-between mt-1.5 text-xs">
-                  <span className="text-gray-400">{t.low} {low.toFixed(2)}</span>
-                  <span className="text-gray-400">{t.high} {high.toFixed(2)}</span>
+                  <span className="text-[var(--text-secondary)]">{t.low} {low.toFixed(2)}</span>
+                  <span className="text-[var(--text-secondary)]">{t.high} {high.toFixed(2)}</span>
                 </div>
               </div>
-              <p className="text-gray-400 text-xs mt-2 leading-relaxed">
+              <p className="text-[var(--text-secondary)] text-xs mt-2 leading-relaxed">
                 {pricePosition > 70 ? t.rangeHigh : pricePosition < 30 ? t.rangeLow : t.rangeMid}
               </p>
             </div>
@@ -417,7 +417,7 @@ export default function StockAnalysis({
                 icon="🔥"
                 label={t.volume}
                 value={volSignal === 'high' ? t.volHigh : volSignal === 'low' ? t.volLow : t.volNormal}
-                valueColor={volSignal === 'high' ? 'text-orange-400' : 'text-gray-300'}
+                valueColor={volSignal === 'high' ? 'text-orange-400' : 'text-[var(--text-primary)]'}
                 desc={volSignal === 'high' ? t.volHighDesc : volSignal === 'low' ? t.volLowDesc : t.volNormalDesc}
               />
             )}
@@ -426,13 +426,13 @@ export default function StockAnalysis({
 
         {/* القيمة العادلة */}
         {fv && fairValue > 0 && (
-          <div className="bg-gray-800 rounded-lg p-3 sm:col-span-2">
+          <div className="bg-[var(--surface-2)] rounded-lg p-3 sm:col-span-2">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-base">💎</span>
-              <p className="text-gray-400 text-xs">{t.fair}</p>
+              <p className="text-[var(--text-secondary)] text-xs">{t.fair}</p>
             </div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-              <p className="text-white text-sm font-bold">
+              <p className="text-[var(--text-primary)] text-sm font-bold">
                 {t.fairValueLabel} {fairValue.toFixed(2)} {t.pound}
               </p>
               {fairGap !== null && (
@@ -442,13 +442,13 @@ export default function StockAnalysis({
               )}
             </div>
             {fv.recommendation && (
-              <p className="text-gray-400 text-xs mt-1">
+              <p className="text-[var(--text-secondary)] text-xs mt-1">
                 {t.analystRec} <span className="text-orange-400 font-bold">{fv.recommendation}</span>
                 {fv.analyst ? ` — ${fv.analyst}` : ''}
               </p>
             )}
             {fairGap !== null && (
-              <p className="text-gray-400 text-xs mt-1 leading-relaxed">
+              <p className="text-[var(--text-secondary)] text-xs mt-1 leading-relaxed">
                 {fairGap > 2 ? `${t.fairUnder} ${fairGap.toFixed(1)}%` : fairGap < -2 ? `${t.fairOver} ${Math.abs(fairGap).toFixed(1)}%` : t.fairEqual}
               </p>
             )}
@@ -459,11 +459,11 @@ export default function StockAnalysis({
 
       {/* ملاحظة عند ندرة التاريخ */}
       {!hasHistory && (
-        <p className="text-gray-500 text-xs mt-3 leading-relaxed">{t.limitedNote}</p>
+        <p className="text-[var(--text-tertiary)] text-xs mt-3 leading-relaxed">{t.limitedNote}</p>
       )}
 
       {/* تنبيه */}
-      <p className="text-gray-500 text-xs mt-4 leading-relaxed border-t border-gray-800 pt-3">
+      <p className="text-[var(--text-tertiary)] text-xs mt-4 leading-relaxed border-t border-[var(--border)] pt-3">
         {t.disclaimer}
       </p>
 

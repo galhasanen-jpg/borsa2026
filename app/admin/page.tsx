@@ -1343,18 +1343,18 @@ export default function AdminPage() {
     { label: t.columns.egx30, key: 'egx30' },
   ];
   return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-7xl mx-auto">
 
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-orange-500 font-bold text-xl">{t.title}</h1>
+          <h1 className="text-[var(--accent-text)] font-bold text-xl">{t.title}</h1>
           <div className="flex items-center gap-3">
-            <span className="text-gray-400 text-xs">{t.updatedCount(prices.length, stocks.length)}</span>
+            <span className="text-[var(--text-secondary)] text-xs">{t.updatedCount(prices.length, stocks.length)}</span>
             <a
               href="https://vercel.com/galhasanen-jpgs-projects/borsa2026cd/analytics"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gray-800 text-gray-300 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-700 hover:text-orange-500 transition"
+              className="bg-[var(--surface-2)] text-[var(--text-primary)] px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-[var(--surface-3-hover)] hover:text-[var(--accent-text)] transition"
             >
               {t.analytics}
             </a>
@@ -1367,24 +1367,24 @@ export default function AdminPage() {
 
         {/* التبويبات */}
         <div className="flex gap-2 mb-6 flex-wrap">
-          <button onClick={() => setActiveTab('prices')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'prices' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>{t.tabs.prices}</button>
-          <button onClick={() => setActiveTab('history')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'history' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>{t.tabs.history}</button>
-          <button onClick={() => setActiveTab('analysts')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'analysts' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
+          <button onClick={() => setActiveTab('prices')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'prices' ? 'bg-orange-500 text-black font-bold' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>{t.tabs.prices}</button>
+          <button onClick={() => setActiveTab('history')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'history' ? 'bg-orange-500 text-black font-bold' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>{t.tabs.history}</button>
+          <button onClick={() => setActiveTab('analysts')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'analysts' ? 'bg-orange-500 text-black font-bold' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
             {t.tabs.analysts}
             {pendingAnalysts.length > 0 && <span className="mr-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">{pendingAnalysts.length}</span>}
           </button>
-          <button onClick={() => setActiveTab('followers')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'followers' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
+          <button onClick={() => setActiveTab('followers')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'followers' ? 'bg-orange-500 text-black font-bold' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
             {t.tabs.followers}
             {pendingFollowers.length > 0 && <span className="mr-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">{pendingFollowers.length}</span>}
           </button>
-          <button onClick={() => setActiveTab('visitors')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'visitors' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
+          <button onClick={() => setActiveTab('visitors')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'visitors' ? 'bg-orange-500 text-black font-bold' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
             {t.tabs.visitors}
             {pendingSiteUsers.length > 0 && <span className="mr-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">{pendingSiteUsers.length}</span>}
           </button>
-          <button onClick={() => setActiveTab('aiAnalyst')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'aiAnalyst' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
+          <button onClick={() => setActiveTab('aiAnalyst')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'aiAnalyst' ? 'bg-orange-500 text-black font-bold' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
             {t.tabs.aiAnalyst}
           </button>
-          <button onClick={() => setActiveTab('funds')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'funds' ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
+          <button onClick={() => setActiveTab('funds')} className={`px-4 py-2 text-sm rounded transition ${activeTab === 'funds' ? 'bg-orange-500 text-black font-bold' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
             {t.tabs.funds}
           </button>
         </div>
@@ -1393,36 +1393,36 @@ export default function AdminPage() {
         {activeTab === 'prices' && (
           <>
             {editStock && (
-              <div className="bg-gray-900 border border-orange-500 rounded-lg p-6 mb-6">
-                <h2 className="text-orange-500 font-bold mb-4">{t.editing(editStock.symbol, editStock.name)}</h2>
+              <div className="bg-[var(--bg-card)] border border-orange-500 rounded-lg p-6 mb-6">
+                <h2 className="text-[var(--accent-text)] font-bold mb-4">{t.editing(editStock.symbol, editStock.name)}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                  <div><label className="text-gray-400 text-xs mb-1 block">{t.price}</label><input value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder="126.00" /></div>
-                  <div><label className="text-gray-400 text-xs mb-1 block">{t.changePercent}</label><input value={formData.change_percent} onChange={e => setFormData({...formData, change_percent: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder={t.changePercentPh} /></div>
-                  <div><label className="text-gray-400 text-xs mb-1 block">{t.volume}</label><input value={formData.volume} onChange={e => setFormData({...formData, volume: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder="1,234,567" /></div>
+                  <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.price}</label><input value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" placeholder="126.00" /></div>
+                  <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.changePercent}</label><input value={formData.change_percent} onChange={e => setFormData({...formData, change_percent: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" placeholder={t.changePercentPh} /></div>
+                  <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.volume}</label><input value={formData.volume} onChange={e => setFormData({...formData, volume: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" placeholder="1,234,567" /></div>
                   <div className="md:col-span-3">
-                    <label className="text-gray-400 text-xs mb-1 block">{t.isinLabel}</label>
-                    <input value={formData.isin} onChange={e => setFormData({...formData, isin: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm font-mono" placeholder={t.isinPh} dir="ltr" />
-                    <p className="text-gray-500 text-xs mt-1">{t.isinHint}</p>
+                    <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.isinLabel}</label>
+                    <input value={formData.isin} onChange={e => setFormData({...formData, isin: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm font-mono" placeholder={t.isinPh} dir="ltr" />
+                    <p className="text-[var(--text-tertiary)] text-xs mt-1">{t.isinHint}</p>
                   </div>
                 </div>
                 <div className="flex gap-3">
                   <button onClick={handleSave} className="bg-orange-500 text-black px-6 py-2 rounded font-bold text-sm hover:bg-orange-600">{t.save}</button>
-                  <button onClick={() => setEditStock(null)} className="bg-gray-700 text-white px-6 py-2 rounded text-sm hover:bg-gray-600">{t.cancel}</button>
+                  <button onClick={() => setEditStock(null)} className="bg-[var(--surface-3)] text-[var(--text-primary)] px-6 py-2 rounded text-sm hover:bg-[var(--surface-3-hover)]">{t.cancel}</button>
                 </div>
               </div>
             )}
 
             {showAddStock && (
-              <div className="bg-gray-900 border border-orange-500 rounded-lg p-6 mb-6">
-                <h2 className="text-orange-500 font-bold mb-4">{t.addStockTitle}</h2>
+              <div className="bg-[var(--bg-card)] border border-orange-500 rounded-lg p-6 mb-6">
+                <h2 className="text-[var(--accent-text)] font-bold mb-4">{t.addStockTitle}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label className="text-gray-400 text-xs mb-1 block">{t.symbolField}</label>
-                    <input value={newStock.symbol} onChange={e => setNewStock({...newStock, symbol: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm font-mono" placeholder={t.symbolPh} dir="ltr" />
+                    <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.symbolField}</label>
+                    <input value={newStock.symbol} onChange={e => setNewStock({...newStock, symbol: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm font-mono" placeholder={t.symbolPh} dir="ltr" />
                   </div>
                   <div>
-                    <label className="text-gray-400 text-xs mb-1 block">{t.sectorField}</label>
-                    <select value={newStock.sector_id} onChange={e => setNewStock({...newStock, sector_id: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm">
+                    <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.sectorField}</label>
+                    <select value={newStock.sector_id} onChange={e => setNewStock({...newStock, sector_id: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm">
                       <option value="">{t.sectorPh}</option>
                       {sectors.map(sec => (
                         <option key={sec.id} value={sec.id}>{lang === 'ar' ? sec.name : sec.name_en}</option>
@@ -1430,41 +1430,41 @@ export default function AdminPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-gray-400 text-xs mb-1 block">{t.nameArField}</label>
-                    <input value={newStock.name} onChange={e => setNewStock({...newStock, name: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                    <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.nameArField}</label>
+                    <input value={newStock.name} onChange={e => setNewStock({...newStock, name: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" />
                   </div>
                   <div>
-                    <label className="text-gray-400 text-xs mb-1 block">{t.nameEnField}</label>
-                    <input value={newStock.name_en} onChange={e => setNewStock({...newStock, name_en: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" dir="ltr" />
+                    <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.nameEnField}</label>
+                    <input value={newStock.name_en} onChange={e => setNewStock({...newStock, name_en: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" dir="ltr" />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="text-gray-400 text-xs mb-1 block">{t.isinLabel}</label>
-                    <input value={newStock.isin} onChange={e => setNewStock({...newStock, isin: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm font-mono" placeholder={t.isinPh} dir="ltr" />
-                    <p className="text-gray-500 text-xs mt-1">{t.isinHint}</p>
+                    <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.isinLabel}</label>
+                    <input value={newStock.isin} onChange={e => setNewStock({...newStock, isin: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm font-mono" placeholder={t.isinPh} dir="ltr" />
+                    <p className="text-[var(--text-tertiary)] text-xs mt-1">{t.isinHint}</p>
                   </div>
                 </div>
                 {addStockError && <p className="text-red-400 text-sm mb-3">{addStockError}</p>}
                 <div className="flex gap-3">
                   <button onClick={handleAddStock} className="bg-orange-500 text-black px-6 py-2 rounded font-bold text-sm hover:bg-orange-600">{t.addStockSubmit}</button>
-                  <button onClick={() => { setShowAddStock(false); setAddStockError(''); }} className="bg-gray-700 text-white px-6 py-2 rounded text-sm hover:bg-gray-600">{t.cancel}</button>
+                  <button onClick={() => { setShowAddStock(false); setAddStockError(''); }} className="bg-[var(--surface-3)] text-[var(--text-primary)] px-6 py-2 rounded text-sm hover:bg-[var(--surface-3-hover)]">{t.cancel}</button>
                 </div>
               </div>
             )}
 
             <div className="mb-4 flex flex-col md:flex-row gap-3 md:items-center">
-              <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.searchPh} className="bg-gray-900 text-white border border-gray-700 rounded px-4 py-2 w-full md:w-96 text-sm" />
+              <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.searchPh} className="bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-4 py-2 w-full md:w-96 text-sm" />
               {!showAddStock && (
                 <button onClick={() => setShowAddStock(true)} className="bg-orange-500 text-black px-4 py-2 rounded font-bold text-sm hover:bg-orange-600 w-fit">{t.addStockBtn}</button>
               )}
             </div>
-            <p className="text-gray-500 text-xs mb-1">💡 {t.quoteTimeHint}</p>
-            <p className="text-gray-500 text-xs mb-3">💡 {t.egx30Hint}</p>
-            <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
+            <p className="text-[var(--text-tertiary)] text-xs mb-1">💡 {t.quoteTimeHint}</p>
+            <p className="text-[var(--text-tertiary)] text-xs mb-3">💡 {t.egx30Hint}</p>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-800 text-gray-400 text-xs">
+                  <tr className="border-b border-[var(--border)] text-[var(--text-secondary)] text-xs">
                     {columns.map(col => (
-                      <th key={col.key} onClick={() => handleSort(col.key)} className="px-4 py-3 text-right cursor-pointer hover:text-orange-500 transition select-none">
+                      <th key={col.key} onClick={() => handleSort(col.key)} className="px-4 py-3 text-right cursor-pointer hover:text-[var(--accent-text)] transition select-none">
                         {col.label} {sortBy === col.key ? (sortDir === 'asc' ? '▲' : '▼') : ''}
                       </th>
                     ))}
@@ -1476,19 +1476,19 @@ export default function AdminPage() {
                     const price = getPrice(stock.symbol);
                     const up = price ? parseFloat(price.change_percent) >= 0 : true;
                     return (
-                      <tr key={i} className="border-b border-gray-800 hover:bg-gray-800 transition">
+                      <tr key={i} className="border-b border-[var(--border)] hover:bg-[var(--surface-2)] transition">
                         <td className="px-4 py-3"><span className="text-orange-400 font-bold text-xs">{stock.symbol}</span></td>
-                        <td className="px-4 py-3">{stock.isin ? <span className="text-gray-400 text-xs font-mono" dir="ltr">{stock.isin}</span> : <span className="text-gray-500 text-xs">-</span>}</td>
-                        <td className="px-4 py-3"><p className="text-white text-xs">{stock.name}</p><p className="text-gray-400 text-xs">{stock.name_en}</p></td>
-                        <td className="px-4 py-3"><span className="text-xs bg-gray-800 text-gray-400 px-2 py-0.5 rounded">{stock.sector}</span></td>
-                        <td className="px-4 py-3">{price ? <span className="text-white font-mono text-xs">{price.price} ج</span> : <span className="text-gray-500 text-xs">{t.notSet}</span>}</td>
-                        <td className="px-4 py-3">{price ? <span className={`text-xs font-bold ${up ? 'text-green-400' : 'text-red-400'}`}>{up ? '▲' : '▼'} {Math.abs(parseFloat(price.change_percent))}%</span> : <span className="text-gray-500 text-xs">-</span>}</td>
-                        <td className="px-4 py-3">{price ? <span className="text-gray-400 text-xs">{new Date(price.updated_at).toLocaleString(t.dateLocale)}</span> : <span className="text-gray-500 text-xs">-</span>}</td>
+                        <td className="px-4 py-3">{stock.isin ? <span className="text-[var(--text-secondary)] text-xs font-mono" dir="ltr">{stock.isin}</span> : <span className="text-[var(--text-tertiary)] text-xs">-</span>}</td>
+                        <td className="px-4 py-3"><p className="text-[var(--text-primary)] text-xs">{stock.name}</p><p className="text-[var(--text-secondary)] text-xs">{stock.name_en}</p></td>
+                        <td className="px-4 py-3"><span className="text-xs bg-[var(--surface-2)] text-[var(--text-secondary)] px-2 py-0.5 rounded">{stock.sector}</span></td>
+                        <td className="px-4 py-3">{price ? <span className="text-[var(--text-primary)] font-mono text-xs">{price.price} ج</span> : <span className="text-[var(--text-tertiary)] text-xs">{t.notSet}</span>}</td>
+                        <td className="px-4 py-3">{price ? <span className={`text-xs font-bold ${up ? 'text-green-400' : 'text-red-400'}`}>{up ? '▲' : '▼'} {Math.abs(parseFloat(price.change_percent))}%</span> : <span className="text-[var(--text-tertiary)] text-xs">-</span>}</td>
+                        <td className="px-4 py-3">{price ? <span className="text-[var(--text-secondary)] text-xs">{new Date(price.updated_at).toLocaleString(t.dateLocale)}</span> : <span className="text-[var(--text-tertiary)] text-xs">-</span>}</td>
                         <td className="px-4 py-3">
                           {price?.quote_time ? (() => {
                             const stale = Date.now() - new Date(price.quote_time).getTime() > 3 * 24 * 60 * 60 * 1000;
-                            return <span className={`text-xs ${stale ? 'text-red-400' : 'text-gray-400'}`}>{new Date(price.quote_time).toLocaleString(t.dateLocale)}</span>;
-                          })() : <span className="text-gray-500 text-xs">-</span>}
+                            return <span className={`text-xs ${stale ? 'text-red-400' : 'text-[var(--text-secondary)]'}`}>{new Date(price.quote_time).toLocaleString(t.dateLocale)}</span>;
+                          })() : <span className="text-[var(--text-tertiary)] text-xs">-</span>}
                         </td>
                         <td className="px-4 py-3">
                           <input type="checkbox" checked={!!stock.is_egx30} onChange={() => handleToggleEgx30(stock)} className="w-4 h-4 accent-orange-500 cursor-pointer" />
@@ -1511,9 +1511,9 @@ export default function AdminPage() {
         {/* تبويب البيانات التاريخية */}
         {activeTab === 'history' && (
           <div className="space-y-6">
-            <div className="bg-gray-900 border border-orange-900 rounded-lg p-6">
-              <h2 className="text-orange-500 font-bold mb-2">{t.yahooSyncTitle}</h2>
-              <p className="text-gray-400 text-xs mb-4 leading-relaxed">{t.yahooSyncDesc}</p>
+            <div className="bg-[var(--bg-card)] border border-orange-900 rounded-lg p-6">
+              <h2 className="text-[var(--accent-text)] font-bold mb-2">{t.yahooSyncTitle}</h2>
+              <p className="text-[var(--text-secondary)] text-xs mb-4 leading-relaxed">{t.yahooSyncDesc}</p>
               <button
                 onClick={handleYahooSync}
                 disabled={syncing || stocks.length === 0}
@@ -1523,7 +1523,7 @@ export default function AdminPage() {
               </button>
 
               {syncing && (
-                <div className="mt-4 w-full bg-gray-800 rounded-full h-2 overflow-hidden">
+                <div className="mt-4 w-full bg-[var(--surface-2)] rounded-full h-2 overflow-hidden">
                   <div
                     className="bg-orange-500 h-2 transition-all"
                     style={{ width: `${syncProgress.total > 0 ? (syncProgress.done / syncProgress.total) * 100 : 0}%` }}
@@ -1535,29 +1535,29 @@ export default function AdminPage() {
                 <div className="mt-4">
                   <p className="text-green-400 text-sm font-bold">{t.yahooSyncDone(syncSuccessCount, syncProgress.total)}</p>
                   {syncFailed.length > 0 && (
-                    <p className="text-gray-400 text-xs mt-2">{t.yahooSyncFailedList} {syncFailed.join(', ')}</p>
+                    <p className="text-[var(--text-secondary)] text-xs mt-2">{t.yahooSyncFailedList} {syncFailed.join(', ')}</p>
                   )}
                 </div>
               )}
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-              <h2 className="text-orange-500 font-bold mb-4">{t.manualEntry}</h2>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
+              <h2 className="text-[var(--accent-text)] font-bold mb-4">{t.manualEntry}</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                <div><label className="text-gray-400 text-xs mb-1 block">{t.symbolLabel}</label><input value={historySymbol} onChange={e => setHistorySymbol(e.target.value)} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder="COMI" /></div>
-                <div><label className="text-gray-400 text-xs mb-1 block">{t.dateLabel}</label><input type="date" value={historyDate} onChange={e => setHistoryDate(e.target.value)} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" /></div>
-                <div><label className="text-gray-400 text-xs mb-1 block">{t.openPrice}</label><input value={historyForm.open} onChange={e => setHistoryForm({...historyForm, open: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder="125.00" /></div>
-                <div><label className="text-gray-400 text-xs mb-1 block">{t.highPrice}</label><input value={historyForm.high} onChange={e => setHistoryForm({...historyForm, high: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder="128.00" /></div>
-                <div><label className="text-gray-400 text-xs mb-1 block">{t.lowPrice}</label><input value={historyForm.low} onChange={e => setHistoryForm({...historyForm, low: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder="123.00" /></div>
-                <div><label className="text-gray-400 text-xs mb-1 block">{t.closePrice}</label><input value={historyForm.close} onChange={e => setHistoryForm({...historyForm, close: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder="126.00" /></div>
-                <div><label className="text-gray-400 text-xs mb-1 block">{t.volume}</label><input value={historyForm.volume} onChange={e => setHistoryForm({...historyForm, volume: e.target.value})} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" placeholder="1234567" /></div>
+                <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.symbolLabel}</label><input value={historySymbol} onChange={e => setHistorySymbol(e.target.value)} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" placeholder="COMI" /></div>
+                <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.dateLabel}</label><input type="date" value={historyDate} onChange={e => setHistoryDate(e.target.value)} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" /></div>
+                <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.openPrice}</label><input value={historyForm.open} onChange={e => setHistoryForm({...historyForm, open: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" placeholder="125.00" /></div>
+                <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.highPrice}</label><input value={historyForm.high} onChange={e => setHistoryForm({...historyForm, high: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" placeholder="128.00" /></div>
+                <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.lowPrice}</label><input value={historyForm.low} onChange={e => setHistoryForm({...historyForm, low: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" placeholder="123.00" /></div>
+                <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.closePrice}</label><input value={historyForm.close} onChange={e => setHistoryForm({...historyForm, close: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" placeholder="126.00" /></div>
+                <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.volume}</label><input value={historyForm.volume} onChange={e => setHistoryForm({...historyForm, volume: e.target.value})} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" placeholder="1234567" /></div>
               </div>
               <button onClick={handleSaveHistory} className="bg-orange-500 text-black px-6 py-2 rounded font-bold text-sm hover:bg-orange-600">{t.save}</button>
             </div>
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-              <h2 className="text-orange-500 font-bold mb-2">{t.bulkImport}</h2>
-              <p className="text-gray-400 text-xs mb-4">{t.bulkFormat}</p>
-              <textarea value={bulkHistory} onChange={e => setBulkHistory(e.target.value)} rows={6} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm font-mono mb-4" placeholder="COMI, 2024-01-15, 120.00, 125.00, 119.00, 123.00, 1500000" />
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
+              <h2 className="text-[var(--accent-text)] font-bold mb-2">{t.bulkImport}</h2>
+              <p className="text-[var(--text-secondary)] text-xs mb-4">{t.bulkFormat}</p>
+              <textarea value={bulkHistory} onChange={e => setBulkHistory(e.target.value)} rows={6} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm font-mono mb-4" placeholder="COMI, 2024-01-15, 120.00, 125.00, 119.00, 123.00, 1500000" />
               <button onClick={handleBulkImport} className="bg-orange-500 text-black px-6 py-2 rounded font-bold text-sm hover:bg-orange-600">{t.import}</button>
             </div>
           </div>
@@ -1566,15 +1566,15 @@ export default function AdminPage() {
         {activeTab === 'analysts' && (
           <div className="space-y-6">
             {pendingAnalysts.length > 0 && (
-              <div className="bg-gray-900 border border-red-800 rounded-lg p-4">
+              <div className="bg-[var(--bg-card)] border border-red-800 rounded-lg p-4">
                 <h2 className="text-red-400 font-bold mb-4">{t.pendingRequests(pendingAnalysts.length)}</h2>
                 <div className="space-y-3">
                   {pendingAnalysts.map((analyst, i) => (
-                    <div key={i} className="bg-gray-800 rounded-lg p-4 flex justify-between items-start">
+                    <div key={i} className="bg-[var(--surface-2)] rounded-lg p-4 flex justify-between items-start">
                       <div>
-                        <p className="text-white font-bold text-sm">{analyst.name}</p>
-                        <p className="text-orange-500 text-xs">{analyst.specialization}</p>
-                        <p className="text-gray-400 text-xs mt-1">{analyst.bio}</p>
+                        <p className="text-[var(--text-primary)] font-bold text-sm">{analyst.name}</p>
+                        <p className="text-[var(--accent-text)] text-xs">{analyst.specialization}</p>
+                        <p className="text-[var(--text-secondary)] text-xs mt-1">{analyst.bio}</p>
                       </div>
                       <div className="flex gap-2">
                         <button onClick={() => handleApproveAnalyst(analyst.id)} className="bg-green-900 text-green-400 px-3 py-1.5 rounded text-xs font-bold hover:bg-green-800">{t.approve}</button>
@@ -1586,18 +1586,18 @@ export default function AdminPage() {
               </div>
             )}
 
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-              <h2 className="text-orange-500 font-bold mb-4">{t.activeAnalysts(analysts.length)}</h2>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
+              <h2 className="text-[var(--accent-text)] font-bold mb-4">{t.activeAnalysts(analysts.length)}</h2>
               <div className="space-y-3">
                 {analysts.map((analyst, i) => (
-                  <div key={i} className={`bg-gray-800 rounded-lg p-4 cursor-pointer transition ${selectedAnalyst?.id === analyst.id ? 'border border-orange-500' : ''}`}
+                  <div key={i} className={`bg-[var(--surface-2)] rounded-lg p-4 cursor-pointer transition ${selectedAnalyst?.id === analyst.id ? 'border border-orange-500' : ''}`}
                     onClick={() => { setSelectedAnalyst(analyst); fetchRecommendations(analyst.id); setShowAddRec(false); }}>
                     <div className="flex justify-between items-center">
                       <div>
-                        <p className="text-white font-bold text-sm">{analyst.name}</p>
-                        <p className="text-orange-500 text-xs">{analyst.specialization}</p>
+                        <p className="text-[var(--text-primary)] font-bold text-sm">{analyst.name}</p>
+                        <p className="text-[var(--accent-text)] text-xs">{analyst.specialization}</p>
                       </div>
-                      <span className="text-gray-400 text-xs">{t.clickToManage}</span>
+                      <span className="text-[var(--text-secondary)] text-xs">{t.clickToManage}</span>
                     </div>
                   </div>
                 ))}
@@ -1605,45 +1605,45 @@ export default function AdminPage() {
             </div>
 
             {selectedAnalyst && (
-              <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+              <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-orange-500 font-bold">{t.recsOf(selectedAnalyst.name, recommendations.length)}</h2>
+                  <h2 className="text-[var(--accent-text)] font-bold">{t.recsOf(selectedAnalyst.name, recommendations.length)}</h2>
                   <button onClick={() => setShowAddRec(!showAddRec)} className="bg-orange-500 text-black px-3 py-1.5 rounded text-xs font-bold hover:bg-orange-600">
                     {showAddRec ? t.cancel : t.addRec}
                   </button>
                 </div>
 
                 {showAddRec && (
-                  <div className="bg-gray-800 rounded-lg p-4 mb-4 border border-gray-700">
+                  <div className="bg-[var(--surface-2)] rounded-lg p-4 mb-4 border border-[var(--border-strong)]">
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
                       <div className="md:col-span-3">
-                        <label className="text-gray-400 text-xs mb-1 block">{t.chooseStock}</label>
-                        <select value={recForm.symbol} onChange={e => { const s = stocks.find(s => s.symbol === e.target.value); setRecForm({...recForm, symbol: e.target.value, stock_name: s?.name || ''}); }} className="bg-gray-700 text-white border border-gray-600 rounded px-3 py-2 w-full text-xs">
+                        <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.chooseStock}</label>
+                        <select value={recForm.symbol} onChange={e => { const s = stocks.find(s => s.symbol === e.target.value); setRecForm({...recForm, symbol: e.target.value, stock_name: s?.name || ''}); }} className="bg-[var(--surface-3)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-xs">
                           <option value="">{t.chooseStockPh}</option>
                           {stocks.map((stock, i) => { const price = getPrice(stock.symbol); return <option key={i} value={stock.symbol}>{stock.symbol} - {stock.name} {price ? `| ${price.price} ج` : ''}</option>; })}
                         </select>
                         {recForm.symbol && (
-                          <div className="mt-1 flex items-center gap-3 bg-gray-900 rounded p-2">
+                          <div className="mt-1 flex items-center gap-3 bg-[var(--bg-card)] rounded p-2">
                             <span className="text-orange-400 font-bold text-xs">{recForm.symbol}</span>
-                            <span className="text-white text-xs">{recForm.stock_name}</span>
-                            {getPrice(recForm.symbol) && <><span className="text-gray-400 text-xs">|</span><span className="text-gray-400 text-xs">{t.lastPrice}</span><span className="text-orange-500 font-bold text-xs">{getPrice(recForm.symbol)?.price} ج</span></>}
+                            <span className="text-[var(--text-primary)] text-xs">{recForm.stock_name}</span>
+                            {getPrice(recForm.symbol) && <><span className="text-[var(--text-secondary)] text-xs">|</span><span className="text-[var(--text-secondary)] text-xs">{t.lastPrice}</span><span className="text-[var(--accent-text)] font-bold text-xs">{getPrice(recForm.symbol)?.price} ج</span></>}
                           </div>
                         )}
                       </div>
-                      <div><label className="text-gray-400 text-xs mb-1 block">{t.recType}</label><select value={recForm.type} onChange={e => setRecForm({...recForm, type: e.target.value})} className="bg-gray-700 text-white border border-gray-600 rounded px-3 py-2 w-full text-xs"><option value="شراء">شراء</option><option value="بيع">بيع</option><option value="احتفاظ">احتفاظ</option></select></div>
-                      <div><label className="text-gray-400 text-xs mb-1 block">{t.entryPrice}</label><input value={recForm.entry_price} onChange={e => setRecForm({...recForm, entry_price: e.target.value})} className="bg-gray-700 text-white border border-gray-600 rounded px-3 py-2 w-full text-xs" placeholder="120.00" /></div>
-                      <div><label className="text-gray-400 text-xs mb-1 block">{t.targetPrice}</label><input value={recForm.target_price} onChange={e => setRecForm({...recForm, target_price: e.target.value})} className="bg-gray-700 text-white border border-gray-600 rounded px-3 py-2 w-full text-xs" placeholder="145.00" /></div>
-                      <div><label className="text-gray-400 text-xs mb-1 block">{t.stopLoss}</label><input value={recForm.stop_loss} onChange={e => setRecForm({...recForm, stop_loss: e.target.value})} className="bg-gray-700 text-white border border-gray-600 rounded px-3 py-2 w-full text-xs" placeholder="110.00" /></div>
-                      <div><label className="text-gray-400 text-xs mb-1 block">{t.duration}</label><select value={recForm.duration} onChange={e => setRecForm({...recForm, duration: e.target.value})} className="bg-gray-700 text-white border border-gray-600 rounded px-3 py-2 w-full text-xs"><option value="short">{t.durationOptions.short}</option><option value="medium">{t.durationOptions.medium}</option><option value="long">{t.durationOptions.long}</option></select></div>
+                      <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.recType}</label><select value={recForm.type} onChange={e => setRecForm({...recForm, type: e.target.value})} className="bg-[var(--surface-3)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-xs"><option value="شراء">شراء</option><option value="بيع">بيع</option><option value="احتفاظ">احتفاظ</option></select></div>
+                      <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.entryPrice}</label><input value={recForm.entry_price} onChange={e => setRecForm({...recForm, entry_price: e.target.value})} className="bg-[var(--surface-3)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-xs" placeholder="120.00" /></div>
+                      <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.targetPrice}</label><input value={recForm.target_price} onChange={e => setRecForm({...recForm, target_price: e.target.value})} className="bg-[var(--surface-3)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-xs" placeholder="145.00" /></div>
+                      <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.stopLoss}</label><input value={recForm.stop_loss} onChange={e => setRecForm({...recForm, stop_loss: e.target.value})} className="bg-[var(--surface-3)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-xs" placeholder="110.00" /></div>
+                      <div><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.duration}</label><select value={recForm.duration} onChange={e => setRecForm({...recForm, duration: e.target.value})} className="bg-[var(--surface-3)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-xs"><option value="short">{t.durationOptions.short}</option><option value="medium">{t.durationOptions.medium}</option><option value="long">{t.durationOptions.long}</option></select></div>
                     </div>
-                    <div className="mb-3"><label className="text-gray-400 text-xs mb-1 block">{t.recDescription}</label><textarea value={recForm.description} onChange={e => setRecForm({...recForm, description: e.target.value})} rows={2} className="bg-gray-700 text-white border border-gray-600 rounded px-3 py-2 w-full text-xs" /></div>
+                    <div className="mb-3"><label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.recDescription}</label><textarea value={recForm.description} onChange={e => setRecForm({...recForm, description: e.target.value})} rows={2} className="bg-[var(--surface-3)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-xs" /></div>
                     <button onClick={handleAddRec} className="bg-orange-500 text-black px-4 py-2 rounded text-xs font-bold hover:bg-orange-600">{t.saveRec}</button>
                   </div>
                 )}
 
                 <div className="space-y-3">
                   {recommendations.map((rec, i) => (
-                    <div key={i} className="bg-gray-800 rounded-lg p-3 border border-gray-700">
+                    <div key={i} className="bg-[var(--surface-2)] rounded-lg p-3 border border-[var(--border-strong)]">
                       <div className="flex justify-between items-start">
                         <div>
                           <div className="flex items-center gap-2 mb-1">
@@ -1653,7 +1653,7 @@ export default function AdminPage() {
                               {t.statusLabels[rec.status] || rec.status}
                             </span>
                           </div>
-                          <p className="text-gray-400 text-xs">{t.entryShort} {rec.entry_price} ج{rec.target_price && ` • ${t.targetShort} ${rec.target_price} ج`}{rec.stop_loss && ` • ${t.stopShort} ${rec.stop_loss} ج`}</p>
+                          <p className="text-[var(--text-secondary)] text-xs">{t.entryShort} {rec.entry_price} ج{rec.target_price && ` • ${t.targetShort} ${rec.target_price} ج`}{rec.stop_loss && ` • ${t.stopShort} ${rec.stop_loss} ج`}</p>
                         </div>
                         <div className="flex gap-1">
                           {rec.status === 'open' && (
@@ -1662,7 +1662,7 @@ export default function AdminPage() {
                               <button onClick={() => { const p = prompt(t.promptClosePrice); if (p) handleUpdateRecStatus(rec.id, 'failed', p); }} className="bg-red-900 text-red-400 px-2 py-1 rounded text-xs hover:bg-red-800">❌</button>
                             </>
                           )}
-                          <button onClick={() => handleDeleteRec(rec.id)} className="bg-gray-700 text-gray-400 px-2 py-1 rounded text-xs hover:bg-gray-600">{t.delete}</button>
+                          <button onClick={() => handleDeleteRec(rec.id)} className="bg-[var(--surface-3)] text-[var(--text-secondary)] px-2 py-1 rounded text-xs hover:bg-[var(--surface-3-hover)]">{t.delete}</button>
                         </div>
                       </div>
                     </div>
@@ -1679,19 +1679,19 @@ export default function AdminPage() {
 
             {/* طلبات معلقة */}
             {pendingFollowers.length > 0 && (
-              <div className="bg-gray-900 border border-red-800 rounded-lg p-4">
+              <div className="bg-[var(--bg-card)] border border-red-800 rounded-lg p-4">
                 <h2 className="text-red-400 font-bold mb-4">{t.pendingRequests(pendingFollowers.length)}</h2>
                 <div className="space-y-3">
                   {pendingFollowers.map((follower, i) => (
-                    <div key={i} className="bg-gray-800 rounded-lg p-4">
+                    <div key={i} className="bg-[var(--surface-2)] rounded-lg p-4">
                       <div className="flex justify-between items-start">
                         <div>
-                          <p className="text-white font-bold text-sm">{follower.name}</p>
-                          <p className="text-gray-400 text-xs mt-1">📧 {follower.email}</p>
-                          <p className="text-gray-400 text-xs">📱 {follower.whatsapp}</p>
+                          <p className="text-[var(--text-primary)] font-bold text-sm">{follower.name}</p>
+                          <p className="text-[var(--text-secondary)] text-xs mt-1">📧 {follower.email}</p>
+                          <p className="text-[var(--text-secondary)] text-xs">📱 {follower.whatsapp}</p>
                           <div className="flex gap-2 mt-1">
-                            <span className="text-orange-500 text-xs">{t.followerAnalyst} {follower.analyst_name}</span>
-                            <span className={`text-xs px-2 py-0.5 rounded ${follower.plan === 'premium' ? 'bg-orange-900 text-orange-400' : follower.plan === 'basic' ? 'bg-blue-900 text-blue-400' : 'bg-gray-700 text-gray-400'}`}>
+                            <span className="text-[var(--accent-text)] text-xs">{t.followerAnalyst} {follower.analyst_name}</span>
+                            <span className={`text-xs px-2 py-0.5 rounded ${follower.plan === 'premium' ? 'bg-orange-900 text-orange-400' : follower.plan === 'basic' ? 'bg-blue-900 text-blue-400' : 'bg-[var(--surface-3)] text-[var(--text-secondary)]'}`}>
                               {t.planLabels[follower.plan] || follower.plan}
                             </span>
                           </div>
@@ -1718,21 +1718,21 @@ export default function AdminPage() {
             )}
 
             {/* المتابعون النشطون */}
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-              <h2 className="text-orange-500 font-bold mb-4">{t.activeFollowers(followers.length)}</h2>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
+              <h2 className="text-[var(--accent-text)] font-bold mb-4">{t.activeFollowers(followers.length)}</h2>
               {followers.length === 0 ? (
-                <p className="text-gray-400 text-sm text-center py-4">{t.noActiveFollowers}</p>
+                <p className="text-[var(--text-secondary)] text-sm text-center py-4">{t.noActiveFollowers}</p>
               ) : (
                 <div className="space-y-2">
                   {followers.map((follower, i) => (
-                    <div key={i} className="bg-gray-800 rounded-lg p-3 flex justify-between items-center">
+                    <div key={i} className="bg-[var(--surface-2)] rounded-lg p-3 flex justify-between items-center">
                       <div>
-                        <p className="text-white font-bold text-sm">{follower.name}</p>
-                        <p className="text-gray-400 text-xs">📧 {follower.email} • 📱 {follower.whatsapp}</p>
-                        <p className="text-orange-500 text-xs">{t.followerAnalyst} {follower.analyst_name}</p>
+                        <p className="text-[var(--text-primary)] font-bold text-sm">{follower.name}</p>
+                        <p className="text-[var(--text-secondary)] text-xs">📧 {follower.email} • 📱 {follower.whatsapp}</p>
+                        <p className="text-[var(--accent-text)] text-xs">{t.followerAnalyst} {follower.analyst_name}</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className={`text-xs px-2 py-1 rounded font-bold ${follower.plan === 'premium' ? 'bg-orange-900 text-orange-400' : follower.plan === 'basic' ? 'bg-blue-900 text-blue-400' : 'bg-gray-700 text-gray-400'}`}>
+                        <span className={`text-xs px-2 py-1 rounded font-bold ${follower.plan === 'premium' ? 'bg-orange-900 text-orange-400' : follower.plan === 'basic' ? 'bg-blue-900 text-blue-400' : 'bg-[var(--surface-3)] text-[var(--text-secondary)]'}`}>
                           {t.planLabels[follower.plan] || follower.plan}
                         </span>
                         <button onClick={() => handleRejectFollower(follower.id)} className="bg-red-900 text-red-400 px-2 py-1 rounded text-xs hover:bg-red-800">{t.delete}</button>
@@ -1751,9 +1751,9 @@ export default function AdminPage() {
           <div className="space-y-6">
 
             {/* إضافة حساب مباشرة - حل مؤقت لحين توفر دومين موثّق للإيميلات */}
-            <div className="bg-gray-900 border border-orange-800 rounded-lg p-4">
-              <h2 className="text-orange-500 font-bold mb-1">{t.addAccountTitle}</h2>
-              <p className="text-gray-400 text-xs mb-4">{t.addAccountDesc}</p>
+            <div className="bg-[var(--bg-card)] border border-orange-800 rounded-lg p-4">
+              <h2 className="text-[var(--accent-text)] font-bold mb-1">{t.addAccountTitle}</h2>
+              <p className="text-[var(--text-secondary)] text-xs mb-4">{t.addAccountDesc}</p>
 
               {addAccountMessage && (
                 <div className={`p-2 rounded mb-3 text-xs ${addAccountMessage.startsWith('✅') ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'}`}>
@@ -1766,20 +1766,20 @@ export default function AdminPage() {
                   value={addAccountForm.name}
                   onChange={e => setAddAccountForm({ ...addAccountForm, name: e.target.value })}
                   placeholder={t.addAccountNamePh}
-                  className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 text-xs"
+                  className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 text-xs"
                 />
                 <input
                   value={addAccountForm.email}
                   onChange={e => setAddAccountForm({ ...addAccountForm, email: e.target.value })}
                   placeholder={t.addAccountEmailPh}
-                  className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 text-xs"
+                  className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 text-xs"
                 />
                 <input
                   type="text"
                   value={addAccountForm.password}
                   onChange={e => setAddAccountForm({ ...addAccountForm, password: e.target.value })}
                   placeholder={t.addAccountPasswordPh}
-                  className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 text-xs"
+                  className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 text-xs"
                 />
               </div>
               <button
@@ -1793,16 +1793,16 @@ export default function AdminPage() {
 
             {/* طلبات معلقة (أكدوا إيميلهم وينتظرون الموافقة) */}
             {pendingSiteUsers.length > 0 && (
-              <div className="bg-gray-900 border border-red-800 rounded-lg p-4">
+              <div className="bg-[var(--bg-card)] border border-red-800 rounded-lg p-4">
                 <h2 className="text-red-400 font-bold mb-4">{t.pendingAccounts(pendingSiteUsers.length)}</h2>
                 <div className="space-y-3">
                   {pendingSiteUsers.map((user, i) => (
-                    <div key={i} className="bg-gray-800 rounded-lg p-4">
+                    <div key={i} className="bg-[var(--surface-2)] rounded-lg p-4">
                       <div className="flex justify-between items-start">
                         <div>
-                          <p className="text-white font-bold text-sm">{user.name}</p>
-                          <p className="text-gray-400 text-xs mt-1">📧 {user.email}</p>
-                          <p className="text-gray-400 text-xs mt-1">{new Date(user.created_at).toLocaleString(t.dateLocale)}</p>
+                          <p className="text-[var(--text-primary)] font-bold text-sm">{user.name}</p>
+                          <p className="text-[var(--text-secondary)] text-xs mt-1">📧 {user.email}</p>
+                          <p className="text-[var(--text-secondary)] text-xs mt-1">{new Date(user.created_at).toLocaleString(t.dateLocale)}</p>
                         </div>
                         <div className="flex gap-2 flex-shrink-0">
                           <button
@@ -1826,17 +1826,17 @@ export default function AdminPage() {
             )}
 
             {/* الحسابات المفعّلة أو المرفوضة */}
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-              <h2 className="text-orange-500 font-bold mb-4">{t.allAccounts(activeSiteUsers.length)}</h2>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
+              <h2 className="text-[var(--accent-text)] font-bold mb-4">{t.allAccounts(activeSiteUsers.length)}</h2>
               {activeSiteUsers.length === 0 ? (
-                <p className="text-gray-400 text-sm text-center py-4">{t.noAccountsYet}</p>
+                <p className="text-[var(--text-secondary)] text-sm text-center py-4">{t.noAccountsYet}</p>
               ) : (
                 <div className="space-y-2">
                   {activeSiteUsers.map((user, i) => (
-                    <div key={i} className="bg-gray-800 rounded-lg p-3 flex justify-between items-center">
+                    <div key={i} className="bg-[var(--surface-2)] rounded-lg p-3 flex justify-between items-center">
                       <div>
-                        <p className="text-white font-bold text-sm">{user.name}</p>
-                        <p className="text-gray-400 text-xs">📧 {user.email}</p>
+                        <p className="text-[var(--text-primary)] font-bold text-sm">{user.name}</p>
+                        <p className="text-[var(--text-secondary)] text-xs">📧 {user.email}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className={`text-xs px-2 py-1 rounded font-bold ${user.status === 'active' ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'}`}>
@@ -1858,19 +1858,19 @@ export default function AdminPage() {
           <div className="space-y-6">
 
             <div className="bg-gradient-to-l from-orange-950 to-gray-900 border border-orange-700 rounded-lg p-4">
-              <h2 className="text-orange-500 font-bold mb-1">{t.aiTitle}</h2>
-              <p className="text-gray-400 text-xs">{t.aiDesc}</p>
+              <h2 className="text-[var(--accent-text)] font-bold mb-1">{t.aiTitle}</h2>
+              <p className="text-[var(--text-secondary)] text-xs">{t.aiDesc}</p>
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-              <p className="text-gray-400 text-xs font-bold mb-2">{t.aiQuickCommands}</p>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
+              <p className="text-[var(--text-secondary)] text-xs font-bold mb-2">{t.aiQuickCommands}</p>
               <div className="flex flex-wrap gap-2 mb-4">
                 {aiQuickCommandsList.map(cmd => (
                   <button
                     key={cmd}
                     onClick={() => setAiCommand(cmd)}
                     disabled={aiRunning}
-                    className="bg-gray-800 text-gray-300 px-3 py-1.5 rounded text-xs hover:bg-gray-700 hover:text-orange-500 transition disabled:opacity-50"
+                    className="bg-[var(--surface-2)] text-[var(--text-primary)] px-3 py-1.5 rounded text-xs hover:bg-[var(--surface-3-hover)] hover:text-[var(--accent-text)] transition disabled:opacity-50"
                   >
                     {cmd}
                   </button>
@@ -1888,7 +1888,7 @@ export default function AdminPage() {
                   onKeyDown={e => e.key === 'Enter' && !aiRunning && handleRunAiAnalysis()}
                   placeholder={t.aiCommandPh}
                   disabled={aiRunning}
-                  className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 flex-1 text-sm disabled:opacity-50"
+                  className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 flex-1 text-sm disabled:opacity-50"
                 />
                 <button
                   onClick={() => handleRunAiAnalysis()}
@@ -1899,13 +1899,13 @@ export default function AdminPage() {
                 </button>
               </div>
 
-              <label className="flex items-center gap-2 text-gray-400 text-xs cursor-pointer">
+              <label className="flex items-center gap-2 text-[var(--text-secondary)] text-xs cursor-pointer">
                 <input type="checkbox" checked={aiForce} onChange={e => setAiForce(e.target.checked)} disabled={aiRunning} />
                 {t.aiForceLabel}
               </label>
 
               {aiRunning && aiStatusMessage && (
-                <div className="bg-gray-900 border border-orange-800 rounded-lg px-3 py-2 text-orange-400 text-xs flex items-center gap-2">
+                <div className="bg-[var(--bg-card)] border border-orange-800 rounded-lg px-3 py-2 text-orange-400 text-xs flex items-center gap-2">
                   <span className="inline-block w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
                   {aiStatusMessage}
                 </div>
@@ -1913,7 +1913,7 @@ export default function AdminPage() {
             </div>
 
             {aiCurrentReport && (
-              <div className="bg-gray-900 border border-orange-700 rounded-lg p-4">
+              <div className="bg-[var(--bg-card)] border border-orange-700 rounded-lg p-4">
                 <div className="flex justify-between items-center gap-3 flex-wrap mb-3">
                   <p className={`text-xs font-bold ${aiCurrentReport.cached ? 'text-blue-400' : 'text-green-400'}`}>
                     {aiCurrentReport.cached
@@ -1925,19 +1925,19 @@ export default function AdminPage() {
                       href={`/api/ai-analyst/pdf?id=${aiCurrentReport.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-orange-500 text-xs font-bold hover:text-orange-400 transition border border-orange-700 rounded px-2 py-1"
+                      className="text-[var(--accent-text)] text-xs font-bold hover:text-orange-400 transition border border-orange-700 rounded px-2 py-1"
                     >
                       {t.aiViewPdf}
                     </a>
                     <a
                       href={`/api/ai-analyst/pdf?id=${aiCurrentReport.id}&download=1`}
-                      className="text-orange-500 text-xs font-bold hover:text-orange-400 transition border border-orange-700 rounded px-2 py-1"
+                      className="text-[var(--accent-text)] text-xs font-bold hover:text-orange-400 transition border border-orange-700 rounded px-2 py-1"
                     >
                       {t.aiDownloadPdf}
                     </a>
                     <a
                       href={`/api/ai-analyst/reports?id=${aiCurrentReport.id}&download=1`}
-                      className="text-orange-500 text-xs font-bold hover:text-orange-400 transition border border-orange-700 rounded px-2 py-1"
+                      className="text-[var(--accent-text)] text-xs font-bold hover:text-orange-400 transition border border-orange-700 rounded px-2 py-1"
                     >
                       {t.aiDownloadTxt}
                     </a>
@@ -1947,29 +1947,29 @@ export default function AdminPage() {
               </div>
             )}
 
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-              <h3 className="text-orange-500 font-bold text-sm mb-3">{t.aiHistory} ({aiReports.length})</h3>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
+              <h3 className="text-[var(--accent-text)] font-bold text-sm mb-3">{t.aiHistory} ({aiReports.length})</h3>
               {aiReports.length === 0 ? (
-                <p className="text-gray-400 text-sm text-center py-4">{t.aiNoHistory}</p>
+                <p className="text-[var(--text-secondary)] text-sm text-center py-4">{t.aiNoHistory}</p>
               ) : (
                 <div className="space-y-3">
                   {aiReports.map(r => (
-                    <div key={r.id} className="bg-gray-800 rounded-lg p-3">
+                    <div key={r.id} className="bg-[var(--surface-2)] rounded-lg p-3">
                       <div className="flex justify-between items-start gap-3 flex-wrap mb-2">
-                        <p className="text-white font-bold text-sm">{r.command}</p>
-                        <span className="text-gray-400 text-xs whitespace-nowrap">{new Date(r.created_at).toLocaleString(t.dateLocale)}</span>
+                        <p className="text-[var(--text-primary)] font-bold text-sm">{r.command}</p>
+                        <span className="text-[var(--text-secondary)] text-xs whitespace-nowrap">{new Date(r.created_at).toLocaleString(t.dateLocale)}</span>
                       </div>
                       {aiExpanded[r.id] ? (
                         <AiReportView report={r.report} />
                       ) : (
-                        <div className="text-gray-300 text-xs leading-relaxed whitespace-pre-wrap line-clamp-3" style={{ userSelect: 'none' }}>
+                        <div className="text-[var(--text-primary)] text-xs leading-relaxed whitespace-pre-wrap line-clamp-3" style={{ userSelect: 'none' }}>
                           {r.report}
                         </div>
                       )}
                       <div className="flex gap-3 mt-2">
                         <button
                           onClick={() => setAiExpanded(prev => ({ ...prev, [r.id]: !prev[r.id] }))}
-                          className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                          className="text-[var(--accent-text)] text-xs font-bold hover:text-orange-400 transition"
                         >
                           {aiExpanded[r.id] ? t.aiCollapse : t.aiExpand}
                         </button>
@@ -1977,19 +1977,19 @@ export default function AdminPage() {
                           href={`/api/ai-analyst/pdf?id=${r.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                          className="text-[var(--accent-text)] text-xs font-bold hover:text-orange-400 transition"
                         >
                           {t.aiViewPdf}
                         </a>
                         <a
                           href={`/api/ai-analyst/pdf?id=${r.id}&download=1`}
-                          className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                          className="text-[var(--accent-text)] text-xs font-bold hover:text-orange-400 transition"
                         >
                           {t.aiDownloadPdf}
                         </a>
                         <a
                           href={`/api/ai-analyst/reports?id=${r.id}&download=1`}
-                          className="text-orange-500 text-xs font-bold hover:text-orange-400 transition"
+                          className="text-[var(--accent-text)] text-xs font-bold hover:text-orange-400 transition"
                         >
                           {t.aiDownloadTxt}
                         </a>
@@ -2013,11 +2013,11 @@ export default function AdminPage() {
         {activeTab === 'funds' && (
           <div className="space-y-6">
 
-            <div className="bg-gray-900 border border-orange-800 rounded-lg p-4">
-              <h3 className="text-orange-500 font-bold text-sm mb-1">{t.startaTitle}</h3>
-              <p className="text-gray-400 text-xs mb-3">{t.startaHint}</p>
+            <div className="bg-[var(--bg-card)] border border-orange-800 rounded-lg p-4">
+              <h3 className="text-[var(--accent-text)] font-bold text-sm mb-1">{t.startaTitle}</h3>
+              <p className="text-[var(--text-secondary)] text-xs mb-3">{t.startaHint}</p>
               <div className="flex items-center gap-2 flex-wrap">
-                <input type="file" accept=".csv,text/csv" onChange={e => setStartaFile(e.target.files?.[0] || null)} className="text-gray-300 text-xs" />
+                <input type="file" accept=".csv,text/csv" onChange={e => setStartaFile(e.target.files?.[0] || null)} className="text-[var(--text-primary)] text-xs" />
                 <button
                   onClick={handleStartaImport}
                   disabled={startaImporting || !startaFile}
@@ -2029,11 +2029,11 @@ export default function AdminPage() {
               {startaMsg && <p className="text-orange-400 text-xs mt-2">{startaMsg}</p>}
             </div>
 
-            <div className="bg-gray-900 border border-orange-800 rounded-lg p-4">
-              <h3 className="text-orange-500 font-bold text-sm mb-1">{t.fraTitle}</h3>
-              <p className="text-gray-400 text-xs mb-3">{t.fraHint}</p>
+            <div className="bg-[var(--bg-card)] border border-orange-800 rounded-lg p-4">
+              <h3 className="text-[var(--accent-text)] font-bold text-sm mb-1">{t.fraTitle}</h3>
+              <p className="text-[var(--text-secondary)] text-xs mb-3">{t.fraHint}</p>
               <div className="flex items-center gap-2 flex-wrap">
-                <input type="file" accept=".html,.htm,text/html" multiple onChange={e => setFraFiles(e.target.files)} className="text-gray-300 text-xs" />
+                <input type="file" accept=".html,.htm,text/html" multiple onChange={e => setFraFiles(e.target.files)} className="text-[var(--text-primary)] text-xs" />
                 <button
                   onClick={handleFraImport}
                   disabled={fraImporting || !fraFiles || fraFiles.length === 0}
@@ -2044,64 +2044,64 @@ export default function AdminPage() {
               </div>
               {fraMsg && <p className="text-orange-400 text-xs mt-2">{fraMsg}</p>}
               {fraUnmatched.length > 0 && (
-                <div className="mt-2 bg-gray-800 rounded p-2 max-h-40 overflow-y-auto">
-                  <p className="text-gray-400 text-xs font-bold mb-1">{t.fraUnmatchedTitle}</p>
-                  <ul className="text-gray-400 text-xs space-y-0.5 list-disc pr-4">
+                <div className="mt-2 bg-[var(--surface-2)] rounded p-2 max-h-40 overflow-y-auto">
+                  <p className="text-[var(--text-secondary)] text-xs font-bold mb-1">{t.fraUnmatchedTitle}</p>
+                  <ul className="text-[var(--text-secondary)] text-xs space-y-0.5 list-disc pr-4">
                     {fraUnmatched.map((name, i) => <li key={i}>{name}</li>)}
                   </ul>
                 </div>
               )}
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-              <h3 className="text-orange-500 font-bold text-sm mb-3">{fundForm.id ? t.fundEditTitle : t.fundAddTitle}</h3>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
+              <h3 className="text-[var(--accent-text)] font-bold text-sm mb-3">{fundForm.id ? t.fundEditTitle : t.fundAddTitle}</h3>
 
               {fundError && <p className="text-red-400 text-xs mb-3">{fundError}</p>}
 
               <div className="grid sm:grid-cols-2 gap-3 mb-3">
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.fundName}</label>
-                  <input value={fundForm.name} onChange={e => setFundForm({ ...fundForm, name: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundName}</label>
+                  <input value={fundForm.name} onChange={e => setFundForm({ ...fundForm, name: e.target.value })} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.fundNameEn}</label>
-                  <input value={fundForm.name_en} onChange={e => setFundForm({ ...fundForm, name_en: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" dir="ltr" />
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundNameEn}</label>
+                  <input value={fundForm.name_en} onChange={e => setFundForm({ ...fundForm, name_en: e.target.value })} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" dir="ltr" />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.fundType}</label>
-                  <input value={fundForm.fund_type} onChange={e => setFundForm({ ...fundForm, fund_type: e.target.value })} placeholder={t.fundTypePh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundType}</label>
+                  <input value={fundForm.fund_type} onChange={e => setFundForm({ ...fundForm, fund_type: e.target.value })} placeholder={t.fundTypePh} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.fundManager}</label>
-                  <input value={fundForm.manager_company} onChange={e => setFundForm({ ...fundForm, manager_company: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundManager}</label>
+                  <input value={fundForm.manager_company} onChange={e => setFundForm({ ...fundForm, manager_company: e.target.value })} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.fundInception}</label>
-                  <input type="date" value={fundForm.inception_date} onChange={e => setFundForm({ ...fundForm, inception_date: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundInception}</label>
+                  <input type="date" value={fundForm.inception_date} onChange={e => setFundForm({ ...fundForm, inception_date: e.target.value })} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.fundCurrency}</label>
-                  <input value={fundForm.currency} onChange={e => setFundForm({ ...fundForm, currency: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" dir="ltr" />
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundCurrency}</label>
+                  <input value={fundForm.currency} onChange={e => setFundForm({ ...fundForm, currency: e.target.value })} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" dir="ltr" />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.fundSubFee}</label>
-                  <input value={fundForm.subscription_fee} onChange={e => setFundForm({ ...fundForm, subscription_fee: e.target.value })} placeholder={t.fundSubFeePh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundSubFee}</label>
+                  <input value={fundForm.subscription_fee} onChange={e => setFundForm({ ...fundForm, subscription_fee: e.target.value })} placeholder={t.fundSubFeePh} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.fundRedFee}</label>
-                  <input value={fundForm.redemption_fee} onChange={e => setFundForm({ ...fundForm, redemption_fee: e.target.value })} placeholder={t.fundRedFeePh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundRedFee}</label>
+                  <input value={fundForm.redemption_fee} onChange={e => setFundForm({ ...fundForm, redemption_fee: e.target.value })} placeholder={t.fundRedFeePh} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.fundEntryDays}</label>
-                  <input value={fundForm.entry_days} onChange={e => setFundForm({ ...fundForm, entry_days: e.target.value })} placeholder={t.fundEntryDaysPh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundEntryDays}</label>
+                  <input value={fundForm.entry_days} onChange={e => setFundForm({ ...fundForm, entry_days: e.target.value })} placeholder={t.fundEntryDaysPh} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.fundExitDays}</label>
-                  <input value={fundForm.exit_days} onChange={e => setFundForm({ ...fundForm, exit_days: e.target.value })} placeholder={t.fundExitDaysPh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundExitDays}</label>
+                  <input value={fundForm.exit_days} onChange={e => setFundForm({ ...fundForm, exit_days: e.target.value })} placeholder={t.fundExitDaysPh} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.fundRiskLevel}</label>
-                  <select value={fundForm.risk_level} onChange={e => setFundForm({ ...fundForm, risk_level: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm">
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundRiskLevel}</label>
+                  <select value={fundForm.risk_level} onChange={e => setFundForm({ ...fundForm, risk_level: e.target.value })} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm">
                     <option value="">{t.fundRiskNotSet}</option>
                     {RISK_LEVELS.map(r => <option key={r} value={r}>{r}</option>)}
                   </select>
@@ -2109,25 +2109,25 @@ export default function AdminPage() {
               </div>
 
               <div className="mb-3">
-                <label className="text-gray-400 text-xs mb-1 block">{t.fundSource}</label>
-                <input value={fundForm.source_note} onChange={e => setFundForm({ ...fundForm, source_note: e.target.value })} placeholder={t.fundSourcePh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundSource}</label>
+                <input value={fundForm.source_note} onChange={e => setFundForm({ ...fundForm, source_note: e.target.value })} placeholder={t.fundSourcePh} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" />
               </div>
 
               <div className="grid sm:grid-cols-2 gap-3 mb-3">
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.fundLicenseInfo}</label>
-                  <input value={fundForm.license_info} onChange={e => setFundForm({ ...fundForm, license_info: e.target.value })} placeholder={t.fundLicenseInfoPh} className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundLicenseInfo}</label>
+                  <input value={fundForm.license_info} onChange={e => setFundForm({ ...fundForm, license_info: e.target.value })} placeholder={t.fundLicenseInfoPh} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-xs mb-1 block">{t.fundProspectusUrl}</label>
-                  <input value={fundForm.prospectus_url} onChange={e => setFundForm({ ...fundForm, prospectus_url: e.target.value })} placeholder={t.fundProspectusUrlPh} dir="ltr" className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm" />
+                  <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundProspectusUrl}</label>
+                  <input value={fundForm.prospectus_url} onChange={e => setFundForm({ ...fundForm, prospectus_url: e.target.value })} placeholder={t.fundProspectusUrlPh} dir="ltr" className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm" />
                 </div>
               </div>
 
               <div className="mb-4">
-                <label className="text-gray-400 text-xs mb-1 block">{t.fundProspectus}</label>
-                <input type="file" accept="application/pdf" onChange={e => setFundProspectusFile(e.target.files?.[0] || null)} className="text-gray-300 text-xs w-full" />
-                <p className="text-gray-500 text-xs mt-1">{t.fundProspectusHint}</p>
+                <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.fundProspectus}</label>
+                <input type="file" accept="application/pdf" onChange={e => setFundProspectusFile(e.target.files?.[0] || null)} className="text-[var(--text-primary)] text-xs w-full" />
+                <p className="text-[var(--text-tertiary)] text-xs mt-1">{t.fundProspectusHint}</p>
               </div>
 
               <div className="flex gap-3">
@@ -2141,7 +2141,7 @@ export default function AdminPage() {
                 {fundForm.id && (
                   <button
                     onClick={() => { setFundForm(emptyFundForm); setFundProspectusFile(null); setFundError(''); }}
-                    className="bg-gray-800 text-gray-300 px-4 py-2 rounded text-sm hover:bg-gray-700 transition"
+                    className="bg-[var(--surface-2)] text-[var(--text-primary)] px-4 py-2 rounded text-sm hover:bg-[var(--surface-3-hover)] transition"
                   >
                     {t.fundCancelEdit}
                   </button>
@@ -2150,23 +2150,23 @@ export default function AdminPage() {
             </div>
 
             {fundsList.length > 0 && (
-              <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-                <h3 className="text-orange-500 font-bold text-sm mb-1">{t.navImportTitle}</h3>
-                <p className="text-gray-500 text-xs mb-3">{t.navImportHint}</p>
+              <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
+                <h3 className="text-[var(--accent-text)] font-bold text-sm mb-1">{t.navImportTitle}</h3>
+                <p className="text-[var(--text-tertiary)] text-xs mb-3">{t.navImportHint}</p>
                 <div className="flex items-center gap-2 flex-wrap">
                   <select
                     value={quickImportFundId}
                     onChange={e => setQuickImportFundId(e.target.value)}
-                    className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 text-sm"
+                    className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 text-sm"
                   >
                     <option value="">{t.fundSelectPh}</option>
                     {fundsList.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
                   </select>
-                  <input type="file" accept=".csv,text/csv" onChange={e => setQuickImportFile(e.target.files?.[0] || null)} className="text-gray-300 text-xs" />
+                  <input type="file" accept=".csv,text/csv" onChange={e => setQuickImportFile(e.target.files?.[0] || null)} className="text-[var(--text-primary)] text-xs" />
                   <button
                     onClick={handleQuickImportNavCsv}
                     disabled={quickImporting || !quickImportFundId || !quickImportFile}
-                    className="bg-gray-700 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-600 transition disabled:opacity-50"
+                    className="bg-[var(--surface-3)] text-[var(--text-primary)] px-3 py-1.5 rounded text-xs font-bold hover:bg-[var(--surface-3-hover)] transition disabled:opacity-50"
                   >
                     {t.navImportBtn}
                   </button>
@@ -2175,17 +2175,17 @@ export default function AdminPage() {
               </div>
             )}
 
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-              <h3 className="text-orange-500 font-bold text-sm mb-3">{t.fundListTitle} ({fundsList.length})</h3>
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
+              <h3 className="text-[var(--accent-text)] font-bold text-sm mb-3">{t.fundListTitle} ({fundsList.length})</h3>
               {fundsList.length > 0 && (
                 <div className="mb-3">
-                  <p className="text-gray-400 text-xs mb-1">{t.fundStatusFilterLabel}</p>
+                  <p className="text-[var(--text-secondary)] text-xs mb-1">{t.fundStatusFilterLabel}</p>
                   <div className="flex gap-2 flex-wrap">
                     {(['all', 'complete', 'partial', 'none'] as const).map(s => (
                       <button
                         key={s}
                         onClick={() => setFundCompletenessFilter(s)}
-                        className={`px-3 py-1.5 text-xs rounded transition ${fundCompletenessFilter === s ? 'bg-orange-500 text-black font-bold' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+                        className={`px-3 py-1.5 text-xs rounded transition ${fundCompletenessFilter === s ? 'bg-orange-500 text-black font-bold' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                       >
                         {s === 'all' ? t.fundStatusAll : s === 'complete' ? t.fundStatusComplete : s === 'partial' ? t.fundStatusPartial : t.fundStatusNone}
                         {' '}({fundsList.filter(f => s === 'all' || getFundCompleteness(f).status === s).length})
@@ -2195,60 +2195,60 @@ export default function AdminPage() {
                 </div>
               )}
               {fundsList.length === 0 ? (
-                <p className="text-gray-400 text-sm text-center py-4">{t.fundNoFunds}</p>
+                <p className="text-[var(--text-secondary)] text-sm text-center py-4">{t.fundNoFunds}</p>
               ) : (
                 <div className="space-y-3">
                   {fundsList.filter(f => fundCompletenessFilter === 'all' || getFundCompleteness(f).status === fundCompletenessFilter).map(f => {
                     const completeness = getFundCompleteness(f);
                     const statusLabel = completeness.status === 'complete' ? t.fundStatusComplete : completeness.status === 'partial' ? t.fundStatusPartial : t.fundStatusNone;
                     return (
-                    <div key={f.id} className="bg-gray-800 rounded-lg p-3">
+                    <div key={f.id} className="bg-[var(--surface-2)] rounded-lg p-3">
                       <div className="flex justify-between items-start gap-3 flex-wrap mb-2">
                         <div>
-                          <p className="text-white font-bold text-sm">{f.name}</p>
-                          <p className="text-gray-400 text-xs">{f.fund_type}</p>
+                          <p className="text-[var(--text-primary)] font-bold text-sm">{f.name}</p>
+                          <p className="text-[var(--text-secondary)] text-xs">{f.fund_type}</p>
                         </div>
                         <div className="flex gap-3">
-                          <button onClick={() => handleEditFund(f)} className="text-orange-500 text-xs font-bold hover:text-orange-400 transition">{t.fundEdit}</button>
-                          <button onClick={() => { setNavCsvFile(null); setNavImportMsg(''); handleManageNav(f.id); }} className="text-orange-500 text-xs font-bold hover:text-orange-400 transition">{t.fundManageNav}</button>
+                          <button onClick={() => handleEditFund(f)} className="text-[var(--accent-text)] text-xs font-bold hover:text-orange-400 transition">{t.fundEdit}</button>
+                          <button onClick={() => { setNavCsvFile(null); setNavImportMsg(''); handleManageNav(f.id); }} className="text-[var(--accent-text)] text-xs font-bold hover:text-orange-400 transition">{t.fundManageNav}</button>
                           <button onClick={() => handleDeleteFund(f.id)} className="text-red-500 text-xs font-bold hover:text-red-400 transition">{t.fundDelete}</button>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2 flex-wrap mb-2">
-                        <span className={`text-xs font-bold ${completeness.status === 'complete' ? 'text-green-400' : completeness.status === 'partial' ? 'text-yellow-400' : 'text-gray-400'}`}>
+                        <span className={`text-xs font-bold ${completeness.status === 'complete' ? 'text-green-400' : completeness.status === 'partial' ? 'text-yellow-400' : 'text-[var(--text-secondary)]'}`}>
                           {statusLabel}
                         </span>
-                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasNav ? 'text-green-400 border-green-700' : 'text-gray-500 border-gray-700'}`}>
+                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasNav ? 'text-green-400 border-green-700' : 'text-[var(--text-tertiary)] border-[var(--border-strong)]'}`}>
                           {completeness.hasNav ? '✓' : '✗'} {t.fundBadgeNav}
                         </span>
-                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasProspectus ? 'text-green-400 border-green-700' : 'text-gray-500 border-gray-700'}`}>
+                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasProspectus ? 'text-green-400 border-green-700' : 'text-[var(--text-tertiary)] border-[var(--border-strong)]'}`}>
                           {completeness.hasProspectus ? '✓' : '✗'} {t.fundBadgeProspectus}
                         </span>
-                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasLicense ? 'text-green-400 border-green-700' : 'text-gray-500 border-gray-700'}`}>
+                        <span className={`text-xs px-1.5 py-0.5 rounded border ${completeness.hasLicense ? 'text-green-400 border-green-700' : 'text-[var(--text-tertiary)] border-[var(--border-strong)]'}`}>
                           {completeness.hasLicense ? '✓' : '✗'} {t.fundBadgeLicense}
                         </span>
                       </div>
 
                       {fundManagingId === f.id && (
-                        <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 mt-2">
+                        <div className="bg-[var(--bg-card)] border border-[var(--border-strong)] rounded-lg p-3 mt-2">
                           <div className="flex justify-between items-center mb-2">
                             <h4 className="text-orange-400 font-bold text-xs">{t.navTitle(f.name)}</h4>
-                            <button onClick={() => setFundManagingId(null)} className="text-gray-400 text-xs hover:text-white transition">{t.navClose}</button>
+                            <button onClick={() => setFundManagingId(null)} className="text-[var(--text-secondary)] text-xs hover:text-[var(--text-primary)] transition">{t.navClose}</button>
                           </div>
 
                           <div className="grid sm:grid-cols-3 gap-2 mb-2">
                             <div>
-                              <label className="text-gray-400 text-xs mb-1 block">{t.navDate}</label>
-                              <input type="date" value={navForm.nav_date} onChange={e => setNavForm({ ...navForm, nav_date: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1.5 w-full text-xs" />
+                              <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.navDate}</label>
+                              <input type="date" value={navForm.nav_date} onChange={e => setNavForm({ ...navForm, nav_date: e.target.value })} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-2 py-1.5 w-full text-xs" />
                             </div>
                             <div>
-                              <label className="text-gray-400 text-xs mb-1 block">{t.navValue}</label>
-                              <input type="number" step="0.0001" value={navForm.value} onChange={e => setNavForm({ ...navForm, value: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1.5 w-full text-xs" dir="ltr" />
+                              <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.navValue}</label>
+                              <input type="number" step="0.0001" value={navForm.value} onChange={e => setNavForm({ ...navForm, value: e.target.value })} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-2 py-1.5 w-full text-xs" dir="ltr" />
                             </div>
                             <div>
-                              <label className="text-gray-400 text-xs mb-1 block">{t.navSource}</label>
-                              <input value={navForm.source_note} onChange={e => setNavForm({ ...navForm, source_note: e.target.value })} className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1.5 w-full text-xs" />
+                              <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.navSource}</label>
+                              <input value={navForm.source_note} onChange={e => setNavForm({ ...navForm, source_note: e.target.value })} className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-2 py-1.5 w-full text-xs" />
                             </div>
                           </div>
                           <button
@@ -2259,15 +2259,15 @@ export default function AdminPage() {
                             {t.navAddBtn}
                           </button>
 
-                          <div className="border-t border-gray-800 pt-3 mb-3">
-                            <p className="text-gray-400 text-xs font-bold mb-1">{t.navImportTitle}</p>
-                            <p className="text-gray-500 text-xs mb-2">{t.navImportHint}</p>
+                          <div className="border-t border-[var(--border)] pt-3 mb-3">
+                            <p className="text-[var(--text-secondary)] text-xs font-bold mb-1">{t.navImportTitle}</p>
+                            <p className="text-[var(--text-tertiary)] text-xs mb-2">{t.navImportHint}</p>
                             <div className="flex items-center gap-2 flex-wrap">
-                              <input type="file" accept=".csv,text/csv" onChange={e => setNavCsvFile(e.target.files?.[0] || null)} className="text-gray-300 text-xs" />
+                              <input type="file" accept=".csv,text/csv" onChange={e => setNavCsvFile(e.target.files?.[0] || null)} className="text-[var(--text-primary)] text-xs" />
                               <button
                                 onClick={handleImportNavCsv}
                                 disabled={navImporting || !navCsvFile}
-                                className="bg-gray-700 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-600 transition disabled:opacity-50"
+                                className="bg-[var(--surface-3)] text-[var(--text-primary)] px-3 py-1.5 rounded text-xs font-bold hover:bg-[var(--surface-3-hover)] transition disabled:opacity-50"
                               >
                                 {t.navImportBtn}
                               </button>
@@ -2275,14 +2275,14 @@ export default function AdminPage() {
                             {navImportMsg && <p className="text-orange-400 text-xs mt-1">{navImportMsg}</p>}
                           </div>
 
-                          <p className="text-gray-400 text-xs mb-1">{t.navExisting} ({fundNavList.length})</p>
+                          <p className="text-[var(--text-secondary)] text-xs mb-1">{t.navExisting} ({fundNavList.length})</p>
                           {fundNavList.length === 0 ? (
-                            <p className="text-gray-500 text-xs">{t.navNoPoints}</p>
+                            <p className="text-[var(--text-tertiary)] text-xs">{t.navNoPoints}</p>
                           ) : (
                             <div className="max-h-40 overflow-y-auto space-y-1">
                               {fundNavList.map(p => (
-                                <div key={p.id} className="flex justify-between items-center bg-gray-800 rounded px-2 py-1 text-xs">
-                                  <span className="text-gray-300">{p.nav_date} — {Number(p.value).toFixed(4)} {f.currency}</span>
+                                <div key={p.id} className="flex justify-between items-center bg-[var(--surface-2)] rounded px-2 py-1 text-xs">
+                                  <span className="text-[var(--text-primary)]">{p.nav_date} — {Number(p.value).toFixed(4)} {f.currency}</span>
                                   <button onClick={() => handleDeleteNavPoint(p.id)} className="text-red-500 hover:text-red-400 transition">{t.navDelete}</button>
                                 </div>
                               ))}

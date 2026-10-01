@@ -1,16 +1,54 @@
 @import "tailwindcss";
 
+/* نظام الألوان (الوضع الغامق هو الافتراضي والأصلي، والفاتح بيستبدل نفس
+   المتغيرات تحت كلاس .light على <html>). كل قيمة هنا بتتغيّر في مكان واحد —
+   أي طلب لاحق بتغيير لون معيّن في أي وضع بيبقى تعديل سطر واحد بس. */
+:root {
+  --bg-page: #0a0a0a;
+  --bg-nav: #000000;
+  --bg-card: #111827;
+  --surface-2: #1f2937;
+  --surface-3: #374151;
+  --surface-3-hover: #4b5563;
+  --border: #1f2937;
+  --border-strong: #374151;
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --text-tertiary: #6b7280;
+  --accent-text: #f97316;
+  --scrollbar-thumb: #333333;
+  --scrollbar-track: #1a1a1a;
+}
+
+html.light {
+  --bg-page: #f8fafc;
+  --bg-nav: #ffffff;
+  --bg-card: #ffffff;
+  --surface-2: #f1f5f9;
+  --surface-3: #e2e8f0;
+  --surface-3-hover: #cbd5e1;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+  --accent-text: #c2410c;
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-track: #f1f5f9;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   scrollbar-width: thin;
-  scrollbar-color: #333 #1a1a1a;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
 body {
-  background-color: #0a0a0a;
-  color: #ffffff;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 ::-webkit-scrollbar {
@@ -18,10 +56,10 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }

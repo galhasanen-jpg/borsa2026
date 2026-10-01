@@ -97,9 +97,9 @@ export default function AccountPage() {
 
   if (!siteUser) {
     return (
-      <main className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
+      <main className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center p-4">
         <div className="text-center">
-          <p className="text-gray-400 mb-4">{t.notLoggedIn}</p>
+          <p className="text-[var(--text-secondary)] mb-4">{t.notLoggedIn}</p>
           <a href="/signin" className="bg-orange-500 text-black px-4 py-2 rounded-lg font-bold text-sm hover:bg-orange-600 transition">
             {t.signIn}
           </a>
@@ -109,20 +109,20 @@ export default function AccountPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 p-4">
+    <main className="min-h-screen bg-[var(--bg-page)] p-4">
       <div className="max-w-md mx-auto">
 
-        <h1 className="text-orange-500 font-bold text-xl mb-6">{t.title}</h1>
+        <h1 className="text-[var(--accent-text)] font-bold text-xl mb-6">{t.title}</h1>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
-          <p className="text-gray-400 text-xs mb-1">{t.nameLabel}</p>
-          <p className="text-white text-sm mb-4">{siteUser.name}</p>
-          <p className="text-gray-400 text-xs mb-1">{t.emailLabel}</p>
-          <p className="text-white text-sm">{siteUser.email}</p>
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6 mb-6">
+          <p className="text-[var(--text-secondary)] text-xs mb-1">{t.nameLabel}</p>
+          <p className="text-[var(--text-primary)] text-sm mb-4">{siteUser.name}</p>
+          <p className="text-[var(--text-secondary)] text-xs mb-1">{t.emailLabel}</p>
+          <p className="text-[var(--text-primary)] text-sm">{siteUser.email}</p>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h2 className="text-white font-bold text-sm mb-4">{t.changePassword}</h2>
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6">
+          <h2 className="text-[var(--text-primary)] font-bold text-sm mb-4">{t.changePassword}</h2>
 
           {message && (
             <div className={`p-3 rounded-lg mb-4 text-sm ${message.startsWith('✅') ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'}`}>
@@ -132,33 +132,33 @@ export default function AccountPage() {
 
           <div className="space-y-4">
             <div>
-              <label className="text-gray-400 text-xs mb-1 block">{t.currentPassword}</label>
+              <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.currentPassword}</label>
               <input
                 type="password"
                 value={form.currentPassword}
                 onChange={e => setForm({ ...form, currentPassword: e.target.value })}
-                className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+                className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
                 placeholder={t.currentPasswordPh}
               />
             </div>
             <div>
-              <label className="text-gray-400 text-xs mb-1 block">{t.newPassword}</label>
+              <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.newPassword}</label>
               <input
                 type="password"
                 value={form.newPassword}
                 onChange={e => setForm({ ...form, newPassword: e.target.value })}
-                className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+                className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
                 placeholder={t.newPasswordPh}
               />
             </div>
             <div>
-              <label className="text-gray-400 text-xs mb-1 block">{t.confirmPassword}</label>
+              <label className="text-[var(--text-secondary)] text-xs mb-1 block">{t.confirmPassword}</label>
               <input
                 type="password"
                 value={form.confirmPassword}
                 onChange={e => setForm({ ...form, confirmPassword: e.target.value })}
                 onKeyDown={e => e.key === 'Enter' && handleChangePassword()}
-                className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2 w-full text-sm"
+                className="bg-[var(--surface-2)] text-[var(--text-primary)] border border-[var(--border-strong)] rounded px-3 py-2 w-full text-sm"
                 placeholder={t.confirmPasswordPh}
               />
             </div>
