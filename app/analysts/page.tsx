@@ -146,7 +146,7 @@ export default function AnalystsPage() {
         {/* الدليل العملي للمستثمر الجديد */}
         <a
           href="/analysts/guide"
-          className="block bg-gradient-to-l from-orange-950 to-gray-900 border border-orange-700 rounded-xl p-4 mb-6 hover:border-orange-500 transition flex items-center justify-between gap-3 flex-wrap"
+          className="block bg-gradient-to-l from-[var(--hero-from)] to-[var(--hero-to)] border border-orange-700 rounded-xl p-4 mb-6 hover:border-orange-500 transition flex items-center justify-between gap-3 flex-wrap"
         >
           <div>
             <h3 className="text-[var(--accent-text)] font-bold text-sm">{t.guideTitle}</h3>
@@ -214,7 +214,7 @@ export default function AnalystsPage() {
                 key={i}
                 className={`rounded-xl p-4 hover:border-orange-500 transition flex items-center gap-4 ${
                   analyst.is_ai_analyst
-                    ? 'bg-gradient-to-l from-orange-950 to-gray-900 border border-orange-700'
+                    ? 'bg-gradient-to-l from-[var(--hero-from)] to-[var(--hero-to)] border border-orange-700'
                     : 'bg-[var(--bg-card)] border border-[var(--border)]'
                 }`}
               >

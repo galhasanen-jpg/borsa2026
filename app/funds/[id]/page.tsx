@@ -127,7 +127,7 @@ export default function FundDetailPage() {
           <DataError onRetry={fetchAll} />
         ) : (
           <div className="space-y-4">
-            <div className="bg-gradient-to-l from-orange-950 to-gray-900 border border-orange-700 rounded-xl p-6">
+            <div className="bg-gradient-to-l from-[var(--hero-from)] to-[var(--hero-to)] border border-orange-700 rounded-xl p-6">
               <h1 className="text-[var(--accent-text)] font-bold text-2xl mb-1">{fund.name}</h1>
               {fund.name_en && <p className="text-[var(--text-secondary)] text-sm">{fund.name_en}</p>}
             </div>
