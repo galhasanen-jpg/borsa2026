@@ -118,7 +118,7 @@ export default function Navbar() {
             key={item.id}
             href={item.href}
             onClick={e => handleNavClick(e, item)}
-            className={`px-4 py-3 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
+            className={`px-4 py-3 text-sm font-bold border-b-2 transition-all whitespace-nowrap ${
               pathname === item.href
                 ? 'border-orange-500 text-[var(--accent-text)]'
                 : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)]'
@@ -140,7 +140,7 @@ export default function Navbar() {
               key={item.id}
               href={item.href}
               onClick={e => handleNavClick(e, item)}
-              className={`px-6 py-5 text-lg font-medium text-right border-b border-[var(--border)] transition ${
+              className={`px-6 py-5 text-lg font-bold text-right border-b border-[var(--border)] transition ${
                 pathname === item.href
                   ? 'text-[var(--accent-text)] bg-[var(--bg-card)]'
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)]'
@@ -155,13 +155,13 @@ export default function Navbar() {
               <a
                 href="/account"
                 onClick={() => setMenuOpen(false)}
-                className="px-6 py-5 text-lg font-medium text-right text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)] transition border-b border-[var(--border)]"
+                className="px-6 py-5 text-lg font-bold text-right text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)] transition border-b border-[var(--border)]"
               >
                 {lang === 'ar' ? `حسابي (${siteUser.name})` : `My Account (${siteUser.name})`}
               </a>
               <button
                 onClick={handleLogout}
-                className="px-6 py-5 text-lg font-medium text-right text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)] transition"
+                className="px-6 py-5 text-lg font-bold text-right text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)] transition"
               >
                 {lang === 'ar' ? 'خروج' : 'Logout'}
               </button>
@@ -170,7 +170,7 @@ export default function Navbar() {
             <a
               href="/signin"
               onClick={() => setMenuOpen(false)}
-              className="px-6 py-5 text-lg font-medium text-right text-[var(--accent-text)] hover:bg-[var(--bg-card)] transition"
+              className="px-6 py-5 text-lg font-bold text-right text-[var(--accent-text)] hover:bg-[var(--bg-card)] transition"
             >
               {lang === 'ar' ? 'تسجيل الدخول' : 'Sign in'}
             </a>
