@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import StockChart from '../components/StockChart';
 import StockAnalysis from '../components/StockAnalysis';
 import { useLanguage } from '../components/LanguageProvider';
@@ -8,6 +8,7 @@ import DataError from '../components/DataError';
 
 export default function StocksPage() {
   const { lang } = useLanguage();
+  const chartRef = useRef<HTMLDivElement>(null);
   const [activeSector, setActiveSector] = useState('الكل');
   const [sectors, setSectors] = useState<any[]>([]);
   const [stocks, setStocks] = useState<any[]>([]);
@@ -34,6 +35,16 @@ export default function StocksPage() {
       fetchWatchlists(userData.id);
     }
   }, []);
+
+  // على الموبايل القايمة بتتحول لعمود واحد فوق الرسم البياني، ولو القايمة طويلة
+  // (كل الأسهم) المستخدم محتاج يسكرول كتير جداً قبل ما يشوف الرسم أصلاً بعد
+  // ما يختار سهم — فبننقله تلقائياً لمكان الرسم بدل ما يحس إنه مش ظاهر
+  useEffect(() => {
+    if (selectedStock && window.innerWidth < 1024) {
+      const timer = setTimeout(() => chartRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedStock]);
 
   async function fetchSectors() {
     try {
@@ -343,7 +354,7 @@ export default function StocksPage() {
           </div>
 
           {/* الرسم البياني */}
-          <div className="lg:col-span-3 min-w-0 space-y-4">
+          <div ref={chartRef} className="lg:col-span-3 min-w-0 space-y-4">
             {selectedStock ? (
               <StockChart
                 symbol={selectedStock.symbol}
