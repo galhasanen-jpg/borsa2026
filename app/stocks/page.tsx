@@ -238,17 +238,17 @@ export default function StocksPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 min-w-0">
 
           {/* جدول الأسهم */}
-          <div className="lg:col-span-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden">
+          <div className="lg:col-span-2 min-w-0 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
               <h2 className="text-[var(--accent-text)] font-bold text-sm">
                 {activeList === 'all' ? 'الأسهم' : watchlists.find(w => w.id === activeList)?.name}
               </h2>
               <span className="text-[var(--text-secondary)] text-xs">{displayedStocks.length} سهم</span>
             </div>
-            <div className="overflow-y-auto" style={{ maxHeight: '600px' }}>
+            <div className="overflow-x-auto overflow-y-auto" style={{ maxHeight: '600px' }}>
               <table className="w-full text-sm">
                 <thead className="sticky top-0 bg-[var(--bg-card)]">
                   <tr className="border-b border-[var(--border)] text-[var(--text-secondary)] text-xs">
@@ -343,7 +343,7 @@ export default function StocksPage() {
           </div>
 
           {/* الرسم البياني */}
-          <div className="lg:col-span-3 space-y-4">
+          <div className="lg:col-span-3 min-w-0 space-y-4">
             {selectedStock ? (
               <StockChart
                 symbol={selectedStock.symbol}
