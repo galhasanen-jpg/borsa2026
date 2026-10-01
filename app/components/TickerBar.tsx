@@ -100,7 +100,7 @@ export default function TickerBar() {
                   className="flex items-center gap-2 px-4 py-2 border-r border-[var(--border)] flex-shrink-0 cursor-pointer hover:bg-[var(--bg-card)] transition"
                 >
                   <span className="text-[var(--text-primary)] text-xs font-bold tracking-wider">{ticker.symbol}</span>
-                  <span className="text-[var(--text-primary)] text-xs font-mono">{ticker.price}</span>
+                  <span className="text-[var(--text-primary)] text-xs font-mono font-bold">{ticker.price}</span>
                   {ticker.change && (
                     <span className={`text-xs font-bold flex items-center gap-0.5 ${ticker.up ? 'text-green-400' : 'text-red-400'}`}>
                       {ticker.up ? '▲' : '▼'} {ticker.change}
