@@ -205,7 +205,7 @@ export default function FundsPage() {
             <p className="text-xl">{t.noMatch}</p>
           </div>
         ) : (
-          <div className="grid sm:grid-cols-2 gap-4 pb-24">
+          <div className="grid sm:grid-cols-2 gap-4 pb-32">
             {filteredFunds.map(f => (
               <div key={f.id} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
                 <div className="flex justify-between items-start gap-3 mb-2">
@@ -277,7 +277,7 @@ export default function FundsPage() {
         )}
 
         {selected.length > 0 && (
-          <div className="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-orange-700 p-4 flex items-center justify-between gap-4 flex-wrap z-40">
+          <div className="fixed bottom-11 left-0 right-0 bg-gray-900 border-t border-orange-700 p-4 flex items-center justify-between gap-4 flex-wrap z-40">
             <p className="text-gray-300 text-sm">
               {t.compareBar(selected.length)}
               {selected.length >= MAX_COMPARE && <span className="text-gray-500"> — {t.compareMax}</span>}
